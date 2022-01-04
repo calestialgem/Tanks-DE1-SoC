@@ -6,19 +6,20 @@
 
 /** Configures all the sub systems at the start. */
 static config_all(void) {
+	error_config();
 	audio_config();
-	graphics_config();
 	keyboard_config();
+	graphics_config();
 	timer_config();
 }
 
-/** Wait for the interrupts to work. */
+/** Waits for the interrupts to work. */
 static wait(void) {
 	while (true)
 		;
 }
 
-/** Start of the program. */
+/** Starts the program. */
 int main(void) {
 	config_all();
 	wait();
