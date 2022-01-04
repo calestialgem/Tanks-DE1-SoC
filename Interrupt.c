@@ -27,14 +27,14 @@ static void set_interrupt_stack(void) {
 }
 static void config_interrupt(uint32_t const N) {
 	uint32_t const ICDISERn = (N >> 3) & 0xFFFFFFFC;
+	volatile uint32_t *const ICDISER = 0xFFFED100 + ICDISERn;
 	uint32_t const enableBit = N & 0x1F;
 	uint32_t const enableMask = 0x1 << enableBit;
-	volatile uint32_t *const ICDISER = 0xFFFED100 + ICDISERn;
 	*ICDISER |= enableMask;
 	uint32_t const ICDIPTRn = (N & 0xFFFFFFFC);
 	uint32_t const index = N & 0x3;
-	uint8_t const targetCPU = 1;
 	volatile uint8_t *const ICDIPTR = 0xFFFED800 + ICDIPTRn + index;
+	uint8_t const targetCPU = 1;
 	*ICDIPTR = targetCPU;
 }
 static void config_gic(void) {
@@ -66,8 +66,7 @@ void interrupt_config(void) {
 }
 /** Handles normal interrupts. */
 void __attribute__((interrupt)) __cs3_isr_irq(void) {
-	// Read the ICCIAR from the CPU Interface in the GIC.
-	volatile uint32_t *const ICCIAR = 0xFFFEC10C;
+	volatile uint32_t const *const ICCIAR = 0xFFFEC10C;
 	uint32_t const id = *ICCIAR;
 	switch (id) {
 #ifdef AUDIO_INTERRUPT_ID
@@ -93,7 +92,6 @@ void __attribute__((interrupt)) __cs3_isr_irq(void) {
 	default:
 		error_show(ERROR_UNDEFINED_ISR);
 	};
-	// Write to the end of interrupt register (ICCEOIR).
 	volatile uint32_t *const ICCEOIR = 0xFFEC110;
 	*ICCEOIR = id;
 }
