@@ -46,8 +46,9 @@
 /** Error from an undefined interrupt service routine. */
 #define ERROR_UNDEFINED_ISR (ERROR_UNDEFINED | ERROR_INTERRUPT)
 
-/** Initializes the error system. Called at the start of the program. */
-void error_init(void);
+/** Configures and initializes the error system. Called at the start of the
+ * program. */
+void error_config(void);
 /** Shows the given error code in the LEDs and stalls the program. Called when
  * an error occurs. */
 void error_show(uint32_t error);
