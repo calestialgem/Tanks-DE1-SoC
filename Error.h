@@ -19,6 +19,8 @@
 #define ERROR_INVALID_ID ((uint32_t)(1U << 4U))
 /** Sixth LED for errors in an interrupt service routine. */
 #define ERROR_INTERRUPT ((uint32_t)(1U << 5U))
+/** Seventh LED for undefined errors. */
+#define ERROR_UNDEFINED ((uint32_t)(1U << 6U))
 
 // Combination of LEDs for an invalid id.
 
