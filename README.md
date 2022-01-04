@@ -12,4 +12,4 @@ Support for mouse input and enemy AI is not included in the scope for now.
 
 - Audio & Keyboard: Ahmet İhsan GÜL
 - Graphics: Mustafa Çağatay SİPHAİOĞLU
-- Game Logic: [Cem GEÇGEL](gecgelcem@outlook.com)
+- Game Logic: Cem GEÇGEL (<gecgelcem@outlook.com>)
