@@ -42,8 +42,8 @@
 /** Error from the graphics interrupt service routine. */
 #define ERROR_GRAPHICS_ISR (ERROR_GRAPHICS | ERROR_INTERRUPT)
 
-/** Configures the error system. Called at the start of the program. */
-void error_config(void);
+/** Initializes the error system. Called at the start of the program. */
+void error_init(void);
 /** Shows the given error code in the LEDs and stalls the program. Called when
  * an error occurs. */
 void error_show(uint32_t error);

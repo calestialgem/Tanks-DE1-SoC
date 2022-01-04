@@ -2,7 +2,7 @@
 
 #include <stdbool.h>
 
-void error_config(void) {
+void error_init(void) {
 	// Clear the current error.
 	error_show(ERROR_NO_ERROR);
 }
