@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define GRAPHICS_WIDTH 500
+#define GRAPHICS_WIDTH 1000
 #define GRAPHICS_HEIGHT 2000
 
 /** Configures and initializes the graphics system. Called at the start of the
