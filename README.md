@@ -11,5 +11,5 @@ Support for mouse input and enemy AI is not included in the scope for now.
 ---
 
 - Audio & Keyboard: Ahmet İhsan GÜL
-- Graphics: Mustafa Çağatay SİPAHİOĞLU
+- Graphics: Mustafa Çağatay SİPAHİOĞLU (<fdsf@fds.com>)
 - Game Logic: Cem GEÇGEL (<gecgelcem@outlook.com>)

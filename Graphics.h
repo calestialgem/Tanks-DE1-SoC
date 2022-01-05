@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-// /** Graphics' interrupt id. */
-// #define GRAPHICS_INTERRUPT_ID 0
+#define GRAPHICS_WIDTH 640
+#define GRAPHICS_HEIGHT 480
 
 /** Configures and initializes the graphics system. Called at the start of the
  * program. */
