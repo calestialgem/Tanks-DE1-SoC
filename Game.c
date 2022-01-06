@@ -7,7 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-void game_add_tank(Tanks *tanks, char const name[GAME_TANK_NAME_CAPACITY]) {
+void game_add_tank(
+	Tanks *const tanks, char const name[GAME_TANK_NAME_CAPACITY]) {
 	if (tanks->size == GAME_TANK_CAPACITY) {
 		error_show(ERROR_LOGIC);
 		return;
@@ -15,18 +16,22 @@ void game_add_tank(Tanks *tanks, char const name[GAME_TANK_NAME_CAPACITY]) {
 	Tank *const tank = &tanks->array[tanks->size++];
 	strncpy(tank->name, name, GAME_TANK_NAME_CAPACITY);
 }
-void game_remove_tank(Tanks *tanks, int index) {
+static inline void copy_tank(
+	Tank *const destination, Tank const *const source) {
+	destination->position = source->position;
+	destination->tilt = source->tilt;
+	destination->gunAngle = source->gunAngle;
+	destination->health = source->health;
+	strncpy(destination->name, source->name, GAME_TANK_NAME_CAPACITY);
+}
+void game_remove_tank(Tanks *const tanks, int const index) {
 	if (tanks->size <= index) {
 		error_show(ERROR_LOGIC);
 		return;
 	}
-	Tank *const last = &tanks->array[--tanks->size];
+	Tank const *const last = &tanks->array[--tanks->size];
 	Tank *const removed = &tanks->array[index];
-	removed->position = last->position;
-	removed->tilt = last->tilt;
-	removed->gunAngle = last->gunAngle;
-	removed->health = last->health;
-	strncpy(removed->name, last->name, GAME_TANK_NAME_CAPACITY);
+	copy_tank(removed, last);
 }
 static inline float get_random(float const lowerLimit, float const upperLimit) {
 	float const randomLimit = RAND_MAX;
@@ -34,7 +39,7 @@ static inline float get_random(float const lowerLimit, float const upperLimit) {
 	float const span = upperLimit - lowerLimit;
 	return normalized * span + lowerLimit;
 }
-static inline void generate_map(Map *map) {
+static inline void generate_map(Map *const map) {
 	for (int i = 0; i < GAME_MAP_SIZE; i++) {
 		float const angleMultiplier = 0.1F;
 		float const angle = i * angleMultiplier;
@@ -44,9 +49,8 @@ static inline void generate_map(Map *map) {
 		map->ground[i] = heightMultiplier * sinusoidal * random;
 	}
 }
-static inline void move_tank(
-	Map const *const map, Tank *const tank, float const x) {
-	int const index = floor(x / GAME_MAP_STEP_SIZE);
+static inline void update_tank(Tank *const tank, Map const *const map) {
+	int const index = floor(tank->position.x / GAME_MAP_STEP_SIZE);
 	float const height = map->ground[index];
 	tank->position.y = height;
 	int const previousIndex = index == 0 ? index : index - 1;
@@ -59,12 +63,13 @@ static inline void move_tank(
 	float const tangent = verticalChange / horizontalChange;
 	tank->tilt = atan(tangent);
 }
-static inline void place_tank(Map const *const map, Tank *const tank) {
+static inline void place_tank(Tank *const tank, Map const *const map) {
 	float const lowerLimit = GAME_WIDTH * 0.1F;
 	float const upperLimit = GAME_WIDTH * 0.9F;
-	move_tank(map, tank, get_random(lowerLimit, upperLimit));
+	tank->position.x = get_random(lowerLimit, upperLimit);
+	update_tank(tank, map);
 }
-void game_restart(Game *game) {
+void game_restart(Game *const game) {
 	if (game->playing) {
 		error_show(ERROR_LOGIC);
 		return;
@@ -77,13 +82,13 @@ void game_restart(Game *game) {
 	game->bullets.size = 0;
 	for (int i = 0; i < game->tanks.size; i++) {
 		Tank *const tank = &game->tanks.array[i];
-		place_tank(&game->map, tank);
+		place_tank(tank, &game->map);
 		tank->gunAngle = GAME_TANK_GUN_ANGLE_LIMIT;
 		tank->health = GAME_TANK_INITIAL_HEALTH;
 		tank->alive = true;
 	}
 }
-static inline void next_turn(Game *game) {
+static inline void next_turn(Game *const game) {
 	if (++game->turn >= game->tanks.size) {
 		game->turn = 0;
 	}
