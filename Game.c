@@ -41,12 +41,13 @@ static inline float get_random(float const lowerLimit, float const upperLimit) {
 }
 static inline void generate_map(Map *const map) {
 	for (int i = 0; i < GAME_MAP_SIZE; i++) {
-		float const angleMultiplier = 0.1F;
-		float const angle = i * angleMultiplier;
-		float const sinusoidal = sin(angle);
-		float const random = get_random(0.5F, 1.0F);
-		float const heightMultiplier = GAME_HEIGHT / 2.0;
-		map->ground[i] = heightMultiplier * sinusoidal * random;
+		float const scale = get_random(0.0F, 1.0F);
+		float const translation = get_random(0.0F, 1.0F);
+		float const angle = i * scale + translation;
+		float const sinusoidalTerm = abs(sin(angle));
+		float const randomTerm = get_random(0.5F, 1.0F);
+		float const heightTerm = GAME_HEIGHT / 2.0F;
+		map->ground[i] = sinusoidalTerm * randomTerm * heightTerm;
 	}
 }
 static inline void update_tank(Tank *const tank, Map const *const map) {
