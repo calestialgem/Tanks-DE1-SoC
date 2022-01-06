@@ -40,14 +40,14 @@ static inline float get_random(float const lowerLimit, float const upperLimit) {
 	return normalized * span + lowerLimit;
 }
 static inline void generate_map(Map *const map) {
+	float change = get_random(-0.01F, 0.01F);
+	float height = get_random(0.5F, 1.0F);
 	for (int i = 0; i < GAME_MAP_SIZE; i++) {
-		float const scale = get_random(0.0F, 1.0F);
-		float const translation = get_random(0.0F, 1.0F);
-		float const angle = i * scale + translation;
-		float const sinusoidalTerm = abs(sin(angle));
-		float const randomTerm = get_random(0.5F, 1.0F);
-		float const heightTerm = GAME_HEIGHT / 2.0F;
-		map->ground[i] = sinusoidalTerm * randomTerm * heightTerm;
+		float const scale = GAME_HEIGHT / 2.0F;
+		map->ground[i] = scale * height;
+		height += change;
+		float const changeOfChange = 0.001F;
+		change += get_random(-changeOfChange, changeOfChange);
 	}
 }
 static inline void update_tank(Tank *const tank, Map const *const map) {
