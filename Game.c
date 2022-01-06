@@ -69,6 +69,15 @@ static inline void place_tank(Tank *const tank, Map const *const map) {
 	tank->position.x = get_random(lowerLimit, upperLimit);
 	update_tank(tank, map);
 }
+static inline void reset_tanks(Tanks *const tanks, Map const *const map) {
+	for (int i = 0; i < tanks->size; i++) {
+		Tank *const tank = &tanks->array[i];
+		place_tank(tank, map);
+		tank->gunAngle = GAME_TANK_GUN_ANGLE_LIMIT;
+		tank->health = GAME_TANK_INITIAL_HEALTH;
+		tank->alive = true;
+	}
+}
 void game_restart(Game *const game) {
 	if (game->playing) {
 		error_show(ERROR_LOGIC);
@@ -80,13 +89,7 @@ void game_restart(Game *const game) {
 	srand(time(0));
 	generate_map(&game->map);
 	game->bullets.size = 0;
-	for (int i = 0; i < game->tanks.size; i++) {
-		Tank *const tank = &game->tanks.array[i];
-		place_tank(tank, &game->map);
-		tank->gunAngle = GAME_TANK_GUN_ANGLE_LIMIT;
-		tank->health = GAME_TANK_INITIAL_HEALTH;
-		tank->alive = true;
-	}
+	reset_tanks(&game->tanks, &game->map);
 }
 static inline void next_turn(Game *const game) {
 	if (++game->turn >= game->tanks.size) {
