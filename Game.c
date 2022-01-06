@@ -52,17 +52,16 @@ static inline void generate_map(Map *const map) {
 }
 static inline void update_tank(Tank *const tank, Map const *const map) {
 	int const index = floor(tank->position.x / GAME_MAP_STEP_SIZE);
-	float const height = map->ground[index];
-	tank->position.y = height;
+	tank->position.y = map->ground[index];
 	int const previousIndex = index == 0 ? index : index - 1;
 	int const nextIndex = index == GAME_MAP_SIZE - 1 ? index : index + 1;
 	float const previousHeight = map->ground[previousIndex];
 	float const nextHeight = map->ground[nextIndex];
-	float const verticalChange = previousHeight - nextHeight;
+	float const heightChange = previousHeight - nextHeight;
 	int const steps = nextIndex - previousIndex;
-	float const horizontalChange = steps * GAME_MAP_STEP_SIZE;
-	float const tangent = verticalChange / horizontalChange;
-	tank->tilt = atan(tangent);
+	float const stepWidth = steps * GAME_MAP_STEP_SIZE;
+	float const slope = heightChange / stepWidth;
+	tank->tilt = atan(slope);
 }
 static inline void place_tank(Tank *const tank, Map const *const map) {
 	float const lowerLimit = GAME_WIDTH * 0.1F;
