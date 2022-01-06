@@ -44,23 +44,17 @@ static inline void generate_map(Map *map) {
 		map->ground[i] = heightMultiplier * sinusoidal * random;
 	}
 }
-static inline float get_height_at_index_or_else(
-	Map const *const map, int const index, float const orElse) {
-	return index >= 0 && index < GAME_MAP_SIZE ? map->ground[index]
-						   : orElse;
-}
 static inline void move_tank(
 	Map const *const map, Tank *const tank, float const x) {
 	int const index = floor(x / GAME_MAP_STEP_SIZE);
 	float const height = map->ground[index];
 	tank->position.y = height;
-	float const previousHeight =
-		get_height_at_index_or_else(map, index - 1, height);
-	float const nextHeight =
-		get_height_at_index_or_else(map, index + 1, height);
+	int const previousIndex = index == 0 ? index : index - 1;
+	int const nextIndex = index == GAME_MAP_SIZE - 1 ? index : index + 1;
+	float const previousHeight = map->ground[previousIndex];
+	float const nextHeight = map->ground[nextIndex];
 	float const verticalChange = previousHeight - nextHeight;
-	bool const notAtMapLimits = index != 0 & index != GAME_MAP_SIZE - 1;
-	int const steps = notAtMapLimits + 1;
+	int const steps = nextIndex - previousIndex;
 	float const horizontalChange = steps * GAME_MAP_STEP_SIZE;
 	float const tangent = verticalChange / horizontalChange;
 	tank->tilt = atan(tangent);
