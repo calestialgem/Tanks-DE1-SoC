@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "Error.h"
 #include "Graphics.h"
 
 #include <math.h>
@@ -8,6 +9,7 @@
 
 void game_add_tank(Tanks *tanks, char const name[GAME_TANK_NAME_CAPACITY]) {
 	if (tanks->size == GAME_TANK_CAPACITY) {
+		error_show(ERROR_LOGIC);
 		return;
 	}
 	Tank *const tank = &tanks->array[tanks->size++];
@@ -15,6 +17,7 @@ void game_add_tank(Tanks *tanks, char const name[GAME_TANK_NAME_CAPACITY]) {
 }
 void game_remove_tank(Tanks *tanks, int index) {
 	if (tanks->size <= index) {
+		error_show(ERROR_LOGIC);
 		return;
 	}
 	Tank *const last = &tanks->array[--tanks->size];
@@ -69,6 +72,7 @@ static inline void place_tank(Map const *const map, Tank *const tank) {
 }
 void game_restart(Game *game) {
 	if (game->playing) {
+		error_show(ERROR_LOGIC);
 		return;
 	}
 	game->playing = true;
