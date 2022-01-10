@@ -35,8 +35,8 @@ static inline float get_random(float const lowerLimit, float const upperLimit) {
 static inline void generate_map(struct map *const map) {
 	float change = get_random(-0.01F, 0.01F);
 	float height = get_random(0.5F, 1.0F);
-	for (int i = 0; i < GAME_MAP_SIZE; i++) {
-		float const scale = GAME_HEIGHT / 2.0F;
+	for (int i = 0; i < STANDARD_X; i++) {
+		float const scale = STANDARD_Y / 2.0F;
 		map->ground[i] = scale * height;
 		height += change;
 		float const changeOfChange = 0.001F;
@@ -44,21 +44,21 @@ static inline void generate_map(struct map *const map) {
 	}
 }
 static inline void update_tank(struct tank *const tank, struct map const map) {
-	int const index = floor(tank->position.x / GAME_MAP_STEP_SIZE);
+	int const index = floor(tank->position.x);
 	tank->position.y = map.ground[index];
 	int const previousIndex = index == 0 ? index : index - 1;
-	int const nextIndex = index == GAME_MAP_SIZE - 1 ? index : index + 1;
+	int const nextIndex = index == STANDARD_X - 1 ? index : index + 1;
 	float const previousHeight = map.ground[previousIndex];
 	float const nextHeight = map.ground[nextIndex];
 	float const heightChange = previousHeight - nextHeight;
 	int const steps = nextIndex - previousIndex;
-	float const stepWidth = steps * GAME_MAP_STEP_SIZE;
+	float const stepWidth = steps;
 	float const slope = heightChange / stepWidth;
 	tank->tilt = atan(slope);
 }
 static inline void place_tank(struct tank *const tank, struct map const map) {
-	float const lowerLimit = GAME_WIDTH * 0.1F;
-	float const upperLimit = GAME_WIDTH * 0.9F;
+	float const lowerLimit = STANDARD_X * 0.1F;
+	float const upperLimit = STANDARD_X * 0.9F;
 	tank->position.x = get_random(lowerLimit, upperLimit);
 	update_tank(tank, map);
 }
@@ -67,7 +67,7 @@ static inline void reset_tanks(
 	for (int i = 0; i < tanks->size; i++) {
 		struct tank *const tank = &tanks->array[i];
 		place_tank(tank, map);
-		tank->gun.angle = GAME_GUN_ANGLE_LIMIT;
+		tank->gun.angle = M_PI_2;
 		tank->health = GAME_TANK_INITIAL_HEALTH;
 		tank->alive = true;
 	}
