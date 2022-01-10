@@ -5,6 +5,8 @@
 #define TIMER_INTERRUPT_ID 72
 /** Timer's intervals in milliseconds, which corresponds to 60 Hz. */
 #define TIMER_MILLIS 16
+/** Timer's intervals in seconds. */
+#define TIMER_STEP (TIMER_MILLIS / 1000.0F)
 
 /** Configures and initializes the timer. Called at the start of the
  * program. */
