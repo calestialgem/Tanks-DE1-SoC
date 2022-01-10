@@ -36,13 +36,13 @@ union vector {
 };
 /** Projectiles that do damage. */
 struct bullet {
-	/** Position of the center of mass m. */
+	/** Position of the center of mass in m. */
 	union vector position;
 	/** Velocity of the center of mass in m/s. */
 	union vector velocity;
 	/** Diameter in m. */
 	float diameter;
-	/** Mass in kg. */
+	/** Total mass in kg. */
 	float mass;
 	/** Power released when it explodes. */
 	float power;

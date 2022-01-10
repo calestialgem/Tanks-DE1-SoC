@@ -2,6 +2,7 @@
 
 #include "Error.h"
 #include "Graphics.h"
+#include "Timer.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -83,6 +84,30 @@ void game_restart(struct game *const game) {
 	generate_map(&game->map);
 	game->bullets.size = 0;
 	reset_tanks(&game->tanks, game->map);
+}
+static inline union vector add_vectors(
+	union vector const left, union vector const right) {
+	union vector const result = {
+		.x = left.x + right.x, .y = left.y + right.y};
+	return result;
+}
+static inline union vector multiply_vector(
+	union vector const left, float const right) {
+	union vector const result = {.x = left.x * right, .y = left.y * right};
+	return result;
+}
+static inline void simulate_bullet(struct bullet *const bullet) {
+	union vector const acceleration = {.x = 0.0F, .y = GAME_GRAVITY};
+	union vector const velocityEffect =
+		multiply_vector(bullet->velocity, TIMER_STEP);
+	union vector const accelerationEffect =
+		multiply_vector(acceleration, powf(TIMER_STEP, 2.0F) / 2.0F);
+	union vector const positionChange =
+		add_vectors(velocityEffect, accelerationEffect);
+	bullet->position = add_vectors(bullet->position, positionChange);
+	union vector const velocityChange =
+		multiply_vector(acceleration, TIMER_STEP);
+	bullet->velocity = add_vectors(bullet->velocity, velocityChange);
 }
 static inline void next_turn(struct game *const game) {
 	if (++game->turn >= game->tanks.size) {
