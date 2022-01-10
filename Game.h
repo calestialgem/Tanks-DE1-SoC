@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define STANDARD_X 320
+#define STANDARD_Y 240
+
 #define GAME_GRAVITY 9.81F
 
 #define GAME_BULLET_CAPACITY 8

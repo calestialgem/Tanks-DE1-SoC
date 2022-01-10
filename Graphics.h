@@ -4,8 +4,7 @@
 
 
 #define PIXEL_BUF_CTRL_BASE   0xFF203020
-#define STANDARD_X 320
-#define STANDARD_Y 240
+
 
 //RGB to hex color converter: https://www.rapidtables.com/convert/color/rgb-to-hex.html
 //Color format= 5 bit red, 6 bit green, 5 bit blue = 16 bits.
@@ -24,6 +23,9 @@
 #define Color_gui_cloud_blue 0x051D
 #define Color_gui_fuel_green 0x0320
 #define Color_gui_shield_blue 0x07FF
+#define Color_gui_ground 0xFFFF
+#define Color_gui_background 0x9E7F
+
 
 // Configuration and main render file.
 void graphics_build(short pixel_map[STANDARD_Y][STANDARD_X], struct game const* game_data);
