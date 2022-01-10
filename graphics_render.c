@@ -1,10 +1,10 @@
 #include  "Game.h"
+#include  "Graphics.h"
 
 
 
-
-void graphics_build(short **pixel_map, struct game const* game_data){
-
+void graphics_build(short pixel_map[STANDARD_Y][STANDARD_X], struct game const* game_data){
+  int x,y;
 
 
   for (y = 0; y <= STANDARD_Y; y++)
@@ -21,10 +21,10 @@ void graphics_build(short **pixel_map, struct game const* game_data){
 
 
 
-void graphics_render(game const* game_data) {
+void graphics_render(struct game const* game_data) { //game_data'yı doğru mu alıyorum?
 
     short pixel_map[STANDARD_Y][STANDARD_X];
-    graphics_build(game_data);   //should return 320x240 pixel map.
+    graphics_build(pixel_map,game_data);   //should return 320x240 pixel map.
     int pixel_buf_ptr = *(int *)PIXEL_BUF_CTRL_BASE;
     int pixel_ptr, x, y;
 

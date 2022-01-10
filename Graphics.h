@@ -1,5 +1,7 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
+#include "Game.h"
+
 
 #define PIXEL_BUF_CTRL_BASE   0xFF203020
 #define STANDARD_X 320
@@ -24,7 +26,7 @@
 #define Color_gui_shield_blue 0x07FF
 
 // Configuration and main render file.
-void graphics_build(short **pixel_map, struct game const* game_data);
+void graphics_build(short pixel_map[STANDARD_Y][STANDARD_X], struct game const* game_data);
 void graphics_render(struct game const* game_data);
 
 

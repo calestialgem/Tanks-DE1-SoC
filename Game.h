@@ -1,8 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "Graphics.h"
-
 #include <stdbool.h>
 #include <stdint.h>
 
