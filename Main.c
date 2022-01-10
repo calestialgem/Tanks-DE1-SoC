@@ -5,22 +5,23 @@
 #include "Keyboard.h"
 #include "Timer.h"
 
+game game_data;
+
 /** Configures all the subsystems at the start. */
 static config_all(void) {
 	error_config();
 	audio_config();
 	keyboard_config();
-	graphics_config();
 	timer_config();
 	interrupt_config();
 }
 /** Draws continuously. */
-static render(void) {
+static render(struct game *const game_data) {
 	while (true)
-		graphics_render();
+		graphics_render(game_data);
 }
 /** Starts the program. */
 int main(void) {
 	config_all();
-	render();
+	render(game_data);
 }
