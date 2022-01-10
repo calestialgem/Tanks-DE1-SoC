@@ -1,11 +1,10 @@
 #include "Audio.h"
 #include "Error.h"
+#include "Game.h"
 #include "Graphics.h"
 #include "Interrupt.h"
 #include "Keyboard.h"
 #include "Timer.h"
-
-game game_data;
 
 /** Configures all the subsystems at the start. */
 static config_all(void) {
@@ -22,6 +21,12 @@ static render(struct game *const game_data) {
 }
 /** Starts the program. */
 int main(void) {
+	struct game current = {.tanks = {.size = 0},
+		.bullets = {.size = 0},
+		.map = {},
+		.playing = false,
+		.turn = 0,
+		.shooting = false};
 	config_all();
-	render(game_data);
+	render(&current);
 }

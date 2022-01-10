@@ -7,21 +7,13 @@
 #include <stdint.h>
 
 #define GAME_GRAVITY 9.81F
-#define GAME_PIXEL_SCALE 100.0F
-#define GAME_WIDTH (GRAPHICS_WIDTH * GAME_PIXEL_SCALE)
-#define GAME_HEIGHT (GRAPHICS_HEIGHT * GAME_PIXEL_SCALE)
 
 #define GAME_BULLET_CAPACITY 8
 #define GAME_BULLET_DENSITY 2500.0F
 
-#define GAME_GUN_ANGLE_LIMIT 15.0F
-
 #define GAME_TANK_CAPACITY 4
 #define GAME_TANK_INITIAL_HEALTH 100.0F
 #define GAME_TANK_NAME_CAPACITY 32
-
-#define GAME_MAP_SIZE 128
-#define GAME_MAP_STEP_SIZE (GAME_WIDTH / GAME_MAP_SIZE)
 
 /** Vector of two floats. */
 union vector {
@@ -86,7 +78,7 @@ struct tanks {
 /** Terrain where tanks are on. */
 struct map {
 	/** Heights of the ground at different horizontal positions in m. */
-	float ground[GAME_MAP_SIZE];
+	float ground[STANDARD_X];
 };
 /** Game state. */
 struct game {
