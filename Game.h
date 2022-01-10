@@ -100,6 +100,8 @@ struct game {
 	bool playing;
 	/** The index of the tank that can do actions. */
 	uint8_t turn;
+	/** Wheter the current tank is shooting. */
+	bool shooting;
 };
 
 /** Adds a tank to the array. */

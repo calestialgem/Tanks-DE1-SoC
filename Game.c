@@ -89,4 +89,8 @@ static inline void next_turn(struct game *const game) {
 		game->turn = 0;
 	}
 }
-void game_update(struct game *game) {}
+void game_update(struct game *game) {
+	if (game->shooting) {
+	} else {
+	}
+}
