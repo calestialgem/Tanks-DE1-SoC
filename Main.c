@@ -14,13 +14,13 @@ static config_all(void) {
 	timer_config();
 	interrupt_config();
 }
-/** Waits for the interrupts to work. */
-static wait(void) {
+/** Draws continuously. */
+static render(void) {
 	while (true)
-		;
+		graphics_render();
 }
 /** Starts the program. */
 int main(void) {
 	config_all();
-	wait();
+	render();
 }
