@@ -14,9 +14,10 @@
 #define GAME_BULLET_CAPACITY 8
 #define GAME_BULLET_DENSITY 2500.0F
 
+#define GAME_GUN_ANGLE_LIMIT 15.0F
+
 #define GAME_TANK_CAPACITY 4
 #define GAME_TANK_INITIAL_HEALTH 100.0F
-#define GAME_TANK_GUN_ANGLE_LIMIT 15.0F
 #define GAME_TANK_NAME_CAPACITY 32
 
 #define GAME_MAP_SIZE 128
@@ -53,19 +54,26 @@ typedef struct {
 	/** Amount of bullets in the array. */
 	uint8_t size;
 } Bullets;
+/** Weapon on top of a tank. */
+typedef struct {
+	/** The angle with respect to the tank in rad. */
+	float angle;
+	/** The amount bullets are shot forward percent. */
+	uint8_t power;
+} Gun;
 /** Characters controlled by players. */
 typedef struct {
 	/** Position of the middle horizontally and down vertically in m. */
 	Vector position;
 	/** The angle the tank is standing with respect to the ground in rad. */
 	float tilt;
-	/** The angle of the tank's gun with respect to the tank in rad. */
-	float gunAngle;
-	/** Remaining healt of the tank. */
-	float health;
+	/** Remaining healt of the tank in percents. */
+	uint8_t health;
 	/** Whether the tank is alive or not. */
 	bool alive;
-	/** Name. */
+	/** Weapon. */
+	Gun gun;
+	/** Player's name. */
 	char name[GAME_TANK_NAME_CAPACITY];
 } Tank;
 /** Array of tanks. */
