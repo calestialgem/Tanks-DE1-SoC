@@ -1,20 +1,41 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
+#include "Game.h"
 
-#include <stdint.h>
 
-#define GRAPHICS_WIDTH 100
-#define GRAPHICS_HEIGHT 200
+#define PIXEL_BUF_CTRL_BASE   0xFF203020
 
-/** Configures and initializes the graphics system. Called at the start of the
- * program. */
-void graphics_config(void);
+
+//RGB to hex color converter: https://www.rapidtables.com/convert/color/rgb-to-hex.html
+//Color format= 5 bit red, 6 bit green, 5 bit blue = 16 bits.
+//Tank colors
+#define Color_tank_red 0xC000
+#define Color_tank_green 0x0260
+#define Color_tank_blue 0x11B4
+#define Color_tank_purple 0x8010
+#define Color_tank_yellow 0xFEA0
+
+
+//GUI Colors
+#define Color_gui_red 0xF800
+#define Color_gui_black 0x0000
+#define Color_gui_grey 0x7BEF
+#define Color_gui_cloud_blue 0x051D
+#define Color_gui_fuel_green 0x0320
+#define Color_gui_shield_blue 0x07FF
+#define Color_gui_ground 0xFFFF
+#define Color_gui_background 0x9E7F
+
+
+// Configuration and main render file.
+void graphics_build(short pixel_map[STANDARD_Y][STANDARD_X], struct game const* game_data);
+void graphics_render(struct game const* game_data);
+
+
 #ifdef GRAPHICS_INTERRUPT_ID
 /** Handles the graphics interrupts. Called by the interrupt handler. */
 void graphics_isr(void);
 #endif // GRAPHICS_INTERRUPT_ID
-/** Swaps the frame buffers, and clears the back buffer pixels. Called by the
- * game logic. */
-void graphics_render(void);
+
 
 #endif // GRAPHICS_H
