@@ -15,9 +15,11 @@ static void interval_timer_ISR( ){
 	RVALID = PS_Data & 0x8000; // extract the RVALID field
 	
 	if (RVALID){               // If there is data in keyboard FIFO buffer:
+
 		byte1 = byte2;         
 		byte2 = byte3;         // Store the most recent 3 data info
 		byte3 = PS_Data & 0xFF;
+
 		if (byte2 == 0xF0){    // Button release
 
 		}           
