@@ -3,8 +3,6 @@
 * Interrupt'a her girişinde tuşları kontrol ediyor.
 * Basılı olan tuşa göre oyunda istenen hareket yapılıyor
 ******************************************************************************/
-static volatile int move_index = 0;
-static volatile int turret_index = 0;
 static volatile char byte1 = 0, byte2 = 0, byte3 = 0;
 
 static void interval_timer_ISR( ){
