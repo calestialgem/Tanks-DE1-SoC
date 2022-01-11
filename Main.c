@@ -17,7 +17,7 @@ static config_all(void) {
 /** Draws continuously. */
 static render(struct game *const game_data) {
 	while (true)
-		graphics_render(game_data);
+		graphics_render(&game_data);
 }
 /** Starts the program. */
 int main(void) {
