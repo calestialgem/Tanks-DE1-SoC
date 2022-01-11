@@ -41,7 +41,7 @@ typedef struct {
 	/** Array of bullets with a set capacity. */
 	Bullet array[GAME_BULLET_CAPACITY];
 	/** Amount of bullets in the array. */
-	uint8_t size;
+	size_t size;
 } Bullets;
 /** Weapon on top of a tank. */
 typedef struct {
@@ -70,7 +70,7 @@ typedef struct {
 	/** Array of tanks with a set capacity. */
 	Tank array[GAME_TANK_CAPACITY];
 	/** Amount of tanks in the array. */
-	uint8_t size;
+	size_t size;
 } Tanks;
 /** Terrain where tanks are on. */
 typedef struct {
@@ -88,7 +88,7 @@ typedef struct {
 	/** Whether the game is running. */
 	bool playing;
 	/** The index of the tank that can do actions. */
-	uint8_t turn;
+	size_t turn;
 	/** Wheter the current tank is shooting. */
 	bool shooting;
 } Game;
@@ -96,7 +96,7 @@ typedef struct {
 /** Adds a tank to the array. */
 void game_add_tank(Tanks *tanks, char const name[GAME_TANK_CAPACITY]);
 /** Removes the tank at the given index from the array. */
-void game_remove_tank(Tanks *tanks, int index);
+void game_remove_tank(Tanks *tanks, size_t index);
 /** Restarts the game. */
 void game_restart(Game *game);
 /** Updates the given game. */

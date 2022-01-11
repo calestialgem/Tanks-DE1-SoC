@@ -17,7 +17,7 @@ void game_add_tank(
 	Tank *const tank = &tanks->array[tanks->size++];
 	strncpy(tank->name, name, GAME_TANK_NAME_CAPACITY);
 }
-void game_remove_tank(Tanks *const tanks, int const index) {
+void game_remove_tank(Tanks *const tanks, size_t const index) {
 	if (tanks->size <= index) {
 		error_show(ERROR_LOGIC);
 		return;
@@ -47,7 +47,8 @@ static inline void generate_map(Map *const map) {
 	float const start = span_random(0.0F, 2.0F * M_PI);
 	float const peakHeight = span_random(0.5F, 0.67F) * GAME_HEIGHT;
 	float const valleyHeight = span_random(0.8F, 0.95F) * GAME_HEIGHT;
-	for (size_t x = 0; x < GAME_WIDTH; x++) {
+	size_t x;
+	for (x = 0; x < GAME_WIDTH; x++) {
 		float const angle =
 			change_span(x, 0.0F, GAME_WIDTH, 0.0F, 2.0F * M_PI);
 		map->ground[x] = span_sinus(
@@ -55,10 +56,10 @@ static inline void generate_map(Map *const map) {
 	}
 }
 static inline void update_tank(Tank *const tank, Map const map) {
-	int const index = floor(tank->position.x);
+	size_t const index = floor(tank->position.x);
 	tank->position.y = map.ground[index];
-	int const previousIndex = index == 0 ? index : index - 1;
-	int const nextIndex = index == GAME_WIDTH - 1 ? index : index + 1;
+	size_t const previousIndex = index == 0 ? index : index - 1;
+	size_t const nextIndex = index == GAME_WIDTH - 1 ? index : index + 1;
 	float const previousHeight = map.ground[previousIndex];
 	float const nextHeight = map.ground[nextIndex];
 	float const heightChange = previousHeight - nextHeight;
@@ -74,7 +75,8 @@ static inline void place_tank(Tank *const tank, Map const map) {
 	update_tank(tank, map);
 }
 static inline void reset_tanks(Tanks *const tanks, Map const map) {
-	for (int i = 0; i < tanks->size; i++) {
+	size_t i;
+	for (i = 0; i < tanks->size; i++) {
 		Tank *const tank = &tanks->array[i];
 		place_tank(tank, map);
 		tank->gun.angle = M_PI_2;
