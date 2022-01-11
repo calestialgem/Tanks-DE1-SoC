@@ -7,7 +7,7 @@ void graphics_build(
 
 	for (y = 0; y <= STANDARD_Y; y++) {
 		for (x = 0; x <= STANDARD_X; ++x) {
-			if (y >= game_data.map.ground[x])
+			if (y >= game_data->map.ground[x])
 				pixel_map[y][x] =
 					Color_gui_ground; // Paint the ground
 			else
