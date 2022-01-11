@@ -17,14 +17,14 @@
 #define GAME_TANK_NAME_CAPACITY 32
 
 /** Vector of two floats. */
-typedef struct Vector {
+typedef struct {
 	/** First component. */
 	float x;
 	/** Second component. */
 	float y;
-};
+} Vector;
 /** Projectiles that do damage. */
-typedef struct Bullet {
+typedef struct {
 	/** Position of the center of mass in m. */
 	Vector position;
 	/** Velocity of the center of mass in m/s. */
@@ -35,23 +35,23 @@ typedef struct Bullet {
 	float mass;
 	/** Power released when it explodes. */
 	float power;
-};
+} Bullet;
 /** Array of bullets. */
-typedef struct Bullets {
+typedef struct {
 	/** Array of bullets with a set capacity. */
 	Bullet array[GAME_BULLET_CAPACITY];
 	/** Amount of bullets in the array. */
 	uint8_t size;
-};
+} Bullets;
 /** Weapon on top of a tank. */
-typedef struct Barrel {
+typedef struct {
 	/** The angle with respect to the tank in rad. */
 	float angle;
 	/** The amount bullets are shot forward percent. */
 	uint8_t power;
-};
+} Barrel;
 /** Characters controlled by players. */
-typedef struct Tank {
+typedef struct {
 	/** Position of the middle horizontally and down vertically in m. */
 	Vector position;
 	/** The angle the tank is standing with respect to the ground in rad. */
@@ -64,21 +64,21 @@ typedef struct Tank {
 	Barrel gun;
 	/** Player's name. */
 	char name[GAME_TANK_NAME_CAPACITY];
-};
+} Tank;
 /** Array of tanks. */
-typedef struct Tanks {
+typedef struct {
 	/** Array of tanks with a set capacity. */
 	Tank array[GAME_TANK_CAPACITY];
 	/** Amount of tanks in the array. */
 	uint8_t size;
-};
+} Tanks;
 /** Terrain where tanks are on. */
-typedef struct Map {
+typedef struct {
 	/** Heights of the ground at different horizontal positions in m. */
 	float ground[STANDARD_X];
-};
+} Map;
 /** Game state. */
-typedef struct Game {
+typedef struct {
 	/** Remaining tanks. */
 	Tanks tanks;
 	/** Active bullets. */
@@ -91,7 +91,7 @@ typedef struct Game {
 	uint8_t turn;
 	/** Wheter the current tank is shooting. */
 	bool shooting;
-};
+} Game;
 
 /** Adds a tank to the array. */
 void game_add_tank(Tanks *tanks, char const name[GAME_TANK_CAPACITY]);
