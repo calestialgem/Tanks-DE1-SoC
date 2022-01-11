@@ -17,22 +17,18 @@
 #define GAME_TANK_NAME_CAPACITY 32
 
 /** Vector of two floats. */
-union vector {
-	/** Componenets as an array. */
-	float c[2];
-	struct {
-		/** First component. */
-		float x;
-		/** Second component. */
-		float y;
-	};
+typedef struct Vector {
+	/** First component. */
+	float x;
+	/** Second component. */
+	float y;
 };
 /** Projectiles that do damage. */
-struct bullet {
+typedef struct Bullet {
 	/** Position of the center of mass in m. */
-	union vector position;
+	Vector position;
 	/** Velocity of the center of mass in m/s. */
-	union vector velocity;
+	Vector velocity;
 	/** Diameter in m. */
 	float diameter;
 	/** Total mass in kg. */
@@ -41,23 +37,23 @@ struct bullet {
 	float power;
 };
 /** Array of bullets. */
-struct bullets {
+typedef struct Bullets {
 	/** Array of bullets with a set capacity. */
-	struct bullet array[GAME_BULLET_CAPACITY];
+	Bullet array[GAME_BULLET_CAPACITY];
 	/** Amount of bullets in the array. */
 	uint8_t size;
 };
 /** Weapon on top of a tank. */
-struct gun {
+typedef struct Barrel {
 	/** The angle with respect to the tank in rad. */
 	float angle;
 	/** The amount bullets are shot forward percent. */
 	uint8_t power;
 };
 /** Characters controlled by players. */
-struct tank {
+typedef struct Tank {
 	/** Position of the middle horizontally and down vertically in m. */
-	union vector position;
+	Vector position;
 	/** The angle the tank is standing with respect to the ground in rad. */
 	float tilt;
 	/** Remaining healt of the tank in percents. */
@@ -65,30 +61,30 @@ struct tank {
 	/** Whether the tank is alive or not. */
 	bool alive;
 	/** Weapon. */
-	struct gun gun;
+	Barrel gun;
 	/** Player's name. */
 	char name[GAME_TANK_NAME_CAPACITY];
 };
 /** Array of tanks. */
-struct tanks {
+typedef struct Tanks {
 	/** Array of tanks with a set capacity. */
-	struct tank array[GAME_TANK_CAPACITY];
+	Tank array[GAME_TANK_CAPACITY];
 	/** Amount of tanks in the array. */
 	uint8_t size;
 };
 /** Terrain where tanks are on. */
-struct map {
+typedef struct Map {
 	/** Heights of the ground at different horizontal positions in m. */
 	float ground[STANDARD_X];
 };
 /** Game state. */
-struct game {
+typedef struct Game {
 	/** Remaining tanks. */
-	struct tanks tanks;
+	Tanks tanks;
 	/** Active bullets. */
-	struct bullets bullets;
+	Bullets bullets;
 	/** Map. */
-	struct map map;
+	Map map;
 	/** Whether the game is running. */
 	bool playing;
 	/** The index of the tank that can do actions. */
@@ -98,12 +94,12 @@ struct game {
 };
 
 /** Adds a tank to the array. */
-void game_add_tank(struct tanks *tanks, char const name[GAME_TANK_CAPACITY]);
+void game_add_tank(Tanks *tanks, char const name[GAME_TANK_CAPACITY]);
 /** Removes the tank at the given index from the array. */
-void game_remove_tank(struct tanks *tanks, int index);
+void game_remove_tank(Tanks *tanks, int index);
 /** Restarts the game. */
-void game_restart(struct game *game);
+void game_restart(Game *game);
 /** Updates the given game. */
-void game_update(struct game *game);
+void game_update(Game *game);
 
 #endif // GAME_H

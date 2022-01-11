@@ -15,13 +15,13 @@ static config_all(void) {
 	interrupt_config();
 }
 /** Draws continuously. */
-static render(struct game *const game_data) {
+static render(Game *const game_data) {
 	while (true)
 		graphics_render(&game_data);
 }
 /** Starts the program. */
 int main(void) {
-	struct game current = {.tanks = {.size = 0},
+	Game current = {.tanks = {.size = 0},
 		.bullets = {.size = 0},
 		.map = {},
 		.playing = false,
