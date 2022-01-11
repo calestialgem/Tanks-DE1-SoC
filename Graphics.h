@@ -2,7 +2,6 @@
 #define GRAPHICS_H
 #include "Game.h"
 
-
 // GUI Colors
 #define Color_gui_red 0xF800
 #define Color_gui_black 0x0000
