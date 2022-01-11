@@ -1,6 +1,7 @@
 #include "Error.h"
 
 #include <stdbool.h>
+#include "MemoryMap.h"
 
 void error_config(void) {
 	// Clear the current error.
@@ -8,7 +9,7 @@ void error_config(void) {
 }
 void error_show(uint32_t const error) {
 	// Show the error in the LEDs.
-	volatile uint32_t *const LEDs = 0xFF200000;
+	Register32 LEDs = (Register32)0xFF200000;
 	*LEDs = error;
 	// Stall the execution when a problem exists.
 	while (error)
