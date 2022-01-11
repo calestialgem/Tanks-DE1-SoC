@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <math.h>
 
 #define GAME_WIDTH 320
 #define GAME_HEIGHT 240
@@ -64,6 +65,8 @@ typedef struct {
 	Barrel gun;
 	/** Player's name. */
 	char name[GAME_TANK_NAME_CAPACITY];
+	/** Index of the player's color. */
+	uint8_t color;
 } Tank;
 /** Array of tanks. */
 typedef struct {
@@ -94,100 +97,160 @@ typedef struct {
 } Game;
 
 /** Adds a tank to the array. */
-void game_add_tank(Tanks *tanks, char const name[GAME_TANK_CAPACITY]);
+void game_add_tank(char const *name, uint8_t color);
 /** Removes the tank at the given index from the array. */
-void game_remove_tank(Tanks *tanks, uint8_t index);
+void game_remove_tank(uint8_t index);
 /** Restarts the game. */
-void game_restart(Game *game);
-/** Updates the given game. */
-void game_update(Game *game);
+void game_restart();
+/** Updates the game. */
+void game_update();
+/** Copies the global game object to the given one. Does this after disabling
+ * interrupts so that the global game object does not update midst the copy
+ * operation. Re-enables interrupts after the copy is done. */
+void game_copy_safely(Game *destination);
 
 #endif // GAME_H
+
 
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#define PIXEL_BUF_CTRL_BASE 0xFF203020
+#define GRAPHICS_TANK_COLOR_COUNT 5
+#define Pixel_gui_border 35
 
-// RGB to hex color converter:
-// https://www.rapidtables.com/convert/color/rgb-to-hex.html Color format= 5 bit
-// red, 6 bit green, 5 bit blue = 16 bits. Tank colors
-#define Color_tank_red 0xC000
-#define Color_tank_green 0x0260
-#define Color_tank_blue 0x11B4
-#define Color_tank_purple 0x8010
-#define Color_tank_yellow 0xFEA0
-
-// GUI Colors
-#define Color_gui_red 0xF800
-#define Color_gui_black 0x0000
-#define Color_gui_grey 0x7BEF
-#define Color_gui_cloud_blue 0x051D
-#define Color_gui_fuel_green 0x0320
-#define Color_gui_shield_blue 0x07FF
-#define Color_gui_ground 0xFFFF
-#define Color_gui_background 0x9E7F
 
 // Configuration and main render file.
-void graphics_build(
-	short pixel_map[GAME_HEIGHT][GAME_WIDTH], Game const *game_data);
-void graphics_render(Game const *game_data);
-
-#ifdef GRAPHICS_INTERRUPT_ID
-/** Handles the graphics interrupts. Called by the interrupt handler. */
-void graphics_isr(void);
-#endif // GRAPHICS_INTERRUPT_ID
+void graphics_build();
+void graphics_render();
+void graphics_draw(short originx, short originy, uint8_t pixel_count, uint8_t pixel_set[2][pixel_count], short Color);
 
 #endif // GRAPHICS_H
 
-void graphics_build(
-	short pixel_map[GAME_HEIGHT][GAME_WIDTH], Game const *game_data) {
-  int x,y,i;
-	int map[GAME_WIDTH];
-	for(i=0;i<=GAME_WIDTH;i++)
-	map[i]=160;
 
-	for (y = 0; y < GAME_HEIGHT; y++) {
-		for (x = 0; x < GAME_WIDTH; ++x) {
-			if (y >= game_data->map.ground[x]) pixel_map[y][x] = Color_gui_ground;
-			else pixel_map[y][x] = Color_gui_background;
 
-				//if (y>=game_data.map.ground[x]) pixel_map[y][x]=Color_gui_ground; //Paint the ground
-				//if (y>=map[x]) pixel_map[y][x]=Color_gui_ground; //Paint the ground
-				if (y>=map[x]) 					pixel_map[y][x]=Color_gui_ground;
-				else                        	pixel_map[y][x]=Color_gui_background; //Paint the background, alternatively have a 320x240 background and take all the pixels from there for a picture.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** Tank Colors: Red, Green, Blue, Purple, Yellow */
+static short Color_tank[GRAPHICS_TANK_COLOR_COUNT] = {
+	0xC000, 0x0260, 0x11B4, 0x8010, 0xFEA0};
+/** Copy of the game that is drawn. Before each render, the updated game is
+ * copied safely by disabling interrupts. */
+static Game drawn_copy;
+/** Pixel map that buffers the color data to the screen. */
+static short pixel_map[GAME_HEIGHT][GAME_WIDTH];
+
+
+
+void graphics_draw(short originx, short originy, uint8_t pixel_count, uint8_t pixel_set[2][pixel_count], short Color){
+for(int i=0;i<pixel_count;i++)
+pixel_map[ originy+pixel_set[1][i] ] [ originx+pixel_set[2][i] ]= Color;
+}
+
+
+
+void graphics_initialize(){	//Initialize the whole screen
+  int x, y;
+	short Color_gui_red =(short) 0xF800;
+	short Color_gui_black =(short) 0x0000;
+	short Color_gui_grey =(short) 0x7BEF;
+	short  Color_gui_background =(short) 0xFFFF;
+
+	short Color_gui_cloud_blue =(short) 0x051D;
+	short Color_gui_fuel_green =(short) 0x0320;
+	short  Color_gui_shield_blue =(short) 0x07FF;
+
+
+	for (y=0; y < GAME_HEIGHT; y++) {			//Initialize GUI & screen
+		for (x=0; x < GAME_WIDTH; x++) {
+			if (y != Pixel_gui_border) 			  //Everything else is white.
+				pixel_map[y][x] = Color_gui_background;
+			else                              //Draw the border.
+				pixel_map[y][x] = Color_gui_black;
 		}
 	}
+
+//Define the sprites that won't change and print them on.{{y},{x}}
+	uint8_t sprite_fuel_can_black[2][26]={{0,2,3,4,5,6,7,1,2,7,1,2,4,5,7,1,2,4,6,7,2,3,4,5,6,7},
+																		    {0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,4}};
+  uint8_t sprite_fuel_can_green[2][8]={{3,4,5,6,3,6,3,5},
+				    													 {1,1,1,1,2,2,3,3}};
+
+	graphics_draw(14,8,26,sprite_fuel_can_black,Color_gui_black);
+  graphics_draw(14,8,8,sprite_fuel_can_green,Color_gui_fuel_green);
+
+
+
+
 }
-void graphics_render(Game const *game_data) {
-	short pixel_map[GAME_HEIGHT][GAME_WIDTH];
-	/* Should return 320x240 pixel map. */
-	graphics_build(pixel_map, game_data);
-	int pixel_buf_ptr = *(int *)PIXEL_BUF_CTRL_BASE;
+
+
+
+
+inline void graphics_build() {
+	int x, y;
+	short Color_map_ground =(short) 0xFFFF;
+	short Color_map_background =(short) 0x9E7F;
+
+	for (y=0; y < GAME_HEIGHT; y++) {
+		for (x=0; x < GAME_WIDTH; x++) {
+
+			if (y >= drawn_copy.map.ground[x]) // Paint the ground.
+				pixel_map[y][x] = Color_map_ground;
+			else // Paint the background. Alternatively take this from picture.
+				pixel_map[y][x] = Color_map_background;
+		}
+
+	}
+}
+
+
+void graphics_render() {
+	//graphics_build(); // Updates 320x240 pixel map.
+
+	int pixel_buf_ptr = *(int *) 0xFF203020; //PIXEL_BUF_CTRL_BASE
 	int pixel_ptr, x, y;
 
+	//Display
 	for (y = 0; y < GAME_HEIGHT; y++)
-		for (x = 0; x < GAME_WIDTH; ++x) {
-			// Change to correct pixel's address.
+		for (x = 0; x < GAME_WIDTH; x++) {     // Change to correct pixel's address.
 			pixel_ptr = pixel_buf_ptr + (y << 10) + (x << 1);
-			// Set pixel color.
-			*(short *)pixel_ptr = pixel_map[y][x];
+						*(short *)pixel_ptr = pixel_map[y][x]; // Set pixel color.
 		}
 }
 
-/** Draws continuously. */
-static render(Game *const game_data) {
-	while (true)
-		graphics_render(&game_data);
+
+
+
+/** Configures all the subsystems at the start. */
+static config_all(void) {
+	graphics_initialize();
 }
+
 /** Starts the program. */
-int main(void) {
-	Game current = {.tanks = {.size = 0},
-		.bullets = {.size = 0},
-		.map = {},
-		.playing = false,
-		.turn = 0,
-		.shooting = false};
-	render(&current);
+void main() {
+	config_all();
+
+	while (true) {
+		graphics_render();
+	}
 }

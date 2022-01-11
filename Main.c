@@ -13,10 +13,11 @@ static config_all(void) {
 	audio_config();
 	keyboard_config();
 	timer_config();
+	graphics_initialize();
 }
 
 /** Starts the program. */
-int main(void) {
+void main() {
 	// Change the seed.
 	srand(time(0));
 	game_add_tank("Player 1", rand() % GRAPHICS_TANK_COLOR_COUNT);
@@ -26,6 +27,7 @@ int main(void) {
 	config_all();
 
 	while (true) {
+		graphics_update();
 		graphics_render();
 	}
 }
