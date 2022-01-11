@@ -100,7 +100,7 @@ extern volatile Game game_instance;
 /** Adds a tank to the array. */
 void game_add_tank(char const name[GAME_TANK_CAPACITY]);
 /** Removes the tank at the given index from the array. */
-void game_remove_tank(size_t index);
+void game_remove_tank(uint8_t index);
 /** Restarts the game. */
 void game_restart();
 /** Updates the game. */
