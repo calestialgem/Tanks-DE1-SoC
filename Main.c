@@ -19,14 +19,13 @@ static config_all(void) {
 int main(void) {
 	// Change the seed.
 	srand(time(0));
-	game_add_tank("Player 1", rand() % Color_tank_count);
-	game_add_tank("Player 2", rand() % Color_tank_count);
-	game_add_tank("Player 3", rand() % Color_tank_count);
+	game_add_tank("Player 1", rand() % GRAPHICS_TANK_COLOR_COUNT);
+	game_add_tank("Player 2", rand() % GRAPHICS_TANK_COLOR_COUNT);
+	game_add_tank("Player 3", rand() % GRAPHICS_TANK_COLOR_COUNT);
 	game_restart();
 	config_all();
 
-	while(1){
-		graphics_render(&current);
+	while (true) {
+		graphics_render();
 	}
-
 }

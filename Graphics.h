@@ -2,6 +2,8 @@
 #define GRAPHICS_H
 #include "Game.h"
 
+#define GRAPHICS_TANK_COLOR_COUNT 5
+
 // GUI Colors
 #define Color_gui_red 0xF800
 #define Color_gui_black 0x0000
@@ -13,8 +15,7 @@
 #define Color_gui_background 0x9E7F
 
 // Configuration and main render file.
-void graphics_build(
-	short pixel_map[GAME_HEIGHT][GAME_WIDTH], Game const *game_data);
-void graphics_render(Game const *game_data);
+/** Renders the game. */
+void graphics_render();
 
 #endif // GRAPHICS_H
