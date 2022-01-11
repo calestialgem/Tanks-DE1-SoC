@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "Math.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -16,13 +18,6 @@
 #define GAME_TANK_INITIAL_HEALTH 100.0F
 #define GAME_TANK_NAME_CAPACITY 32
 
-/** Vector of two floats. */
-typedef struct {
-	/** First component. */
-	float x;
-	/** Second component. */
-	float y;
-} Vector;
 /** Projectiles that do damage. */
 typedef struct {
 	/** Position of the center of mass in m. */

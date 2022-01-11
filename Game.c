@@ -4,8 +4,6 @@
 #include "Graphics.h"
 #include "Timer.h"
 
-#include <math.h>
-#include <stdlib.h>
 #include <string.h>
 
 /** The game which is currently running. Volatile because it is accessed by both
@@ -31,33 +29,21 @@ void game_remove_tank(uint8_t const index) {
 	Tank *const removed = &game_instance.tanks.array[index];
 	*removed = last;
 }
-static inline float change_span(float const number,
-	float const currentMin,
-	float const currentMax,
-	float const targetMin,
-	float const targetMax) {
-	return (number - currentMin) / (currentMax - currentMin) *
-		       (targetMax - targetMin) +
-	       targetMin;
-}
-static inline float span_random(float const min, float const max) {
-	return change_span(rand(), 0, RAND_MAX, min, max);
-}
-static inline float span_sinus(
-	float const x, float const min, float const max) {
-	return change_span(sin(x), -1.0F, 1.0F, min, max);
-}
 static inline void generate_map() {
-	float const peakCount = span_random(0.75F, 1.5F);
-	float const start = span_random(0.0F, 2.0F * M_PI);
-	float const peakHeight = span_random(0.5F, 0.67F) * GAME_HEIGHT;
-	float const valleyHeight = span_random(0.8F, 0.95F) * GAME_HEIGHT;
+	float const peakCount = math_random(0.75F, 1.5F);
+	float const start = math_random(0.0F, MATH_2PI);
+	float const peakHeight = math_random(0.5F, 0.67F) * GAME_HEIGHT;
+	float const valleyHeight = math_random(0.8F, 0.95F) * GAME_HEIGHT;
 	uint8_t x;
 	for (x = 0; x < GAME_WIDTH; x++) {
 		float const angle =
-			change_span(x, 0.0F, GAME_WIDTH, 0.0F, 2.0F * M_PI);
-		game_instance.map.ground[x] = span_sinus(
-			angle * peakCount + start, peakHeight, valleyHeight);
+			math_linearly_map(x, 0.0F, GAME_WIDTH, 0.0F, MATH_2PI);
+		game_instance.map.ground[x] =
+			math_linearly_map(sin(angle * peakCount + start),
+				-1.0F,
+				1.0F,
+				peakHeight,
+				valleyHeight);
 	}
 }
 static inline void update_tank(Tank *const tank) {
@@ -76,7 +62,7 @@ static inline void update_tank(Tank *const tank) {
 static inline void place_tank(Tank *const tank) {
 	float const min = GAME_WIDTH * 0.1F;
 	float const max = GAME_WIDTH * 0.9F;
-	tank->position.x = get_random(min, max);
+	tank->position.x = math_random(min, max);
 	update_tank(tank);
 }
 static inline void reset_tanks() {
@@ -96,31 +82,21 @@ void game_restart() {
 	}
 	game_instance.playing = true;
 	game_instance.turn = 0;
-	// Change the seed.
-	srand(time(0));
+	math_reseed();
 	generate_map();
 	game_instance.bullets.size = 0;
 	reset_tanks();
 }
-static inline Vector add_vectors(Vector const left, Vector const right) {
-	Vector const result = {.x = left.x + right.x, .y = left.y + right.y};
-	return result;
-}
-static inline Vector multiply_vector(Vector const left, float const right) {
-	Vector const result = {.x = left.x * right, .y = left.y * right};
-	return result;
-}
 static inline void simulate_bullet(Bullet *const bullet) {
 	Vector const acceleration = {.x = 0.0F, .y = GAME_GRAVITY};
-	Vector const velocityEffect =
-		multiply_vector(bullet->velocity, TIMER_STEP);
+	Vector const velocityEffect = vector_mul(bullet->velocity, TIMER_STEP);
 	Vector const accelerationEffect =
-		multiply_vector(acceleration, powf(TIMER_STEP, 2.0F) / 2.0F);
+		vector_mul(acceleration, math_square(TIMER_STEP) / 2.0F);
 	Vector const positionChange =
-		add_vectors(velocityEffect, accelerationEffect);
-	bullet->position = add_vectors(bullet->position, positionChange);
-	Vector const velocityChange = multiply_vector(acceleration, TIMER_STEP);
-	bullet->velocity = add_vectors(bullet->velocity, velocityChange);
+		vector_add(velocityEffect, accelerationEffect);
+	bullet->position = vector_add(bullet->position, positionChange);
+	Vector const velocityChange = vector_mul(acceleration, TIMER_STEP);
+	bullet->velocity = vector_add(bullet->velocity, velocityChange);
 }
 static inline void explode_bullet(Bullet const bullet) {
 	uint8_t const leftReach = floor(bullet.position.x - bullet.power);
@@ -132,8 +108,8 @@ static inline void explode_bullet(Bullet const bullet) {
 	for (i = leftEdge; i <= rightEdge; i++) {
 		float const position = i + 0.5F;
 		float const potential =
-			powf(bullet.power, 2.0F) -
-			powf(bullet.position.x - position, 2.0F);
+			math_square(bullet.power) -
+			math_square(bullet.position.x - position);
 		float const destruction =
 			2 * sqrt(potential < 0.0F ? 0.0F : potential);
 		game_instance.map.ground[i] += destruction;
