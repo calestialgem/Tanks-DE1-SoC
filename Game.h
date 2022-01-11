@@ -64,6 +64,8 @@ typedef struct {
 	Barrel gun;
 	/** Player's name. */
 	char name[GAME_TANK_NAME_CAPACITY];
+	/** Index of the player's color. */
+	uint8_t color;
 } Tank;
 /** Array of tanks. */
 typedef struct {
@@ -93,12 +95,8 @@ typedef struct {
 	bool shooting;
 } Game;
 
-/** The game which is currently running. Volatile because it is accessed by both
- * the main loop in rendering and the timer interrupt in updating. */
-extern volatile Game game_instance;
-
 /** Adds a tank to the array. */
-void game_add_tank(char const name[GAME_TANK_CAPACITY]);
+void game_add_tank(char const *name, uint8_t color);
 /** Removes the tank at the given index from the array. */
 void game_remove_tank(uint8_t index);
 /** Restarts the game. */
