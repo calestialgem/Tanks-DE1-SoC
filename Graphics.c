@@ -2,17 +2,20 @@
 #include "Game.h"
 
 /** Tank Colors: Red, Green, Blue, Purple, Yellow */
-static short Color_tank[GRAPHICS_TANK_COLOR_COUNT] = {
-	0xC000, 0x0260, 0x11B4, 0x8010, 0xFEA0};
+static short Color_tank[GRAPHICS_TANK_COLOR_COUNT] = {0xC000, 0x0260, 0x11B4, 0x8010, 0xFEA0};
+static short Color_map_ground =(short) 0xFFFF;
+static short Color_map_background =(short) 0x9E7F;
+
 /** Copy of the game that is drawn. Before each render, the updated game is
  * copied safely by disabling interrupts. */
 static Game drawn_copy;
+
 /** Pixel map that buffers the color data to the screen. */
-static short pixel_map[GAME_HEIGHT][GAME_WIDTH];
+short pixel_map[GAME_HEIGHT][GAME_WIDTH];
 
 
 
-void graphics_draw(short originx, short originy, uint8_t pixel_count, uint8_t pixel_set[2][pixel_count], short Color){
+void graphics_draw(short originy, short originx, uint8_t pixel_count, uint8_t pixel_set[2][pixel_count], short Color){
 for(int i=0;i<pixel_count;i++)
 pixel_map[ originy+pixel_set[1][i] ] [ originx+pixel_set[2][i] ]= Color;
 }
@@ -24,11 +27,11 @@ void graphics_initialize(){	//Initialize the whole screen
 	short Color_gui_red =(short) 0xF800;
 	short Color_gui_black =(short) 0x0000;
 	short Color_gui_grey =(short) 0x7BEF;
-	short  Color_gui_background =(short) 0xFFFF;
+	short Color_gui_background =(short) 0xFFFF;
 
 	short Color_gui_cloud_blue =(short) 0x051D;
 	short Color_gui_fuel_green =(short) 0x0320;
-	short  Color_gui_shield_blue =(short) 0x07FF;
+	short Color_gui_shield_blue =(short) 0x07FF;
 
 
 	for (y=0; y < GAME_HEIGHT; y++) {			//Initialize GUI & screen
@@ -57,10 +60,8 @@ void graphics_initialize(){	//Initialize the whole screen
 
 
 
-static inline void graphics_update() {
+inline void graphics_update() {
 	int x, y;
-	short Color_map_ground =(short) 0xFFFF;
-	short Color_map_background =(short) 0x9E7F;
 
 	for (y=0; y < GAME_HEIGHT; y++) {
 		for (x=0; x < GAME_WIDTH; x++) {

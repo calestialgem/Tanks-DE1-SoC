@@ -11,6 +11,6 @@
 // Configuration and main render file.
 void graphics_update();
 void graphics_render();
-void graphics_draw(short originx, short originy, uint8_t pixel_count, uint8_t pixel_set[2][pixel_count], short Color);
+void graphics_draw(short originy, short originx, uint8_t pixel_count, uint8_t pixel_set[2][pixel_count], short Color);
 
 #endif // GRAPHICS_H

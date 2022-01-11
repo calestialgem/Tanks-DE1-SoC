@@ -161,7 +161,7 @@ static short pixel_map[GAME_HEIGHT][GAME_WIDTH];
 
 
 
-void graphics_draw(short originx, short originy, uint8_t pixel_count, uint8_t pixel_set[2][pixel_count], short Color){
+void graphics_draw(short originy, short originx, uint8_t pixel_count, uint8_t pixel_set[2][pixel_count], short Color){
 for(int i=0;i<pixel_count;i++)
 pixel_map[ originy+pixel_set[1][i] ] [ originx+pixel_set[2][i] ]= Color;
 }
