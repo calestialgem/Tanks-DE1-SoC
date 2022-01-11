@@ -89,35 +89,6 @@ void __attribute__ ((interrupt)) __cs3_isr_irq (void){
 
 void interval_timer_ISR (void);
 
-int lcd_val(int value){
-	
-	switch(value){      // Find the proper 0x value for each number.
-		case 0:
-			return 0x3f;
-		case 1:
-			return 0x6;
-		case 2:
-			return 0x5b;
-		case 3:
-			return 0x4f;
-		case 4:
-			return 0x66;
-		case 5:
-			return 0x6d;
-		case 6:
-			return 0x7d;
-		case 7:
-			return 0x7;
-		case 8:
-			return 0x7f;
-		case 9:
-			return 0x6f;
-		default:
-			return 0;
-	}
-}
-
-
 
 // Define the remaining exception handlers */
 void __attribute__ ((interrupt)) __cs3_isr_undef (void){
@@ -156,7 +127,6 @@ void interval_timer_ISR( ){
 
 	PS_Data = *ps2_ptr;
 	RVALID = PS_Data & 0x8000; // extract the RVALID field
-	*lcd_ptr = lcd_val(RVALID);
 	if (RVALID){
 		byte1 = byte2;
 		byte2 = byte3;
