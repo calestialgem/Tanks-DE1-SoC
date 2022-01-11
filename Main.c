@@ -8,7 +8,7 @@
 #include <math.h>
 
 /** Configures all the subsystems at the start. */
-static config_all(void) {
+static void config_all(void) {
 	error_config();
 	audio_config();
 	keyboard_config();
@@ -17,7 +17,7 @@ static config_all(void) {
 }
 
 /** Starts the program. */
-void main() {
+int main() {
 	math_reseed();
 	game_add_tank("Player 1", math_random_index(GRAPHICS_TANK_COLOR_COUNT));
 	game_add_tank("Player 2", math_random_index(GRAPHICS_TANK_COLOR_COUNT));
@@ -29,4 +29,5 @@ void main() {
 		graphics_update();
 		graphics_render();
 	}
+	return 0;
 }

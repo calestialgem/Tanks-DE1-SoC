@@ -50,7 +50,7 @@ static inline float math_square(float const number) {
 	return number * number;
 }
 /** Returns a random index. */
-static inline int math_random_index(int const size) {
+static inline size_t math_random_index(size_t const size) {
 	return rand() % size;
 }
 
