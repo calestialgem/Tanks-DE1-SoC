@@ -2,6 +2,9 @@
 
 #include "Error.h"
 #include "Game.h"
+#include "MemoryMap.h"
+
+#include <stdlib.h>
 
 /* Some portion of the fallowing code is taken from the manual. */
 
@@ -23,35 +26,35 @@ static void set_interrupt_stack(void) {
 	asm("msr cpsr, %[ps]" : : [ps] "r"(svc));
 }
 static void config_interrupt(uint32_t const N) {
-	uint32_t const ICDISERn = (N >> 3) & 0xFFFFFFFC;
-	volatile uint32_t *const ICDISER = 0xFFFED100 + ICDISERn;
+	size_t const ICDISERn = (N >> 3) & 0xFFFFFFFC;
+	Register32 ICDISER = (Register32)(0xFFFED100 + ICDISERn);
 	uint32_t const enableBit = N & 0x1F;
 	uint32_t const enableMask = 0x1 << enableBit;
 	*ICDISER |= enableMask;
-	uint32_t const ICDIPTRn = (N & 0xFFFFFFFC);
-	uint32_t const index = N & 0x3;
-	volatile uint8_t *const ICDIPTR = 0xFFFED800 + ICDIPTRn + index;
+	size_t const ICDIPTRn = (N & 0xFFFFFFFC);
+	size_t const index = N & 0x3;
+	Register8 ICDIPTR = (Register8)(0xFFFED800 + ICDIPTRn + index);
 	uint8_t const targetCPU = 1;
 	*ICDIPTR = targetCPU;
 }
 static void config_gic(void) {
 	config_interrupt(TIMER_INTERRUPT_ID);
-	volatile uint32_t *const ICCPMR = 0xFFFEC104;
+	Register32 ICCPMR = (Register32)0xFFFEC104;
 	uint16_t const priorityMask = 0xFFFF;
 	*ICCPMR = priorityMask;
-	volatile uint32_t *const ICCICR = 0xFFFEC100;
+	Register32 ICCICR = (Register32)0xFFFEC100;
 	*ICCICR = 1;
-	volatile uint32_t *const ICDDCR = 0xFFFED000;
+	Register32 ICDDCR = (Register32)0xFFFED000;
 	*ICDDCR = 1;
 }
 static void config_fpga_timer(void) {
-	volatile uint16_t *const control = 0xFF202004;
+	Register16 control = (Register16)0xFF202004;
 	*control = 0;
 	uint32_t const frequency = 100e6;
 	uint32_t const counter = frequency / TIMER_FREQUENCY;
-	volatile uint16_t *const startLow = 0xFF202008;
+	Register16 startLow = (Register16)0xFF202008;
 	*startLow = counter & 0xFFFF;
-	volatile uint16_t *const startHigh = 0xFF20200C;
+	Register16 startHigh = (Register16)0xFF20200C;
 	*startHigh = (counter >> 8) & 0xFFFF;
 	*control = 0b0111;
 }
@@ -64,7 +67,7 @@ void timer_config(void) {
 }
 /** Handles normal interrupts. */
 void __attribute__((interrupt)) __cs3_isr_irq(void) {
-	volatile uint32_t const *const ICCIAR = 0xFFFEC10C;
+	ReadRegister32 ICCIAR = (Register32)0xFFFEC10C;
 	uint32_t const id = *ICCIAR;
 	switch (id) {
 	case TIMER_INTERRUPT_ID:
@@ -73,7 +76,7 @@ void __attribute__((interrupt)) __cs3_isr_irq(void) {
 	default:
 		error_show(ERROR_UNDEFINED_ISR);
 	};
-	volatile uint32_t *const ICCEOIR = 0xFFEC110;
+	Register32 ICCEOIR = (Register32)0xFFEC110;
 	*ICCEOIR = id;
 }
 /** Handles resets. */
