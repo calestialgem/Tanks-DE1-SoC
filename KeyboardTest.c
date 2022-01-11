@@ -131,16 +131,16 @@ void interval_timer_ISR( ){
 		byte1 = byte2;
 		byte2 = byte3;
 		byte3 = PS_Data & 0xFF;
-		if((byte3 == 0x1c) && (byte2 != 0xF0))
-			*led_ptr = 2;
-		else if ((byte3 == 0x23) && (byte2 != 0xF0))
-			*led_ptr = 1;
-		else if ((byte3 == 0x1D) && (byte2 != 0xF0))
-			*led_ptr = 8;
-		else if ((byte3 == 0x1B) && (byte2 != 0xF0))
-			*led_ptr = 4;
-		else if (byte2 == 0xF0)
+		if (byte2 == 0xF0)
 			*led_ptr = 0;
+		else if(byte3 == 0x1c)
+			*led_ptr = 2;
+		else if (byte3 == 0x23) 
+			*led_ptr = 1;
+		else if (byte3 == 0x1D)
+			*led_ptr = 8;
+		else if (byte3 == 0x1B)
+			*led_ptr = 4;
 	}
 return;
 }
