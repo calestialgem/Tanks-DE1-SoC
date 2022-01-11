@@ -14,11 +14,7 @@ static config_all(void) {
 	timer_config();
 	interrupt_config();
 }
-/** Draws continuously. */
-static render(Game *const game_data) {
-	while (true)
-		graphics_render(&game_data);
-}
+
 /** Starts the program. */
 int main(void) {
 	Game current = {.tanks = {.size = 0},
@@ -28,5 +24,9 @@ int main(void) {
 		.turn = 0,
 		.shooting = false};
 	config_all();
-	render(&current);
+
+	while(1){
+		graphics_render(&current);
+	}
+
 }

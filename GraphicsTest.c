@@ -41,7 +41,7 @@ typedef struct {
 	/** Array of bullets with a set capacity. */
 	Bullet array[GAME_BULLET_CAPACITY];
 	/** Amount of bullets in the array. */
-	size_t size;
+	uint8_t size;
 } Bullets;
 /** Weapon on top of a tank. */
 typedef struct {
@@ -70,7 +70,7 @@ typedef struct {
 	/** Array of tanks with a set capacity. */
 	Tank array[GAME_TANK_CAPACITY];
 	/** Amount of tanks in the array. */
-	size_t size;
+	uint8_t size;
 } Tanks;
 /** Terrain where tanks are on. */
 typedef struct {
@@ -88,7 +88,7 @@ typedef struct {
 	/** Whether the game is running. */
 	bool playing;
 	/** The index of the tank that can do actions. */
-	size_t turn;
+	uint8_t turn;
 	/** Wheter the current tank is shooting. */
 	bool shooting;
 } Game;
@@ -96,7 +96,7 @@ typedef struct {
 /** Adds a tank to the array. */
 void game_add_tank(Tanks *tanks, char const name[GAME_TANK_CAPACITY]);
 /** Removes the tank at the given index from the array. */
-void game_remove_tank(Tanks *tanks, size_t index);
+void game_remove_tank(Tanks *tanks, uint8_t index);
 /** Restarts the game. */
 void game_restart(Game *game);
 /** Updates the given game. */
@@ -106,7 +106,6 @@ void game_update(Game *game);
 
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
-#include "Game.h"
 
 #define PIXEL_BUF_CTRL_BASE 0xFF203020
 
@@ -143,19 +142,21 @@ void graphics_isr(void);
 
 void graphics_build(
 	short pixel_map[GAME_HEIGHT][GAME_WIDTH], Game const *game_data) {
-	int x, y;
+  int x,y,i;
+	int map[GAME_WIDTH];
+	for(i=0;i<=GAME_WIDTH;i++)
+	map[i]=160;
 
 	for (y = 0; y < GAME_HEIGHT; y++) {
 		for (x = 0; x < GAME_WIDTH; ++x) {
-			if (y >= game_data->map.ground[x])
-				// Paint the ground.
-				pixel_map[y][x] = Color_gui_ground;
-			else
-				// Paint the background.
-				/* Alternatively it can have a 320x240
-				 * background and take all the pixels from there
-				 * for a picture.*/
-				pixel_map[y][x] = Color_gui_background;
+			if (y >= game_data->map.ground[x]) pixel_map[y][x] = Color_gui_ground;
+			else pixel_map[y][x] = Color_gui_background;
+
+				//if (y>=game_data.map.ground[x]) pixel_map[y][x]=Color_gui_ground; //Paint the ground
+				//if (y>=map[x]) pixel_map[y][x]=Color_gui_ground; //Paint the ground
+				if (y>=map[x]) 					pixel_map[y][x]=Color_gui_ground;
+				else                        	pixel_map[y][x]=Color_gui_background; //Paint the background, alternatively have a 320x240 background and take all the pixels from there for a picture.
+
 		}
 	}
 }
