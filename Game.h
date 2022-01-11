@@ -93,13 +93,17 @@ typedef struct {
 	bool shooting;
 } Game;
 
+/** The game which is currently running. Volatile because it is accessed by both
+ * the main loop in rendering and the timer interrupt in updating. */
+extern volatile Game game_instance;
+
 /** Adds a tank to the array. */
-void game_add_tank(Tanks *tanks, char const name[GAME_TANK_CAPACITY]);
+void game_add_tank(char const name[GAME_TANK_CAPACITY]);
 /** Removes the tank at the given index from the array. */
-void game_remove_tank(Tanks *tanks, size_t index);
+void game_remove_tank(size_t index);
 /** Restarts the game. */
-void game_restart(Game *game);
-/** Updates the given game. */
-void game_update(Game *game);
+void game_restart();
+/** Updates the game. */
+void game_update();
 
 #endif // GAME_H

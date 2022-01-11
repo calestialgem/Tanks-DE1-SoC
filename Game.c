@@ -8,22 +8,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-void game_add_tank(
-	Tanks *const tanks, char const name[GAME_TANK_NAME_CAPACITY]) {
-	if (tanks->size == GAME_TANK_CAPACITY) {
+void game_add_tank(char const name[GAME_TANK_NAME_CAPACITY]) {
+	if (game_instance.tanks.size == GAME_TANK_CAPACITY) {
 		error_show(ERROR_LOGIC);
 		return;
 	}
-	Tank *const tank = &tanks->array[tanks->size++];
+	Tank *const tank = &game_instance.tanks.array[game_instance.tanks.size++];
 	strncpy(tank->name, name, GAME_TANK_NAME_CAPACITY);
 }
-void game_remove_tank(Tanks *const tanks, size_t const index) {
-	if (tanks->size <= index) {
+void game_remove_tank(size_t const index) {
+	if (game_instance.tanks.size <= index) {
 		error_show(ERROR_LOGIC);
 		return;
 	}
-	Tank const last = tanks->array[--tanks->size];
-	Tank *const removed = &tanks->array[index];
+	Tank const last = game_instance.tanks.array[--game_instance.tanks.size];
+	Tank *const removed = &game_instance.tanks.array[index];
 	*removed = last;
 }
 static inline float change_span(float const number,
@@ -42,7 +41,7 @@ static inline float span_sinus(
 	float const x, float const min, float const max) {
 	return change_span(sin(x), -1.0F, 1.0F, min, max);
 }
-static inline void generate_map(Map *const map) {
+static inline void generate_map() {
 	float const peakCount = span_random(0.75F, 1.5F);
 	float const start = span_random(0.0F, 2.0F * M_PI);
 	float const peakHeight = span_random(0.5F, 0.67F) * GAME_HEIGHT;
@@ -51,51 +50,51 @@ static inline void generate_map(Map *const map) {
 	for (x = 0; x < GAME_WIDTH; x++) {
 		float const angle =
 			change_span(x, 0.0F, GAME_WIDTH, 0.0F, 2.0F * M_PI);
-		map->ground[x] = span_sinus(
+		game_instance.map.ground[x] = span_sinus(
 			angle * peakCount + start, peakHeight, valleyHeight);
 	}
 }
-static inline void update_tank(Tank *const tank, Map const map) {
+static inline void update_tank(Tank *const tank) {
 	size_t const index = floor(tank->position.x);
-	tank->position.y = map.ground[index];
+	tank->position.y = game_instance.map.ground[index];
 	size_t const previousIndex = index == 0 ? index : index - 1;
 	size_t const nextIndex = index == GAME_WIDTH - 1 ? index : index + 1;
-	float const previousHeight = map.ground[previousIndex];
-	float const nextHeight = map.ground[nextIndex];
+	float const previousHeight = game_instance.map.ground[previousIndex];
+	float const nextHeight = game_instance.map.ground[nextIndex];
 	float const heightChange = previousHeight - nextHeight;
 	int const steps = nextIndex - previousIndex;
 	float const stepWidth = steps;
 	float const slope = heightChange / stepWidth;
 	tank->tilt = atan(slope);
 }
-static inline void place_tank(Tank *const tank, Map const map) {
+static inline void place_tank(Tank *const tank) {
 	float const min = GAME_WIDTH * 0.1F;
 	float const max = GAME_WIDTH * 0.9F;
 	tank->position.x = get_random(min, max);
-	update_tank(tank, map);
+	update_tank(tank);
 }
-static inline void reset_tanks(Tanks *const tanks, Map const map) {
+static inline void reset_tanks() {
 	size_t i;
-	for (i = 0; i < tanks->size; i++) {
-		Tank *const tank = &tanks->array[i];
-		place_tank(tank, map);
+	for (i = 0; i < game_instance.tanks.size; i++) {
+		Tank *const tank = &game_instance.tanks.array[i];
+		place_tank(tank);
 		tank->gun.angle = M_PI_2;
 		tank->health = GAME_TANK_INITIAL_HEALTH;
 		tank->alive = true;
 	}
 }
-void game_restart(Game *const game) {
-	if (game->playing) {
+void game_restart() {
+	if (game_instance.playing) {
 		error_show(ERROR_LOGIC);
 		return;
 	}
-	game->playing = true;
-	game->turn = 0;
+	game_instance.playing = true;
+	game_instance.turn = 0;
 	// Change the seed.
 	srand(time(0));
-	generate_map(&game->map);
-	game->bullets.size = 0;
-	reset_tanks(&game->tanks, game->map);
+	generate_map();
+	game_instance.bullets.size = 0;
+	reset_tanks();
 }
 static inline Vector add_vectors(Vector const left, Vector const right) {
 	Vector const result = {.x = left.x + right.x, .y = left.y + right.y};
@@ -117,7 +116,7 @@ static inline void simulate_bullet(Bullet *const bullet) {
 	Vector const velocityChange = multiply_vector(acceleration, TIMER_STEP);
 	bullet->velocity = add_vectors(bullet->velocity, velocityChange);
 }
-static inline void explode_bullet(Map *const map, Bullet const bullet) {
+static inline void explode_bullet(Bullet const bullet) {
 	size_t const leftReach = floor(bullet.position.x - bullet.power);
 	size_t const rightReach = floor(bullet.position.x + bullet.power);
 	size_t const leftEdge = leftReach < 0 ? 0 : leftReach;
@@ -131,19 +130,19 @@ static inline void explode_bullet(Map *const map, Bullet const bullet) {
 			powf(bullet.position.x - position, 2.0F);
 		float const destruction =
 			2 * sqrt(potential < 0.0F ? 0.0F : potential);
-		map->ground[i] += destruction;
-		if (map->ground[i] >= GAME_HEIGHT) {
-			map->ground[i] = GAME_HEIGHT - 1;
+		game_instance.map.ground[i] += destruction;
+		if (game_instance.map.ground[i] >= GAME_HEIGHT) {
+			game_instance.map.ground[i] = GAME_HEIGHT - 1;
 		}
 	}
 }
-static inline void next_turn(Game *const game) {
-	if (++game->turn >= game->tanks.size) {
-		game->turn = 0;
+static inline void next_turn() {
+	if (++game_instance.turn >= game_instance.tanks.size) {
+		game_instance.turn = 0;
 	}
 }
-void game_update(Game *game) {
-	if (game->shooting) {
+void game_update() {
+	if (game_instance.shooting) {
 	} else {
 	}
 }
