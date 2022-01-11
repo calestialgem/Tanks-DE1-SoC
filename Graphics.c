@@ -5,8 +5,8 @@ void graphics_build(
 	short pixel_map[GAME_HEIGHT][GAME_WIDTH], Game const *game_data) {
 	int x, y;
 
-	for (y = 0; y < GAME_HEIGHT; y++) {
-		for (x = 0; x < GAME_WIDTH; ++x) {
+	for (y=0; y < GAME_HEIGHT; y++) {
+		for (x=0; x < GAME_WIDTH; x++) {
 			if (y >= game_data->map.ground[x])
 				// Paint the ground.
 				pixel_map[y][x] = Color_gui_ground;
@@ -27,7 +27,7 @@ void graphics_render(Game const *game_data) {
 	int pixel_ptr, x, y;
 
 	for (y = 0; y < GAME_HEIGHT; y++)
-		for (x = 0; x < GAME_WIDTH; ++x) {
+		for (x = 0; x < GAME_WIDTH; x++) {
 			// Change to correct pixel's address.
 			pixel_ptr = pixel_buf_ptr + (y << 10) + (x << 1);
 			// Set pixel color.
