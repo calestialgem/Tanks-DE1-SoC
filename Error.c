@@ -1,7 +1,8 @@
 #include "Error.h"
 
-#include <stdbool.h>
 #include "MemoryMap.h"
+
+#include <stdbool.h>
 
 void error_config(void) {
 	// Clear the current error.
