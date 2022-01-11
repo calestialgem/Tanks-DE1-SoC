@@ -117,6 +117,26 @@ static inline void simulate_bullet(Bullet *const bullet) {
 	Vector const velocityChange = multiply_vector(acceleration, TIMER_STEP);
 	bullet->velocity = add_vectors(bullet->velocity, velocityChange);
 }
+static inline void explode_bullet(Map *const map, Bullet const bullet) {
+	size_t const leftReach = floor(bullet.position.x - bullet.power);
+	size_t const rightReach = floor(bullet.position.x + bullet.power);
+	size_t const leftEdge = leftReach < 0 ? 0 : leftReach;
+	size_t const rightEdge =
+		rightReach >= GAME_WIDTH ? GAME_WIDTH - 1 : rightReach;
+	size_t i;
+	for (i = leftEdge; i <= rightEdge; i++) {
+		float const position = i + 0.5F;
+		float const potential =
+			powf(bullet.power, 2.0F) -
+			powf(bullet.position.x - position, 2.0F);
+		float const destruction =
+			2 * sqrt(potential < 0.0F ? 0.0F : potential);
+		map->ground[i] += destruction;
+		if (map->ground[i] >= GAME_HEIGHT) {
+			map->ground[i] = GAME_HEIGHT - 1;
+		}
+	}
+}
 static inline void next_turn(Game *const game) {
 	if (++game->turn >= game->tanks.size) {
 		game->turn = 0;
