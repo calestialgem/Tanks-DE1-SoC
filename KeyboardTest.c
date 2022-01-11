@@ -124,23 +124,22 @@ void interval_timer_ISR( ){
 	int RVALID, PS_Data;
 	*(interval_timer_ptr) = 0; // clear the interrupt
 	
-
-	PS_Data = *ps2_ptr;
+    PS_Data = *ps2_ptr;        // Read data info from PS2 register.
 	RVALID = PS_Data & 0x8000; // extract the RVALID field
-	if (RVALID){
-		byte1 = byte2;
-		byte2 = byte3;
+	if (RVALID){               // If there is data in keyboard FIFO buffer:
+		byte1 = byte2;         
+		byte2 = byte3;         // Store the most recent 3 data info
 		byte3 = PS_Data & 0xFF;
-		if((byte3 == 0x1c) && (byte2 != 0xF0))
+		if (byte2 == 0xF0)     // if the button is released
+			*led_ptr = 0;      
+		else if(byte3 == 0x1c)   // if the button is not released and A is pressed
 			*led_ptr = 2;
-		else if ((byte3 == 0x23) && (byte2 != 0xF0))
+		else if (byte3 == 0x23)  // if the button is not released and D is pressed
 			*led_ptr = 1;
-		else if ((byte3 == 0x1D) && (byte2 != 0xF0))
+		else if (byte3 == 0x1D)  // if the button is not released and W is pressed
 			*led_ptr = 8;
-		else if ((byte3 == 0x1B) && (byte2 != 0xF0))
+		else if (byte3 == 0x1B)  // if the button is not released and S is pressed
 			*led_ptr = 4;
-		else if (byte2 == 0xF0)
-			*led_ptr = 0;
 	}
 return;
 }
