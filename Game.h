@@ -103,5 +103,9 @@ void game_remove_tank(uint8_t index);
 void game_restart();
 /** Updates the game. */
 void game_update();
+/** Copies the global game object to the given one. Does this after disabling
+ * interrupts so that the global game object does not update midst the copy
+ * operation. Re-enables interrupts after the copy is done. */
+void game_copy_safely(Game *destination);
 
 #endif // GAME_H

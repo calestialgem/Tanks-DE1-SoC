@@ -10,7 +10,7 @@
 
 /** The game which is currently running. Volatile because it is accessed by both
  * the main loop in rendering and the timer interrupt in updating. */
-volatile Game game_instance;
+static volatile Game game_instance;
 
 void game_add_tank(char const *const name, uint8_t const color) {
 	if (game_instance.tanks.size == GAME_TANK_CAPACITY) {
@@ -151,4 +151,9 @@ void game_update() {
 	if (game_instance.shooting) {
 	} else {
 	}
+}
+void game_copy_safely(Game *const destination) {
+	timer_disable_interrupts();
+	*destination = game_instance;
+	timer_enable_interrupts();
 }
