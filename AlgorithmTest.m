@@ -11,6 +11,12 @@ positions = 0:1:width;
 
 map = generate(width, height, positions);
 show(map, width, height, positions, 'Terrain Generation');
+map = explode(map, height, 100, 10);
+show(map, width, height, positions, 'Explosion at 100 with 10 Radius');
+for k = 1:10
+	map = explode(map, height, r(0.0, width), r(5.0, 15.0));
+end
+show(map, width, height, positions, 'Explosions');
 
 function show(map, width, height, positions, header)
 	figure();
@@ -20,7 +26,14 @@ function show(map, width, height, positions, header)
 	xlim([0 width]);
 	ylabel('Height Map');
 	ylim([-height 0]);
-	stem(positions, ceil(map), 'Marker', 'none', 'LineWidth', 4);
+	stem(positions, ceil(-map), 'Marker', 'none', 'LineWidth', 4);
+end
+
+function map = explode(map, height, x, r)
+	leftEdge = max(1, floor(x-r));
+	rightEdge = min(length(map), floor(x+r));
+	range = leftEdge:1:rightEdge;
+	map(range) = min(height, map(range) + 2*sqrt(max(0, r^2 - (x-range).^2)));
 end
 
 function map = generate(width, height, positions)
@@ -30,7 +43,7 @@ function map = generate(width, height, positions)
 	% 0.0 is Top & 1.0 is Bottom
 	peakHeight = r(0.5, 0.67);
 	valleyHeight = r(0.8, 0.95);
-	map = s(angles * peakCount + start, peakHeight, valleyHeight) * -height;
+	map = s(angles * peakCount + start, peakHeight, valleyHeight) * height;
 end
 
 function x = x(p, width, min, max)
