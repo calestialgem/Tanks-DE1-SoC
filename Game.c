@@ -96,7 +96,7 @@ void game_restart() {
 	game_instance.bullets.size = 0;
 	reset_tanks();
 }
-static inline void simulate_bullet(Bullet *const bullet) {
+static inline void simulate_bullet(volatile Bullet *const bullet) {
 	Vector const acceleration = {.x = 0.0F, .y = GAME_GRAVITY};
 	Vector const velocityEffect = vector_mul(bullet->velocity, TIMER_STEP);
 	Vector const accelerationEffect =
@@ -107,9 +107,13 @@ static inline void simulate_bullet(Bullet *const bullet) {
 	Vector const velocityChange = vector_mul(acceleration, TIMER_STEP);
 	bullet->velocity = vector_add(bullet->velocity, velocityChange);
 }
-static inline void explode_bullet(Bullet const bullet) {
-	size_t const leftReach = floor(bullet.position.x - bullet.power);
-	size_t const rightReach = floor(bullet.position.x + bullet.power);
+static inline bool check_bullet_contact(volatile Bullet *const bullet) {
+	size_t const index = floor(bullet->position.x);
+	return game_instance.map.ground[index] >= bullet->position.y;
+}
+static inline void explode_bullet(volatile Bullet *const bullet) {
+	size_t const leftReach = floor(bullet->position.x - bullet->power);
+	size_t const rightReach = floor(bullet->position.x + bullet->power);
 	size_t const leftEdge = leftReach < 0 ? 0 : leftReach;
 	size_t const rightEdge =
 		rightReach >= GAME_WIDTH ? GAME_WIDTH - 1 : rightReach;
@@ -117,8 +121,8 @@ static inline void explode_bullet(Bullet const bullet) {
 	for (i = leftEdge; i <= rightEdge; i++) {
 		float const position = i + 0.5F;
 		float const potential =
-			math_square(bullet.power) -
-			math_square(bullet.position.x - position);
+			math_square(bullet->power) -
+			math_square(bullet->position.x - position);
 		float const destruction =
 			2 * sqrt(potential < 0.0F ? 0.0F : potential);
 		game_instance.map.ground[i] += destruction;
@@ -127,6 +131,7 @@ static inline void explode_bullet(Bullet const bullet) {
 		}
 	}
 }
+static inline void apply_bullet_damage(volatile Bullet *const bullet) {}
 static inline void next_turn() {
 	if (++game_instance.turn >= game_instance.tanks.size) {
 		game_instance.turn = 0;
@@ -134,6 +139,21 @@ static inline void next_turn() {
 }
 void game_update() {
 	if (game_instance.shooting) {
+		size_t i;
+		for (i = 0; i < game_instance.bullets.size; i++) {
+			volatile Bullet *const bullet =
+				&game_instance.bullets.array[i];
+			simulate_bullet(bullet);
+			if (check_bullet_contact(bullet)) {
+				explode_bullet(bullet);
+				apply_bullet_damage(bullet);
+				*bullet = game_instance.bullets
+						  .array[--game_instance.bullets
+								   .size];
+				i--;
+			}
+		}
+		game_instance.shooting = game_instance.bullets.size;
 	} else {
 	}
 }
