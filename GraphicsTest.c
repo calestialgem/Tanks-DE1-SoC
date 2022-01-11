@@ -1,12 +1,11 @@
-
 #ifndef GAME_H
 #define GAME_H
 
 #include <stdbool.h>
 #include <stdint.h>
 
-#define STANDARD_X 320
-#define STANDARD_Y 240
+#define GAME_WIDTH 320
+#define GAME_HEIGHT 240
 
 #define GAME_GRAVITY 9.81F
 
@@ -76,7 +75,7 @@ typedef struct {
 /** Terrain where tanks are on. */
 typedef struct {
 	/** Heights of the ground at different horizontal positions in m. */
-	float ground[STANDARD_X];
+	float ground[GAME_WIDTH];
 } Map;
 /** Game state. */
 typedef struct {
@@ -132,7 +131,7 @@ void game_update(Game *game);
 
 // Configuration and main render file.
 void graphics_build(
-	short pixel_map[STANDARD_Y][STANDARD_X], Game const *game_data);
+	short pixel_map[GAME_HEIGHT][GAME_WIDTH], Game const *game_data);
 void graphics_render(Game const *game_data);
 
 #ifdef GRAPHICS_INTERRUPT_ID
@@ -143,45 +142,36 @@ void graphics_isr(void);
 #endif // GRAPHICS_H
 
 void graphics_build(
-	short pixel_map[STANDARD_Y][STANDARD_X], Game const *game_data) {
+	short pixel_map[GAME_HEIGHT][GAME_WIDTH], Game const *game_data) {
 	int x, y;
 
-	for (y = 0; y <= STANDARD_Y; y++) {
-		for (x = 0; x <= STANDARD_X; ++x) {
+	for (y = 0; y < GAME_HEIGHT; y++) {
+		for (x = 0; x < GAME_WIDTH; ++x) {
 			if (y >= game_data->map.ground[x])
-				pixel_map[y][x] =
-					Color_gui_ground; // Paint the ground
+				// Paint the ground.
+				pixel_map[y][x] = Color_gui_ground;
 			else
-				pixel_map[y][x] =
-					Color_gui_background; // Paint the
-							      // background,
-							      // alternatively
-							      // have a 320x240
-							      // background and
-							      // take all the
-							      // pixels from
-							      // there for a
-							      // picture.
+				// Paint the background.
+				/* Alternatively it can have a 320x240
+				 * background and take all the pixels from there
+				 * for a picture.*/
+				pixel_map[y][x] = Color_gui_background;
 		}
 	}
 }
-
-void graphics_render(Game const *game_data) { // game_data'yı doğru mu alıyorum?
-
-	short pixel_map[STANDARD_Y][STANDARD_X];
-	graphics_build(pixel_map, game_data); // should return 320x240 pixel
-					      // map.
+void graphics_render(Game const *game_data) {
+	short pixel_map[GAME_HEIGHT][GAME_WIDTH];
+	/* Should return 320x240 pixel map. */
+	graphics_build(pixel_map, game_data);
 	int pixel_buf_ptr = *(int *)PIXEL_BUF_CTRL_BASE;
 	int pixel_ptr, x, y;
 
-	/* assume that the box coordinates are valid */
-	for (y = 0; y <= STANDARD_Y; y++)
-		for (x = 0; x <= STANDARD_X; ++x) {
-			pixel_ptr =
-				pixel_buf_ptr + (y << 10) +
-				(x << 1); // Change to correct pixel's address
-			*(short *)pixel_ptr = pixel_map[y][x]; // Set pixel
-							       // color
+	for (y = 0; y < GAME_HEIGHT; y++)
+		for (x = 0; x < GAME_WIDTH; ++x) {
+			// Change to correct pixel's address.
+			pixel_ptr = pixel_buf_ptr + (y << 10) + (x << 1);
+			// Set pixel color.
+			*(short *)pixel_ptr = pixel_map[y][x];
 		}
 }
 
@@ -191,7 +181,7 @@ static render(Game *const game_data) {
 		graphics_render(&game_data);
 }
 /** Starts the program. */
-void main() {
+int main(void) {
 	Game current = {.tanks = {.size = 0},
 		.bullets = {.size = 0},
 		.map = {},

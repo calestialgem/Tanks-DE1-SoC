@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define STANDARD_X 320
-#define STANDARD_Y 240
+#define GAME_WIDTH 320
+#define GAME_HEIGHT 240
 
 #define GAME_GRAVITY 9.81F
 
@@ -75,7 +75,7 @@ typedef struct {
 /** Terrain where tanks are on. */
 typedef struct {
 	/** Heights of the ground at different horizontal positions in m. */
-	float ground[STANDARD_X];
+	float ground[GAME_WIDTH];
 } Map;
 /** Game state. */
 typedef struct {

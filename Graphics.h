@@ -25,7 +25,7 @@
 
 // Configuration and main render file.
 void graphics_build(
-	short pixel_map[STANDARD_Y][STANDARD_X], Game const *game_data);
+	short pixel_map[GAME_HEIGHT][GAME_WIDTH], Game const *game_data);
 void graphics_render(Game const *game_data);
 
 #ifdef GRAPHICS_INTERRUPT_ID
