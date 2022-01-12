@@ -108,25 +108,25 @@ void graphics_initialize(){	//Initialize the whole screen, Draw all the pixels t
 	uint8_t sprite_key_t[2][30]          ={{0,1,2,3,4,5,6,0,6,0,6,0,6,0,6,0,6,0,1,2,3,4,5,6,2,2,3,4,5,2},
 																  	     {0,0,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,2,3,3,3,3,4}};
 
-	graphics_draw_sprite(14,8,26,sprite_fuel_can_black, Color_gui_black);
-  graphics_draw_sprite(14,8,8,sprite_fuel_can_green,  Color_gui_fuel_green);
-	graphics_draw_sprite(25,7,24,sprite_health_black,   Color_gui_black);
-	graphics_draw_sprite(25,7,5,sprite_health_red,      Color_gui_red);
-	graphics_draw_sprite(25,7,2,sprite_health_blue,     Color_gui_health_blue);
-	graphics_draw_sprite(4,42,16,sprite_shield,         Color_gui_shield_blue);
-	graphics_draw_sprite(15,37,19,sprite_repair_black,   Color_gui_black);
-	graphics_draw_sprite(15,37,8,sprite_repair_grey,     Color_gui_grey);
-	graphics_draw_sprite(15,47,5,sprite_parachute_black, Color_gui_black);
-	graphics_draw_sprite(15,47,17,sprite_parachute_grey, Color_gui_grey);
-	graphics_draw_sprite(15,57,8,sprite_teleport_black,  Color_gui_black);
-	graphics_draw_sprite(15,57,5,sprite_teleport_red,    Color_gui_red);
-	graphics_draw_sprite(4,120,57,sprite_cloud,          Color_gui_cloud_blue);
-	graphics_draw_sprite(13,155,25,sprite_big_arrow_left, Color_gui_black);
-	graphics_draw_sprite(13,282,25,sprite_big_arrow_right,Color_gui_black);
-	graphics_draw_sprite(4,52,31,sprite_key_f,    Color_gui_black);
-	graphics_draw_sprite(24,37,33,sprite_key_r,    Color_gui_black);
-	graphics_draw_sprite(24,47,33,sprite_key_p,    Color_gui_black);
-	graphics_draw_sprite(24,57,30,sprite_key_t,    Color_gui_black);
+	graphics_draw_sprite(14,8,26,   sprite_fuel_can_black,  Color_gui_black);
+  graphics_draw_sprite(14,8,8,    sprite_fuel_can_green,  Color_gui_fuel_green);
+	graphics_draw_sprite(25,7,24,   sprite_health_black,    Color_gui_black);
+	graphics_draw_sprite(25,7,5,    sprite_health_red,      Color_gui_red);
+	graphics_draw_sprite(25,7,2,    sprite_health_blue,     Color_gui_health_blue);
+	graphics_draw_sprite(4,42,16,   sprite_shield,          Color_gui_shield_blue);
+	graphics_draw_sprite(15,37,19,  sprite_repair_black,    Color_gui_black);
+	graphics_draw_sprite(15,37,8,   sprite_repair_grey,     Color_gui_grey);
+	graphics_draw_sprite(15,47,5,   sprite_parachute_black, Color_gui_black);
+	graphics_draw_sprite(15,47,17,  sprite_parachute_grey,  Color_gui_grey);
+	graphics_draw_sprite(15,57,8,   sprite_teleport_black,  Color_gui_black);
+	graphics_draw_sprite(15,57,5,   sprite_teleport_red,    Color_gui_red);
+	graphics_draw_sprite(4,120,57,  sprite_cloud,           Color_gui_cloud_blue);
+	graphics_draw_sprite(13,155,25, sprite_big_arrow_left,  Color_gui_black);
+	graphics_draw_sprite(13,282,25, sprite_big_arrow_right, Color_gui_black);
+	graphics_draw_sprite(4,52,31,   sprite_key_f,           Color_gui_black);
+	graphics_draw_sprite(24,37,33,  sprite_key_r,           Color_gui_black);
+	graphics_draw_sprite(24,47,33,  sprite_key_p,           Color_gui_black);
+	graphics_draw_sprite(24,57,30,  sprite_key_t,           Color_gui_black);
 
 
 
