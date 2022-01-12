@@ -74,32 +74,32 @@ void __attribute__((interrupt)) __cs3_isr_irq(void) {
 		game_update();
 		break;
 	default:
-		error_show(ERROR_UNDEFINED_ISR);
+		error_show(ERROR_INTERRUPT_DEVICE_ID);
 	};
 	Register32 ICCEOIR = (Register32)0xFFEC110;
 	*ICCEOIR = id;
 }
 /** Handles resets. */
 void __attribute__((interrupt)) __cs3_reset(void) {
-	error_show(ERROR_UNDEFINED_ISR);
+	error_show(ERROR_INTERRUPT_RESET);
 }
 /** Handles undefined instructions. */
 void __attribute__((interrupt)) __cs3_isr_undef(void) {
-	error_show(ERROR_UNDEFINED_ISR);
+	error_show(ERROR_INTERRUPT_UNDEF);
 }
 /** Handles supervisor call instructions. */
 void __attribute__((interrupt)) __cs3_isr_swi(void) {
-	error_show(ERROR_UNDEFINED_ISR);
+	error_show(ERROR_INTERRUPT_SWI);
 }
 /** Handles prefetch aborts. */
 void __attribute__((interrupt)) __cs3_isr_pabort(void) {
-	error_show(ERROR_UNDEFINED_ISR);
+	error_show(ERROR_INTERRUPT_PABORT);
 }
 /** Handles data aborts. */
 void __attribute__((interrupt)) __cs3_isr_dabort(void) {
-	error_show(ERROR_UNDEFINED_ISR);
+	error_show(ERROR_INTERRUPT_DABORT);
 }
 /** Handles fast interrupts. */
 void __attribute__((interrupt)) __cs3_isr_fiq(void) {
-	error_show(ERROR_UNDEFINED_ISR);
+	error_show(ERROR_INTERRUPT_FIQ);
 }

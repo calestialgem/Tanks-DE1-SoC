@@ -12,14 +12,13 @@ static inline void reset_tanks(void) {
 	uint8_t i;
 	for (i = 0; i < game_instance.tanks.size; i++) {
 		volatile Tank *const tank = &game_instance.tanks.array[i];
-		tank_init(
-			&tank, math_random(MAP_LEFT_BORDER, MAP_RIGHT_BORDER));
+		tank_init(tank, math_random(MAP_LEFT_BORDER, MAP_RIGHT_BORDER));
 		barrel_init(&tank->gun, tank->health);
 	}
 }
 void game_restart(void) {
 	if (game_instance.playing) {
-		error_show(ERROR_LOGIC);
+		error_show(ERROR_LOGIC_STILL_PLAYING);
 		return;
 	}
 	game_instance.playing = true;
@@ -93,7 +92,7 @@ static inline void shoot(void) {
 		&game_instance.tanks.array[game_instance.turn];
 	volatile Barrel *const barrel = &tank->gun;
 	if (game_instance.bullets.size == BULLET_CAPACITY) {
-		error_show(ERROR_LOGIC);
+		error_show(ERROR_LOGIC_REACHED_BULLET_CAPACITY);
 		return;
 	}
 	volatile Bullet *const bullet =

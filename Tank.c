@@ -22,7 +22,7 @@ static inline void copy_name(volatile char destination[TANK_NAME_CAPACITY],
 }
 void tank_add(char const *const name, size_t const color) {
 	if (game_instance.tanks.size == TANK_CAPACITY) {
-		error_show(ERROR_LOGIC);
+		error_show(ERROR_LOGIC_REACHED_TANK_CAPACITY);
 		return;
 	}
 	volatile Tank *const tank =
@@ -32,7 +32,7 @@ void tank_add(char const *const name, size_t const color) {
 }
 void tank_remove(size_t const index) {
 	if (game_instance.tanks.size <= index) {
-		error_show(ERROR_LOGIC);
+		error_show(ERROR_LOGIC_NO_TANK_TO_REMOVE);
 		return;
 	}
 	Tank const last = game_instance.tanks.array[--game_instance.tanks.size];
