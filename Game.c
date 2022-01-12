@@ -6,38 +6,8 @@
 
 #include <math.h>
 
-/** The game which is currently running. Volatile because it is accessed by both
- * the main loop in rendering and the timer interrupt in updating. */
-static volatile Game game_instance;
+volatile Game game_instance;
 
-static inline void copy_name(volatile char destination[GAME_TANK_NAME_CAPACITY],
-	char const *const source) {
-	size_t i;
-	for (i = 0; i < GAME_TANK_NAME_CAPACITY; i++) {
-		if (!(destination[i] = source[i])) {
-			return;
-		}
-	}
-}
-void game_add_tank(char const *const name, size_t const color) {
-	if (game_instance.tanks.size == GAME_TANK_CAPACITY) {
-		error_show(ERROR_LOGIC);
-		return;
-	}
-	volatile Tank *const tank =
-		&game_instance.tanks.array[game_instance.tanks.size++];
-	copy_name(tank->name, name);
-	tank->color = color;
-}
-void game_remove_tank(size_t const index) {
-	if (game_instance.tanks.size <= index) {
-		error_show(ERROR_LOGIC);
-		return;
-	}
-	Tank const last = game_instance.tanks.array[--game_instance.tanks.size];
-	volatile Tank *const removed = &game_instance.tanks.array[index];
-	*removed = last;
-}
 static inline void generate_map() {
 	float const peakCount = math_random(0.75F, 1.5F);
 	float const start = math_random(0.0F, MATH_2PI);
@@ -55,29 +25,13 @@ static inline void generate_map() {
 				valleyHeight);
 	}
 }
-static inline void update_tank(volatile Tank *const tank) {
-	size_t const index = floorf(tank->position.x);
-	tank->position.y = game_instance.map.ground[index];
-	size_t const previousIndex = index == 0 ? index : index - 1;
-	size_t const nextIndex = index == GAME_WIDTH - 1 ? index : index + 1;
-	float const previousHeight = game_instance.map.ground[previousIndex];
-	float const nextHeight = game_instance.map.ground[nextIndex];
-	float const heightChange = previousHeight - nextHeight;
-	int const steps = nextIndex - previousIndex;
-	float const stepWidth = steps;
-	float const slope = heightChange / stepWidth;
-	tank->tilt = atanf(slope);
-}
 static inline void reset_tanks() {
 	uint8_t i;
 	for (i = 0; i < game_instance.tanks.size; i++) {
 		volatile Tank *const tank = &game_instance.tanks.array[i];
-		tank->position.x = math_random(
-			GAME_MAP_LEFT_BORDER, GAME_MAP_RIGHT_BORDER);
-		update_tank(tank);
-		tank->health = GAME_TANK_INITIAL_HEALTH;
-		tank->alive = true;
-		tank->fuel = GAME_TANK_INITIAL_FUEL;
+		tank_init(&tank,
+			math_random(
+				GAME_MAP_LEFT_BORDER, GAME_MAP_RIGHT_BORDER));
 		barrel_init(&tank->gun, tank->health);
 	}
 }
@@ -153,57 +107,19 @@ static inline void update_waiting_bullets(void) {
 	game_instance.waitingBullets = game_instance.bullets.size;
 }
 static inline void update_tank_movement(void) {
-	int32_t movement = 0;
-	if (keyboard_tank_left()) {
-		movement--;
-	}
-	if (keyboard_tank_right()) {
-		movement++;
-	}
-	if (!movement) {
-		return;
-	}
-	volatile Tank *const tank =
-		&game_instance.tanks.array[game_instance.turn];
-	float const initialPosition = tank->position.x;
-	tank->position.x += movement * GAME_TANK_SPEED;
-	if (tank->position.x < GAME_MAP_LEFT_BORDER) {
-		tank->position.x = GAME_MAP_LEFT_BORDER;
-	} else if (tank->position.x > GAME_MAP_RIGHT_BORDER) {
-		tank->position.x = GAME_MAP_RIGHT_BORDER;
-	}
-	tank->fuel -= fabsf(tank->position.x - initialPosition) *
-		      GAME_TANK_FUEL_CONSUMPTION;
-	update_tank(tank);
+	tank_move(&game_instance.tanks.array[game_instance.turn],
+		keyboard_tank_left() - keyboard_tank_right());
 }
 static inline void update_barrel_rotation(void) {
-	int32_t rotation = 0;
-	if (keyboard_barrel_left()) {
-		rotation++;
-	}
-	if (keyboard_barrel_right()) {
-		rotation--;
-	}
-	if (!rotation) {
-		return;
-	}
-	barrel_rotate(
-		&game_instance.tanks.array[game_instance.turn].gun, rotation);
+	barrel_rotate(&game_instance.tanks.array[game_instance.turn].gun,
+		keyboard_barrel_left() - keyboard_barrel_right());
 }
 static inline void update_power_change(void) {
-	int32_t change = 0;
-	if (keyboard_barrel_left()) {
-		change++;
-	}
-	if (keyboard_barrel_right()) {
-		change--;
-	}
-	if (!change) {
-		return;
-	}
 	volatile Tank *const tank =
 		&game_instance.tanks.array[game_instance.turn];
-	barrel_change_power(&tank->gun, change, tank->health);
+	barrel_change_power(&tank->gun,
+		keyboard_power_up() - keyboard_power_down(),
+		tank->health);
 }
 static inline void shoot(void) {
 	volatile Tank *const tank =
@@ -233,9 +149,4 @@ static inline void game_update() {
 	if (keyboard_shoot()) {
 		shoot();
 	}
-}
-void game_copy_safely(Game *const destination) {
-	timer_disable_interrupts();
-	*destination = game_instance;
-	timer_enable_interrupts();
 }

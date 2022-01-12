@@ -151,7 +151,12 @@ inline void graphics_update() {
 
 
 void graphics_render() {
-	game_copy_safely(&drawn_copy);
+	/* Copies the global game object. Does this after disabling interrupts so
+	 * that the global game object does not update midst the copy operation.
+	 * Re-enables interrupts after the copy is done. */
+	timer_disable_interrupts();
+	drawn_copy = game_instance;
+	timer_enable_interrupts();
 
 	int pixel_buf_ptr = *(int *) 0xFF203020; //PIXEL_BUF_CTRL_BASE
 	int pixel_ptr, x, y;
