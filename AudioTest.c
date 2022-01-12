@@ -31,7 +31,7 @@ int main(void) {
 	while (1){      // Initiate audio interrupt only when one of the switches (1&2) is turned on
 		if (*switch_ptr == 1)
 			play_audio(MOVE_BUF_SIZE, move_data);
-		else if (switch_ptr == 2)
+		else if (*switch_ptr == 2)
 			play_audio(TURRET_BUF_SIZE, turret_data);
 	}
 
@@ -40,12 +40,9 @@ int main(void) {
 
 void play_audio(int input_buf_size, int* input_array){
     volatile int *audio_ptr = (int *) 0xFF203040;
-    *audio_ptr = *audio_ptr | 0x2;
-    if(audio_data != input_array)
-        buffer_index = 0;
     AUDIO_BUF_SIZE = input_buf_size;
     audio_data = input_array;
-    
+    *audio_ptr = *audio_ptr | 0b10;
 }
 
 /* Initialize the banked stack pointer register for IRQ mode */
@@ -72,9 +69,9 @@ void enable_A9_interrupts(void){
 /* Configure the Generic Interrupt Controller (GIC) */
 void config_GIC(void){
 	/* configure the FPGA interval timer and Audio */
-    *((int *) 0xFFFED108) = 0x00004100;
 	*((int *) 0xFFFED848) = 0x00000001;
 	*((int *) 0xFFFED84C) = 0x00010000;
+	*((int *) 0xFFFED108) = 0x00004100;
 	/* configure the FPGA timer and Audio Timer Priorities */
 	*((int *) 0xFFFED448) = 0x00000001;
 	*((int *) 0xFFFED44C) = 0x00000000;
@@ -175,9 +172,19 @@ void interval_timer_ISR( ){
 			*led_ptr = 0;      
 		else if (byte3 == 0x23){  // if the button is not released and D is pressed
 			*led_ptr = 1;
+			play_audio(MOVE_BUF_SIZE, move_data);
+		}
+		else if (byte3 == 0x1C){  // if the button is not released and A is pressed
+			*led_ptr = 2;
+			play_audio(MOVE_BUF_SIZE, move_data);
 		}
 		else if (byte3 == 0x1D){  // if the button is not released and W is pressed
 			*led_ptr = 8;
+			play_audio(TURRET_BUF_SIZE, turret_data);
+		}
+		else if (byte3 == 0x1b){  // if the button is not released and S is pressed
+			*led_ptr = 4;
+			play_audio(TURRET_BUF_SIZE, turret_data);
 		}	
 			
 	}
@@ -189,13 +196,17 @@ void audio_ISR (void){
 
     int fifospace = *(audio_ptr + 1);
 	int wsrc = (fifospace & 0x00FF0000) >> 16;
-		while ((wsrc >= 0) && (buffer_index < AUDIO_BUF_SIZE)){
+		while ((wsrc >= 32) && (buffer_index < AUDIO_BUF_SIZE)){
 			*(audio_ptr+2) = audio_data[buffer_index];
 			*(audio_ptr+3) = audio_data[buffer_index];
 			buffer_index += 3;
 			fifospace = *(audio_ptr + 1);
 			wsrc = (fifospace & 0x00FF0000) >> 16;
 		}
-    if(buffer_index >= AUDIO_BUF_SIZE)
+    if(buffer_index >= AUDIO_BUF_SIZE){
         *audio_ptr = *audio_ptr & ~0b10;
+		buffer_index = 0;
+	}
 }
+
+	
