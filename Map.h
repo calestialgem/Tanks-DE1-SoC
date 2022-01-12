@@ -1,6 +1,8 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include <stdlib.h>
+
 #define MAP_WIDTH 320
 #define MAP_HEIGHT 240
 #define MAP_LEFT_BORDER 5
@@ -14,5 +16,7 @@ typedef struct {
 
 /** Generates the terrain. */
 void map_generate(void);
+/** Returns the slope at the given position. */
+float map_slope(size_t const index);
 
 #endif // MAP_H

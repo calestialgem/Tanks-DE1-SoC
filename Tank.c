@@ -48,15 +48,7 @@ void tank_place(volatile Tank *const tank, float const position) {
 	tank->position.x = position;
 	size_t const index = floorf(tank->position.x);
 	tank->position.y = game_instance.map.ground[index];
-	size_t const previousIndex = index == 0 ? index : index - 1;
-	size_t const nextIndex = index == MAP_WIDTH - 1 ? index : index + 1;
-	float const previousHeight = game_instance.map.ground[previousIndex];
-	float const nextHeight = game_instance.map.ground[nextIndex];
-	float const heightChange = previousHeight - nextHeight;
-	int const steps = nextIndex - previousIndex;
-	float const stepWidth = steps;
-	float const slope = heightChange / stepWidth;
-	tank->tilt = atanf(slope);
+	tank->tilt = atanf(map_slope(index));
 }
 void tank_move(volatile Tank *const tank, int8_t const movement) {
 	if (!movement || tank->fuel <= 0.0F) {
