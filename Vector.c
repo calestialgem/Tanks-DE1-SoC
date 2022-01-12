@@ -1,6 +1,6 @@
 #include "Vector.h"
 
-#include "Maths.h"
+#include "MathTools.h"
 
 /** Adds the given vectors, and returns the result as a new vector. */
 Vector vector_add(Vector const left, Vector const right) {
@@ -19,5 +19,5 @@ Vector vector_mul(Vector const left, float const right) {
 	return result;
 }
 float vector_square(Vector const vector) {
-	return maths_square(vector.x) + maths_square(vector.y);
+	return math_square(vector.x) + math_square(vector.y);
 }

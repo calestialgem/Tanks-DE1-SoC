@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "Maths.h"
+#include "MathTools.h"
 #include "Timer.h"
 #include "Vector.h"
 

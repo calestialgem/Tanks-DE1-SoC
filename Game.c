@@ -37,16 +37,16 @@ void game_remove_tank(size_t const index) {
 	*removed = last;
 }
 static inline void generate_map() {
-	float const peakCount = maths_random(0.75F, 1.5F);
-	float const start = maths_random(0.0F, MATHS_2PI);
-	float const peakHeight = maths_random(0.5F, 0.67F) * GAME_HEIGHT;
-	float const valleyHeight = maths_random(0.8F, 0.95F) * GAME_HEIGHT;
+	float const peakCount = math_random(0.75F, 1.5F);
+	float const start = math_random(0.0F, MATH_PI);
+	float const peakHeight = math_random(0.5F, 0.67F) * GAME_HEIGHT;
+	float const valleyHeight = math_random(0.8F, 0.95F) * GAME_HEIGHT;
 	size_t x;
 	for (x = 0; x < GAME_WIDTH; x++) {
-		float const angle = maths_linearly_map(
-			x, 0.0F, GAME_WIDTH, 0.0F, MATHS_2PI);
+		float const angle =
+			math_linearly_map(x, 0.0F, GAME_WIDTH, 0.0F, MATH_PI);
 		game_instance.map.ground[x] =
-			maths_linearly_map(sin(angle * peakCount + start),
+			math_linearly_map(sin(angle * peakCount + start),
 				-1.0F,
 				1.0F,
 				peakHeight,
@@ -70,7 +70,7 @@ static inline void reset_tanks() {
 	uint8_t i;
 	for (i = 0; i < game_instance.tanks.size; i++) {
 		volatile Tank *const tank = &game_instance.tanks.array[i];
-		tank->position.x = maths_random(
+		tank->position.x = math_random(
 			GAME_MAP_LEFT_BORDER, GAME_MAP_RIGHT_BORDER);
 		update_tank(tank);
 		tank->gun.angle = GAME_BARREL_INITIAL_ANGLE;
@@ -86,7 +86,7 @@ void game_restart() {
 	}
 	game_instance.playing = true;
 	game_instance.turn = 0;
-	maths_reseed();
+	math_reseed();
 	generate_map();
 	game_instance.bullets.size = 0;
 	reset_tanks();
@@ -95,7 +95,7 @@ static inline void simulate_bullet(volatile Bullet *const bullet) {
 	Vector const acceleration = {.x = 0.0F, .y = GAME_GRAVITY};
 	Vector const velocityEffect = vector_mul(bullet->velocity, TIMER_STEP);
 	Vector const accelerationEffect =
-		vector_mul(acceleration, maths_square(TIMER_STEP) / 2.0F);
+		vector_mul(acceleration, math_square(TIMER_STEP) / 2.0F);
 	Vector const positionChange =
 		vector_add(velocityEffect, accelerationEffect);
 	bullet->position = vector_add(bullet->position, positionChange);
@@ -117,8 +117,8 @@ static inline void explode_bullet(volatile Bullet *const bullet) {
 	for (i = leftEdge; i <= rightEdge; i++) {
 		float const position = i + 0.5F;
 		float const potential =
-			maths_square(bullet->power) -
-			maths_square(bullet->position.x - position);
+			math_square(bullet->power) -
+			math_square(bullet->position.x - position);
 		float const destruction =
 			2 * sqrt(potential < 0.0F ? 0.0F : potential);
 		game_instance.map.ground[i] += destruction;
