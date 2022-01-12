@@ -1,5 +1,7 @@
 #include "MathTools.h"
 
+#include <time.h>
+
 /** Takes the given number that is currently in a range, and normalizes it. Then
  * maps it to the target range linearly. */
 float math_linearly_map(float const number,

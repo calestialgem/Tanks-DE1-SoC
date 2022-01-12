@@ -1,11 +1,12 @@
 #ifndef MATH_TOOLS_H
 #define MATH_TOOLS_H
 
-#include <math.h>
 #include <stdlib.h>
-#include <time.h>
 
-#define MATH_PI (2.0F * M_PI)
+#define MATH_PI 3.1415927F
+#define MATH_2PI (2.0F * MATH_PI)
+#define MATH_PI_2 (MATH_PI / 2.0F)
+#define MATH_PI_4 (MATH_PI / 4.0F)
 
 /** Takes the given number that is currently in a range, and normalizes it. Then
  * maps it to the target range linearly. */

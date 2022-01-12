@@ -4,6 +4,8 @@
 #include "Graphics.h"
 #include "Keyboard.h"
 
+#include <math.h>
+
 /** The game which is currently running. Volatile because it is accessed by both
  * the main loop in rendering and the timer interrupt in updating. */
 static volatile Game game_instance;
@@ -38,15 +40,15 @@ void game_remove_tank(size_t const index) {
 }
 static inline void generate_map() {
 	float const peakCount = math_random(0.75F, 1.5F);
-	float const start = math_random(0.0F, MATH_PI);
+	float const start = math_random(0.0F, MATH_2PI);
 	float const peakHeight = math_random(0.5F, 0.67F) * GAME_HEIGHT;
 	float const valleyHeight = math_random(0.8F, 0.95F) * GAME_HEIGHT;
 	size_t x;
 	for (x = 0; x < GAME_WIDTH; x++) {
 		float const angle =
-			math_linearly_map(x, 0.0F, GAME_WIDTH, 0.0F, MATH_PI);
+			math_linearly_map(x, 0.0F, GAME_WIDTH, 0.0F, MATH_2PI);
 		game_instance.map.ground[x] =
-			math_linearly_map(sin(angle * peakCount + start),
+			math_linearly_map(sinf(angle * peakCount + start),
 				-1.0F,
 				1.0F,
 				peakHeight,
@@ -54,7 +56,7 @@ static inline void generate_map() {
 	}
 }
 static inline void update_tank(volatile Tank *const tank) {
-	size_t const index = floor(tank->position.x);
+	size_t const index = floorf(tank->position.x);
 	tank->position.y = game_instance.map.ground[index];
 	size_t const previousIndex = index == 0 ? index : index - 1;
 	size_t const nextIndex = index == GAME_WIDTH - 1 ? index : index + 1;
@@ -64,7 +66,7 @@ static inline void update_tank(volatile Tank *const tank) {
 	int const steps = nextIndex - previousIndex;
 	float const stepWidth = steps;
 	float const slope = heightChange / stepWidth;
-	tank->tilt = atan(slope);
+	tank->tilt = atanf(slope);
 }
 static inline void reset_tanks() {
 	uint8_t i;
@@ -103,13 +105,13 @@ static inline void simulate_bullet(volatile Bullet *const bullet) {
 	bullet->velocity = vector_add(bullet->velocity, velocityChange);
 }
 static inline bool check_bullet_contact(volatile Bullet *const bullet) {
-	size_t const index = floor(bullet->position.x);
+	size_t const index = floorf(bullet->position.x);
 	return game_instance.map.ground[index] >=
 	       bullet->position.y + bullet->radius;
 }
 static inline void explode_bullet(volatile Bullet *const bullet) {
-	size_t const leftReach = floor(bullet->position.x - bullet->power);
-	size_t const rightReach = floor(bullet->position.x + bullet->power);
+	size_t const leftReach = floorf(bullet->position.x - bullet->power);
+	size_t const rightReach = floorf(bullet->position.x + bullet->power);
 	size_t const leftEdge = leftReach < 0 ? 0 : leftReach;
 	size_t const rightEdge =
 		rightReach >= GAME_WIDTH ? GAME_WIDTH - 1 : rightReach;
@@ -120,7 +122,7 @@ static inline void explode_bullet(volatile Bullet *const bullet) {
 			math_square(bullet->power) -
 			math_square(bullet->position.x - position);
 		float const destruction =
-			2 * sqrt(potential < 0.0F ? 0.0F : potential);
+			2 * sqrtf(potential < 0.0F ? 0.0F : potential);
 		game_instance.map.ground[i] += destruction;
 		if (game_instance.map.ground[i] >= GAME_HEIGHT) {
 			game_instance.map.ground[i] = GAME_HEIGHT - 1;
