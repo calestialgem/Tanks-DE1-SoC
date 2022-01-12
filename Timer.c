@@ -72,6 +72,8 @@ void __attribute__((interrupt)) __cs3_isr_irq(void) {
 	switch (id) {
 	case TIMER_INTERRUPT_ID:
 		game_update();
+		Register16 status = (Register16)0xFF202000;
+		*status = 0;
 		break;
 	default:
 		error_show(ERROR_INTERRUPT_DEVICE_ID);
