@@ -3,6 +3,7 @@
 
 #include "Barrel.h"
 #include "Bullet.h"
+#include "Map.h"
 #include "MathTools.h"
 #include "Tank.h"
 #include "Timer.h"
@@ -12,17 +13,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define GAME_WIDTH 320
-#define GAME_HEIGHT 240
-
-#define GAME_MAP_LEFT_BORDER 5
-#define GAME_MAP_RIGHT_BORDER (GAME_WIDTH - GAME_MAP_LEFT_BORDER)
-
-/** Terrain where tanks are on. */
-typedef struct {
-	/** Heights of the ground at different horizontal positions in m. */
-	float ground[GAME_WIDTH];
-} Map;
 /** Game state. */
 typedef struct {
 	/** Remaining tanks. */

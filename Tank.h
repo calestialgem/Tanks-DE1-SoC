@@ -13,7 +13,7 @@
 
 /** Characters controlled by players. */
 typedef struct {
-	/** Position of the middle horizontally and down vertically in m. */
+	/** Position of the middle horizontally and down vertically in pixel. */
 	Vector position;
 	/** The counter-clockwise angle the tank is standing with respect to the
 	 * ground in rad. */
@@ -22,7 +22,7 @@ typedef struct {
 	uint8_t health;
 	/** Whether the tank is alive or not. */
 	bool alive;
-	/** Remaining fuel of the tank in m^3. */
+	/** Remaining fuel of the tank in pixel^3. */
 	uint8_t fuel;
 	/** Weapon. */
 	Barrel gun;

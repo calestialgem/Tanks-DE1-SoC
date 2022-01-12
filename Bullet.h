@@ -14,13 +14,13 @@
 
 /** Projectiles that do damage. */
 typedef struct {
-	/** Position of the center of mass in m. */
+	/** Position of the center of mass in pixel. */
 	Vector position;
-	/** Velocity of the center of mass in m/s. */
+	/** Velocity of the center of mass in pixel/s. */
 	Vector velocity;
-	/** Radius in m. */
+	/** Radius in pixel. */
 	float radius;
-	/** Explosion radius in m. */
+	/** Explosion radius in pixel. */
 	float power;
 } Bullet;
 /** Array of bullets. */

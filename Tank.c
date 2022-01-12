@@ -2,6 +2,7 @@
 
 #include "Error.h"
 #include "Game.h"
+#include "Map.h"
 
 #include <math.h>
 
@@ -41,11 +42,14 @@ void tank_remove(size_t const index) {
 void tank_place(volatile Tank *const tank, float const position) {
 	tank->fuel -=
 		fabsf(tank->position.x - position) * TANK_FUEL_CONSUMPTION;
+	if (tank->fuel < 0.0F) {
+		tank->fuel = 0.0F;
+	}
 	tank->position.x = position;
 	size_t const index = floorf(tank->position.x);
 	tank->position.y = game_instance.map.ground[index];
 	size_t const previousIndex = index == 0 ? index : index - 1;
-	size_t const nextIndex = index == GAME_WIDTH - 1 ? index : index + 1;
+	size_t const nextIndex = index == MAP_WIDTH - 1 ? index : index + 1;
 	float const previousHeight = game_instance.map.ground[previousIndex];
 	float const nextHeight = game_instance.map.ground[nextIndex];
 	float const heightChange = previousHeight - nextHeight;
@@ -55,14 +59,14 @@ void tank_place(volatile Tank *const tank, float const position) {
 	tank->tilt = atanf(slope);
 }
 void tank_move(volatile Tank *const tank, int8_t const movement) {
-	if (!movement) {
+	if (!movement || tank->fuel <= 0.0F) {
 		return;
 	}
 	float const position = tank->position.x + movement * TANK_SPEED;
-	if (position < GAME_MAP_LEFT_BORDER) {
-		tank_place(tank, GAME_MAP_LEFT_BORDER);
-	} else if (position > GAME_MAP_RIGHT_BORDER) {
-		tank_place(tank, GAME_MAP_RIGHT_BORDER);
+	if (position < MAP_LEFT_BORDER) {
+		tank_place(tank, MAP_LEFT_BORDER);
+	} else if (position > MAP_RIGHT_BORDER) {
+		tank_place(tank, MAP_RIGHT_BORDER);
 	} else {
 		tank_place(tank, position);
 	}

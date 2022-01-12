@@ -8,34 +8,16 @@
 
 volatile Game game_instance;
 
-static inline void generate_map() {
-	float const peakCount = math_random(0.75F, 1.5F);
-	float const start = math_random(0.0F, MATH_2PI);
-	float const peakHeight = math_random(0.5F, 0.67F) * GAME_HEIGHT;
-	float const valleyHeight = math_random(0.8F, 0.95F) * GAME_HEIGHT;
-	size_t x;
-	for (x = 0; x < GAME_WIDTH; x++) {
-		float const angle =
-			math_linearly_map(x, 0.0F, GAME_WIDTH, 0.0F, MATH_2PI);
-		game_instance.map.ground[x] =
-			math_linearly_map(sinf(angle * peakCount + start),
-				-1.0F,
-				1.0F,
-				peakHeight,
-				valleyHeight);
-	}
-}
-static inline void reset_tanks() {
+static inline void reset_tanks(void) {
 	uint8_t i;
 	for (i = 0; i < game_instance.tanks.size; i++) {
 		volatile Tank *const tank = &game_instance.tanks.array[i];
-		tank_init(&tank,
-			math_random(
-				GAME_MAP_LEFT_BORDER, GAME_MAP_RIGHT_BORDER));
+		tank_init(
+			&tank, math_random(MAP_LEFT_BORDER, MAP_RIGHT_BORDER));
 		barrel_init(&tank->gun, tank->health);
 	}
 }
-void game_restart() {
+void game_restart(void) {
 	if (game_instance.playing) {
 		error_show(ERROR_LOGIC);
 		return;
@@ -43,7 +25,7 @@ void game_restart() {
 	game_instance.playing = true;
 	game_instance.turn = 0;
 	math_reseed();
-	generate_map();
+	map_generate();
 	game_instance.bullets.size = 0;
 	reset_tanks();
 }
@@ -57,7 +39,7 @@ static inline void explode_bullet(volatile Bullet *const bullet) {
 	size_t const rightReach = floorf(bullet->position.x + bullet->power);
 	size_t const leftEdge = leftReach < 0 ? 0 : leftReach;
 	size_t const rightEdge =
-		rightReach >= GAME_WIDTH ? GAME_WIDTH - 1 : rightReach;
+		rightReach >= MAP_WIDTH ? MAP_WIDTH - 1 : rightReach;
 	size_t i;
 	for (i = leftEdge; i <= rightEdge; i++) {
 		float const position = i + 0.5F;
@@ -67,8 +49,8 @@ static inline void explode_bullet(volatile Bullet *const bullet) {
 		float const destruction =
 			2 * sqrtf(potential < 0.0F ? 0.0F : potential);
 		game_instance.map.ground[i] += destruction;
-		if (game_instance.map.ground[i] >= GAME_HEIGHT) {
-			game_instance.map.ground[i] = GAME_HEIGHT - 1;
+		if (game_instance.map.ground[i] >= MAP_HEIGHT) {
+			game_instance.map.ground[i] = MAP_HEIGHT - 1;
 		}
 	}
 }
@@ -106,25 +88,14 @@ static inline void update_waiting_bullets(void) {
 	}
 	game_instance.waitingBullets = game_instance.bullets.size;
 }
-static inline void update_tank_movement(void) {
-	tank_move(&game_instance.tanks.array[game_instance.turn],
-		keyboard_tank_left() - keyboard_tank_right());
-}
-static inline void update_barrel_rotation(void) {
-	barrel_rotate(&game_instance.tanks.array[game_instance.turn].gun,
-		keyboard_barrel_left() - keyboard_barrel_right());
-}
-static inline void update_power_change(void) {
-	volatile Tank *const tank =
-		&game_instance.tanks.array[game_instance.turn];
-	barrel_change_power(&tank->gun,
-		keyboard_power_up() - keyboard_power_down(),
-		tank->health);
-}
 static inline void shoot(void) {
 	volatile Tank *const tank =
 		&game_instance.tanks.array[game_instance.turn];
 	volatile Barrel *const barrel = &tank->gun;
+	if (game_instance.bullets.size == BULLET_CAPACITY) {
+		error_show(ERROR_LOGIC);
+		return;
+	}
 	volatile Bullet *const bullet =
 		&game_instance.bullets.array[game_instance.bullets.size++];
 	bullet->position = tank->position;
@@ -137,15 +108,20 @@ static inline void shoot(void) {
 		-sinf(angle) * barrel->power * BULLET_SPEED_MULTIPLIER;
 	game_instance.waitingBullets = true;
 }
-static inline void game_update() {
+static inline void game_update(void) {
 	keyboard_update();
 	if (game_instance.waitingBullets) {
 		update_waiting_bullets();
 		return;
 	}
-	update_tank_movement();
-	update_barrel_rotation();
-	update_power_change();
+	volatile Tank *const tank =
+		&game_instance.tanks.array[game_instance.turn];
+	volatile Barrel *const barrel = &tank->gun;
+	tank_move(tank, keyboard_tank_left() - keyboard_tank_right());
+	barrel_rotate(barrel, keyboard_barrel_left() - keyboard_barrel_right());
+	barrel_change_power(barrel,
+		keyboard_power_up() - keyboard_power_down(),
+		tank->health);
 	if (keyboard_shoot()) {
 		shoot();
 	}
