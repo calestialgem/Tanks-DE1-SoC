@@ -13,16 +13,16 @@ volatile int buffer_index = 0;
 void set_A9_IRQ_stack (void);
 void config_GIC (void);
 void config_interval_timer (void);
+void config_audio (void);
 void enable_A9_interrupts (void);
 void play_audio(int input_buf_size, int* input_array);
 
-
-	
 int main(void) {
 	
 	set_A9_IRQ_stack (); // initialize the stack pointer for IRQ mode
 	config_GIC (); // configure the general interrupt controller
 	config_interval_timer (); // configure Altera interval timer to generate interrupt
+    config_audio();
 	enable_A9_interrupts (); // enable interrupts in the A9 processor
 	volatile int *lcd_ptr = (int *) 0xFF200020;
 	volatile int *switch_ptr = (int *) 0xff200040;
@@ -40,12 +40,12 @@ int main(void) {
 
 void play_audio(int input_buf_size, int* input_array){
     volatile int *audio_ptr = (int *) 0xFF203040;
-    
+    *audio_ptr = *audio_ptr | 0x2;
     if(audio_data != input_array)
         buffer_index = 0;
     AUDIO_BUF_SIZE = input_buf_size;
     audio_data = input_array;
-    *audio_ptr = *audio_ptr | 0x2;
+    
 }
 
 /* Initialize the banked stack pointer register for IRQ mode */
@@ -72,9 +72,9 @@ void enable_A9_interrupts(void){
 /* Configure the Generic Interrupt Controller (GIC) */
 void config_GIC(void){
 	/* configure the FPGA interval timer and Audio */
+    *((int *) 0xFFFED108) = 0x00004100;
 	*((int *) 0xFFFED848) = 0x00000001;
-	*((int *) 0xFFFED84C) = 0x00001000;
-	*((int *) 0xFFFED108) = 0x00004100;
+	*((int *) 0xFFFED84C) = 0x00010000;
 	/* configure the FPGA timer and Audio Timer Priorities */
 	*((int *) 0xFFFED448) = 0x00000001;
 	*((int *) 0xFFFED44C) = 0x00000000;
@@ -95,6 +95,13 @@ void config_interval_timer(){
 	*(interval_timer_ptr + 0x3) = (counter >> 16) & 0xFFFF;
 	/* start interval timer, enable its interrupts */
 	*(interval_timer_ptr + 1) = 0x7; // STOP = 0, START = 1, CONT = 1, ITO = 1
+}
+
+void config_audio(){
+    volatile int *audio_ptr = (int *) 0xFF203040;
+
+    *audio_ptr |= 0b1000;
+    *audio_ptr &= ~0b1111;
 }
 
 void interval_timer_ISR (void);
