@@ -26,7 +26,6 @@ int main() {
 	config_all();
 
 	while (true) {
-		graphics_update();
 		graphics_render();
 	}
 	return 0;

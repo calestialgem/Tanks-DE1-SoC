@@ -5,6 +5,8 @@
 static short Color_tank[GRAPHICS_TANK_COLOR_COUNT] = {0xC000, 0x0260, 0x11B4, 0x8010, 0xFEA0};
 static short Color_map_ground =(short) 0xFFFF;
 static short Color_map_background =(short) 0x9E7F;
+static short Color_barrel =(short) 0x0000;
+static short Color_tank_grey =(short) 0xC618;
 
 /** Copy of the game that is drawn. Before each render, the updated game is
  * copied safely by disabling interrupts. */
@@ -184,41 +186,64 @@ void graphics_initialize(){	//Initialize the whole screen, Draw all the pixels t
 	graphics_draw_sprite(24,37,33,  sprite_key_r,           Color_gui_black);
 	graphics_draw_sprite(24,47,33,  sprite_key_p,           Color_gui_black);
 	graphics_draw_sprite(24,57,30,  sprite_key_t,           Color_gui_black);
+  graphics_draw_sprite(7,7,2,  sprite_tank_0_grey,  Color_tank_grey);
+  graphics_draw_sprite(3,10,6,  sprite_barrel_45,   Color_barrel);
 
 
 
 }
 
 
-
-void graphics_update() {
-
-
-	for (int y=0; y < GAME_HEIGHT; y++) {
-		for (int x=0; x < GAME_WIDTH; x++) {
-
-			if (y >= drawn_copy.map.ground[x]) // Paint the ground.
-				pixel_map[y][x] = Color_map_ground;
-			else // Paint the background. Alternatively take this from picture.
-				pixel_map[y][x] = Color_map_background;
-		}
-
-	}
-}
 
 
 void graphics_render() {
 	/* Copies the global game object. Does this after disabling interrupts so
 	 * that the global game object does not update midst the copy operation.
 	 * Re-enables interrupts after the copy is done. */
-	timer_disable_interrupts();
-	drawn_copy = game_instance;
-	timer_enable_interrupts();
+	//timer_disable_interrupts();
+	//drawn_copy = game_instance;
+	//timer_enable_interrupts();
+
+//Update the Graphics
+graphics_draw_sprite(7,7,24,  sprite_tank_0_red,  Color_tank[1]); //Player indicator.
+
+
+
+for (int y=0; y < GAME_HEIGHT; y++) {
+  for (int x=0; x < GAME_WIDTH; x++) {
+
+    if (y >= 160) // Paint the ground. >= drawn_copy.map.ground[x]
+      pixel_map[y][x] = Color_map_ground;
+    else if (y>Pixel_gui_border) // Paint the background. Alternatively take this from picture.
+      pixel_map[y][x] = Color_map_background;
+  }
+
+}
+
+
+
+
+
+
+
 
 	int pixel_buf_ptr = *(int *) 0xFF203020; //PIXEL_BUF_CTRL_BASE
 	int pixel_ptr, x, y;
 
-	//Display
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//Render Image
 	for (y = 0; y < GAME_HEIGHT; y++)
 		for (x = 0; x < GAME_WIDTH; x++) {     // Change to correct pixel's address.
 			pixel_ptr = pixel_buf_ptr + (y << 10) + (x << 1);
