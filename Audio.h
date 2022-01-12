@@ -1,7 +1,6 @@
 #ifndef AUDIO_H
 #define AUDIO_H
 
-#include <stdint.h>
 
 /** The audio arrays */
 
