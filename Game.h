@@ -1,7 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "Math.h"
+#include "Maths.h"
+#include "Timer.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -12,12 +13,26 @@
 
 #define GAME_GRAVITY 9.81F
 
+#define GAME_BARREL_SPEED (0.1F * TIMER_STEP)
+#define GAME_BARREL_INITIAL_ANGLE M_PI_4
+#define GAME_BARREL_LOWER_ANGLE (M_PI * 5.0F / 180.0F)
+#define GAME_BARREL_UPPER_ANGLE (M_PI_2 - GAME_BARREL_LOWER_ANGLE)
+
 #define GAME_BULLET_CAPACITY 8
-#define GAME_BULLET_DENSITY 2500.0F
+#define GAME_BULLET_RADIUS_MULTIPLIER 0.1F
+#define GAME_BULLET_POWER_MULTIPLIER 0.2F
+#define GAME_BULLET_SPEED_MULTIPLIER (20.0F * TIMER_STEP)
+#define GAME_BULLET_DAMAGE_MULTIPLIER 0.2F
 
 #define GAME_TANK_CAPACITY 4
-#define GAME_TANK_INITIAL_HEALTH 100.0F
+#define GAME_TANK_INITIAL_HEALTH 100
+#define GAME_TANK_INITIAL_FUEL 250
+#define GAME_TANK_FUEL_CONSUMPTION (2.5F * TIMER_STEP)
 #define GAME_TANK_NAME_CAPACITY 32
+#define GAME_TANK_SPEED (0.1F * TIMER_STEP)
+
+#define GAME_MAP_LEFT_BORDER 5
+#define GAME_MAP_RIGHT_BORDER (GAME_WIDTH - GAME_MAP_LEFT_BORDER)
 
 /** Projectiles that do damage. */
 typedef struct {
@@ -25,11 +40,9 @@ typedef struct {
 	Vector position;
 	/** Velocity of the center of mass in m/s. */
 	Vector velocity;
-	/** Diameter in m. */
-	float diameter;
-	/** Total mass in kg. */
-	float mass;
-	/** Power released when it explodes. */
+	/** Radius in m. */
+	float radius;
+	/** Explosion radius in m. */
 	float power;
 } Bullet;
 /** Array of bullets. */
@@ -41,7 +54,7 @@ typedef struct {
 } Bullets;
 /** Weapon on top of a tank. */
 typedef struct {
-	/** The angle with respect to the tank in rad. */
+	/** The counter-clockwise angle with respect to the tank in rad. */
 	float angle;
 	/** The amount bullets are shot forward percent. */
 	uint8_t power;
@@ -50,12 +63,15 @@ typedef struct {
 typedef struct {
 	/** Position of the middle horizontally and down vertically in m. */
 	Vector position;
-	/** The angle the tank is standing with respect to the ground in rad. */
+	/** The counter-clockwise angle the tank is standing with respect to the
+	 * ground in rad. */
 	float tilt;
 	/** Remaining healt of the tank in percents. */
 	uint8_t health;
 	/** Whether the tank is alive or not. */
 	bool alive;
+	/** Remaining fuel of the tank in m^3. */
+	uint8_t fuel;
 	/** Weapon. */
 	Barrel gun;
 	/** Player's name. */
@@ -87,8 +103,8 @@ typedef struct {
 	bool playing;
 	/** The index of the tank that can do actions. */
 	size_t turn;
-	/** Wheter the current tank is shooting. */
-	bool shooting;
+	/** Wheter the game is waiting for all the bullets to explode. */
+	bool waitingBullets;
 } Game;
 
 /** Adds a tank to the array. */

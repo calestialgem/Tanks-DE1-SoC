@@ -18,10 +18,13 @@ static void config_all(void) {
 
 /** Starts the program. */
 int main() {
-	math_reseed();
-	game_add_tank("Player 1", math_random_index(GRAPHICS_TANK_COLOR_COUNT));
-	game_add_tank("Player 2", math_random_index(GRAPHICS_TANK_COLOR_COUNT));
-	game_add_tank("Player 3", math_random_index(GRAPHICS_TANK_COLOR_COUNT));
+	maths_reseed();
+	game_add_tank(
+		"Player 1", maths_random_index(GRAPHICS_TANK_COLOR_COUNT));
+	game_add_tank(
+		"Player 2", maths_random_index(GRAPHICS_TANK_COLOR_COUNT));
+	game_add_tank(
+		"Player 3", maths_random_index(GRAPHICS_TANK_COLOR_COUNT));
 	game_restart();
 	config_all();
 
