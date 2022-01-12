@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "Bullet.h"
 #include "MathTools.h"
 #include "Timer.h"
 #include "Vector.h"
@@ -12,18 +13,10 @@
 #define GAME_WIDTH 320
 #define GAME_HEIGHT 240
 
-#define GAME_GRAVITY 9.81F
-
 #define GAME_BARREL_SPEED (0.1F * TIMER_STEP)
 #define GAME_BARREL_INITIAL_ANGLE MATH_PI_4
 #define GAME_BARREL_LOWER_ANGLE (MATH_PI * 5.0F / 180.0F)
 #define GAME_BARREL_UPPER_ANGLE (MATH_PI_2 - GAME_BARREL_LOWER_ANGLE)
-
-#define GAME_BULLET_CAPACITY 8
-#define GAME_BULLET_RADIUS_MULTIPLIER 0.1F
-#define GAME_BULLET_POWER_MULTIPLIER 0.2F
-#define GAME_BULLET_SPEED_MULTIPLIER (20.0F * TIMER_STEP)
-#define GAME_BULLET_DAMAGE_MULTIPLIER 0.2F
 
 #define GAME_TANK_CAPACITY 4
 #define GAME_TANK_INITIAL_HEALTH 100
@@ -35,24 +28,6 @@
 #define GAME_MAP_LEFT_BORDER 5
 #define GAME_MAP_RIGHT_BORDER (GAME_WIDTH - GAME_MAP_LEFT_BORDER)
 
-/** Projectiles that do damage. */
-typedef struct {
-	/** Position of the center of mass in m. */
-	Vector position;
-	/** Velocity of the center of mass in m/s. */
-	Vector velocity;
-	/** Radius in m. */
-	float radius;
-	/** Explosion radius in m. */
-	float power;
-} Bullet;
-/** Array of bullets. */
-typedef struct {
-	/** Array of bullets with a set capacity. */
-	Bullet array[GAME_BULLET_CAPACITY];
-	/** Amount of bullets in the array. */
-	size_t size;
-} Bullets;
 /** Weapon on top of a tank. */
 typedef struct {
 	/** The counter-clockwise angle with respect to the tank in rad. */

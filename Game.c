@@ -93,17 +93,6 @@ void game_restart() {
 	game_instance.bullets.size = 0;
 	reset_tanks();
 }
-static inline void simulate_bullet(volatile Bullet *const bullet) {
-	Vector const acceleration = {.x = 0.0F, .y = GAME_GRAVITY};
-	Vector const velocityEffect = vector_mul(bullet->velocity, TIMER_STEP);
-	Vector const accelerationEffect =
-		vector_mul(acceleration, math_square(TIMER_STEP) / 2.0F);
-	Vector const positionChange =
-		vector_add(velocityEffect, accelerationEffect);
-	bullet->position = vector_add(bullet->position, positionChange);
-	Vector const velocityChange = vector_mul(acceleration, TIMER_STEP);
-	bullet->velocity = vector_add(bullet->velocity, velocityChange);
-}
 static inline bool check_bullet_contact(volatile Bullet *const bullet) {
 	size_t const index = floorf(bullet->position.x);
 	return game_instance.map.ground[index] >=
@@ -138,7 +127,7 @@ static inline void apply_bullet_damage(volatile Bullet *const bullet) {
 		}
 		float const distanceSquared = vector_square(
 			vector_sub(tank->position, bullet->position));
-		tank->health -= bullet->power * GAME_BULLET_DAMAGE_MULTIPLIER /
+		tank->health -= bullet->power * BULLET_DAMAGE_MULTIPLIER /
 				distanceSquared;
 		tank->alive = tank->health > 0.0F;
 	}
@@ -152,7 +141,7 @@ static inline void update_waiting_bullets(void) {
 	size_t i;
 	for (i = 0; i < game_instance.bullets.size; i++) {
 		volatile Bullet *const bullet = &game_instance.bullets.array[i];
-		simulate_bullet(bullet);
+		bullet_move(bullet);
 		if (check_bullet_contact(bullet)) {
 			explode_bullet(bullet);
 			apply_bullet_damage(bullet);
@@ -236,12 +225,12 @@ static inline void shoot(void) {
 		&game_instance.bullets.array[game_instance.bullets.size++];
 	bullet->position = tank->position;
 	float const angle = tank->tilt + barrel->angle;
-	bullet->radius = barrel->power * GAME_BULLET_RADIUS_MULTIPLIER;
-	bullet->power = barrel->power * GAME_BULLET_POWER_MULTIPLIER;
+	bullet->radius = barrel->power * BULLET_RADIUS_MULTIPLIER;
+	bullet->power = barrel->power * BULLET_POWER_MULTIPLIER;
 	bullet->velocity.x =
-		cosf(angle) * barrel->power * GAME_BULLET_SPEED_MULTIPLIER;
+		cosf(angle) * barrel->power * BULLET_SPEED_MULTIPLIER;
 	bullet->velocity.y =
-		-sinf(angle) * barrel->power * GAME_BULLET_SPEED_MULTIPLIER;
+		-sinf(angle) * barrel->power * BULLET_SPEED_MULTIPLIER;
 	game_instance.waitingBullets = true;
 }
 static inline void game_update() {
