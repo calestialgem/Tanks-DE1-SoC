@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "Barrel.h"
 #include "Bullet.h"
 #include "MathTools.h"
 #include "Timer.h"
@@ -13,11 +14,6 @@
 #define GAME_WIDTH 320
 #define GAME_HEIGHT 240
 
-#define GAME_BARREL_SPEED (0.1F * TIMER_STEP)
-#define GAME_BARREL_INITIAL_ANGLE MATH_PI_4
-#define GAME_BARREL_LOWER_ANGLE (MATH_PI * 5.0F / 180.0F)
-#define GAME_BARREL_UPPER_ANGLE (MATH_PI_2 - GAME_BARREL_LOWER_ANGLE)
-
 #define GAME_TANK_CAPACITY 4
 #define GAME_TANK_INITIAL_HEALTH 100
 #define GAME_TANK_INITIAL_FUEL 250
@@ -28,13 +24,6 @@
 #define GAME_MAP_LEFT_BORDER 5
 #define GAME_MAP_RIGHT_BORDER (GAME_WIDTH - GAME_MAP_LEFT_BORDER)
 
-/** Weapon on top of a tank. */
-typedef struct {
-	/** The counter-clockwise angle with respect to the tank in rad. */
-	float angle;
-	/** The amount bullets are shot forward percent. */
-	uint8_t power;
-} Barrel;
 /** Characters controlled by players. */
 typedef struct {
 	/** Position of the middle horizontally and down vertically in m. */

@@ -75,10 +75,10 @@ static inline void reset_tanks() {
 		tank->position.x = math_random(
 			GAME_MAP_LEFT_BORDER, GAME_MAP_RIGHT_BORDER);
 		update_tank(tank);
-		tank->gun.angle = GAME_BARREL_INITIAL_ANGLE;
 		tank->health = GAME_TANK_INITIAL_HEALTH;
 		tank->alive = true;
 		tank->fuel = GAME_TANK_INITIAL_FUEL;
+		barrel_init(&tank->gun, tank->health);
 	}
 }
 void game_restart() {
@@ -153,7 +153,7 @@ static inline void update_waiting_bullets(void) {
 	game_instance.waitingBullets = game_instance.bullets.size;
 }
 static inline void update_tank_movement(void) {
-	uint32_t movement = 0;
+	int32_t movement = 0;
 	if (keyboard_tank_left()) {
 		movement--;
 	}
@@ -177,7 +177,7 @@ static inline void update_tank_movement(void) {
 	update_tank(tank);
 }
 static inline void update_barrel_rotation(void) {
-	uint32_t rotation = 0;
+	int32_t rotation = 0;
 	if (keyboard_barrel_left()) {
 		rotation++;
 	}
@@ -187,17 +187,11 @@ static inline void update_barrel_rotation(void) {
 	if (!rotation) {
 		return;
 	}
-	volatile Barrel *const barrel =
-		&game_instance.tanks.array[game_instance.turn].gun;
-	barrel->angle += rotation * GAME_BARREL_SPEED;
-	if (barrel->angle < GAME_BARREL_LOWER_ANGLE) {
-		barrel->angle = GAME_BARREL_LOWER_ANGLE;
-	} else if (barrel->angle > GAME_BARREL_UPPER_ANGLE) {
-		barrel->angle = GAME_BARREL_UPPER_ANGLE;
-	}
+	barrel_rotate(
+		&game_instance.tanks.array[game_instance.turn].gun, rotation);
 }
 static inline void update_power_change(void) {
-	uint32_t change = 0;
+	int32_t change = 0;
 	if (keyboard_barrel_left()) {
 		change++;
 	}
@@ -209,13 +203,7 @@ static inline void update_power_change(void) {
 	}
 	volatile Tank *const tank =
 		&game_instance.tanks.array[game_instance.turn];
-	volatile Barrel *const barrel = &tank->gun;
-	barrel->power += change;
-	if (barrel->power < 1) {
-		barrel->power = 1;
-	} else if (barrel->power > tank->health) {
-		barrel->power = tank->health;
-	}
+	barrel_change_power(&tank->gun, change, tank->health);
 }
 static inline void shoot(void) {
 	volatile Tank *const tank =
