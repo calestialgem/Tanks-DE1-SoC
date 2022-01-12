@@ -3,6 +3,7 @@
 
 #include "Maths.h"
 #include "Timer.h"
+#include "Vector.h"
 
 #include <stdbool.h>
 #include <stdint.h>
