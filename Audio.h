@@ -24,7 +24,7 @@ volatile int buffer_index = 0;
 
 
 /* Clears the audio write register */
-void audio_config(void);
+void config_audio(void);
 
 /* Defines which sound to be played by assigning the array. 
 Enables the interrupt bit in the audio register.
