@@ -3,10 +3,10 @@
 #include "Audio.h"
 #include "Timer.h"
 
-#define SPEED (0.1F * TIMER_STEP)
+#define SPEED (0.2F * TIMER_STEP)
 #define INITIAL_ANGLE MATH_PI_4
 #define LOWER_ANGLE 0.0F
-#define UPPER_ANGLE (MATH_PI_2 - LOWER_ANGLE)
+#define UPPER_ANGLE (MATH_PI - LOWER_ANGLE)
 #define MIN_POWER 1
 
 void barrel_init(volatile Barrel *const barrel, uint8_t const power) {
