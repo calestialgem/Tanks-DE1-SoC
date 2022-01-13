@@ -9,6 +9,10 @@
 #define KEYBOARD_KEY_POWER_UP 0x1D     // W
 #define KEYBOARD_KEY_POWER_DOWN 0x1B   // S
 #define KEYBOARD_KEY_SHOOT 0x29	       // SPACE
+#define KEYBOARD_KEY_PARACHUTE 0x4D    // P
+#define KEYBOARD_KEY_REPAIR 0x2D       // R
+#define KEYBOARD_KEY_TELEPORT 0x2C     // T
+#define KEYBOARD_KEY_SHIELD 0x2B       // F
 #define KEYBOARD_BREAK_CODE 0xF0
 
 /** Holds the key data. */
