@@ -11,6 +11,8 @@ void audio_config(void){
 
 void audio_play(int input_buf_size, int* input_array){
     volatile int *audio_ptr = (int *) 0xFF203040;
+    if(input_buf_size != AUDIO_BUF_SIZE)
+        buffer_index = 0;
     AUDIO_BUF_SIZE = input_buf_size;
     audio_data = input_array;
     *audio_ptr = *audio_ptr | 0b10;
