@@ -1327,17 +1327,13 @@ void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
 }
 
 void graphics_render() {
-	// Delete later
-	int power = 100;
-	int angle = 117;
 	int x, y;
 
 	// Paint the ground & the background
 	for (y = 0; y < MAP_HEIGHT; y++) {
 		for (x = 0; x < MAP_WIDTH; x++) {
-
-			if (y >= 160) // Paint the ground. >=
-				      // drawn_copy.map.ground[x]
+			// Paint the ground.
+			if (y >= drawn_copy.map.ground[x])
 				pixel_map[y][x] = Color_map_ground;
 			else if (y > Pixel_gui_border) // Paint the background.
 						       // Alternatively take
