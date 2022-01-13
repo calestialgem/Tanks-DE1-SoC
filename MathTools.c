@@ -30,11 +30,11 @@ float math_square(float const number) {
 size_t math_random_index(size_t const size) {
 	return rand() % size;
 }
-float math_power(float const base, int const exponent) {
+float math_pow(float const base, int const exponent) {
 	if (exponent == 1) {
 		return base;
 	}
-	return base * math_power(base, exponent - 1);
+	return base * math_pow(base, exponent - 1);
 }
 float math_floor(float const number) {
 	return (int32_t)number;
