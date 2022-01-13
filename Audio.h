@@ -35,7 +35,8 @@ void audio_play(int input_buf_size, int* input_array);
 Should be put into the "Is key released?" check. */
 void audio_stop(void);
 
-/* Takes which sound to be played from "audio_play" and plays it until the whole sound is completed.*/
+/* Takes which sound to be played from "audio_play" and plays it until the whole sound is completed.
+Disables the interrupt bit in the audio register once the whole sound is played. */
 void audio_ISR (void);
 
 #endif // AUDIO_H
