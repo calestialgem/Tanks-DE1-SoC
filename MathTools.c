@@ -1,5 +1,7 @@
 #include "MathTools.h"
 
+#include "SinusData.h"
+
 #include <stdint.h>
 #include <time.h>
 
@@ -52,17 +54,13 @@ static inline float bounds(float const angle) {
 	int32_t const wholePart = math_floor(angle);
 	return (wholePart % 360 + 360) % 360 + angle - wholePart;
 }
-float math_sin(float angle) {
-	angle = bounds(angle);
-	float const angle_2 = angle * angle;
-	float const angle_3 = angle_2 * angle;
-	float const angle_5 = angle_3 * angle_2;
-	return angle - angle_3 / 6.0F + angle_5 / 120.0F;
+float math_sin(float const angle) {
+	return sines[((int32_t)(angle * SINES_COUNT / MATH_2PI) % SINES_COUNT +
+			     SINES_COUNT) %
+		     SINES_COUNT];
 }
-float math_cos(float angle) {
-	angle = bounds(angle);
-	float const angle_2 = angle * angle;
-	return 1.0F - angle_2 / 2.0F + angle_2 * angle_2 / 24.0F;
+float math_cos(float const angle) {
+	return math_sin(MATH_PI_2 - angle);
 }
 float math_atan(float const tan) {
 	float const tan_2 = tan * tan;
