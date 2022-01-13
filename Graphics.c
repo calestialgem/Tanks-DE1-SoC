@@ -2,12 +2,31 @@
 #include "Game.h"
 #include <math.h>
 
+
 //Macros
-#define digit(N)  (N == 0) ?  1  : (log10(N) + 1);
 #define min(A, B) (((A) < (B)) ? (A) : (B))
 #define max(A, B) (((A) > (B)) ? (A) : (B))
 
+int fpow(int x, int y){
+	int i,res=1;
+	for(i=0;i<y;i++)
+	res=res*x;
+	return res;
+}
 
+int flog(int x){
+ int log=0;
+ while(x>=10){
+	 x/=10;
+	 log+=1;
+ }
+return log;
+}
+
+int digit(int N){
+	if(N!=0)
+	return flog(N)+1;
+}
 //Colors
 // Tank Colors: Red, Green, Blue, Purple, Yellow
 static short Color_tank[GRAPHICS_TANK_COLOR_COUNT] = {0xC000, 0x0260, 0x11B4, 0x8010, 0xFEA0};
@@ -139,8 +158,9 @@ short pixel_map[MAP_HEIGHT][MAP_WIDTH];
 
 
 void graphics_draw_line(short originy, short originx, short finaly, short finalx, short Color){ //Input start and end points.
-  for (int y=min(originy,finaly); y<=max(originy,finaly); y++){
-		for (int x=min(originx,finalx); x<=max(originx,finalx); x++){
+  int x,y;
+  for (y=min(originy,finaly); y<=max(originy,finaly); y++){
+		for (x=min(originx,finalx); x<=max(originx,finalx); x++){
       if(y-originy-(finaly-originy)*(x-originx)/(finalx-originx)==0)
         pixel_map[y][x]=Color;
 		}
@@ -150,8 +170,9 @@ void graphics_draw_line(short originy, short originx, short finaly, short finalx
 
 
 void graphics_draw_rectangle(short originy, short originx, short finaly, short finalx, short Color){ //Input corner points
-  for (int y=min(originy,finaly); y<=max(originy,finaly); y++){
-		for (int x=min(originx,finalx); x<=max(originx,finalx); x++){
+  int x,y;
+  for (y=min(originy,finaly); y<=max(originy,finaly); y++){
+		for (x=min(originx,finalx); x<=max(originx,finalx); x++){
       pixel_map[y][x]=Color;
 		}
   }
@@ -160,18 +181,19 @@ void graphics_draw_rectangle(short originy, short originx, short finaly, short f
 
 
 void graphics_draw_sprite(short originy, short originx, uint8_t pixel_count, uint8_t pixel_set[2][pixel_count], short Color){
-for(int i=0;i<pixel_count;i++)
+int i;
+for(i=0;i<pixel_count;i++)
 pixel_map[ originy+pixel_set[0][i] ] [ originx+pixel_set[1][i] ]= Color;
 }
 
 
 
 void graphics_draw_numbers(short originy, short originx, int number, short Color_background){ //Input origin of number. (Number is 1-3 digits long)
-
+	int i;
 	graphics_draw_rectangle(originy,originx,originy+4,originx+10,Color_gui_background);
   int d=digit(number);
-  for(int i=0;i<d ;i++){
-    switch(  number/(int)pow(10,d-1-i)   ){	//Number/100 gives the biggest digit for 3 digits. Cast pow result whic is double to int.
+  for(i=0;i<d ;i++){
+    switch(  number/fpow(10,d-1-i)   ){	//Number/100 gives the biggest digit for 3 digits. Cast pow result whic is double to int.
       case 0:
         graphics_draw_sprite(originy, originx+4*i,12,sprite_num_0_black, Color_gui_black);
         graphics_draw_sprite(originy, originx+4*i,3,sprite_num_0_white, Color_background);
@@ -213,7 +235,7 @@ void graphics_draw_numbers(short originy, short originx, int number, short Color
         graphics_draw_sprite(originy, originx+4*i,3,sprite_num_9_white, Color_background);
       break;
     }
-    number=number%(int)pow(10,d-1-i);
+    number=number%fpow(10,d-1-i);
   }
 
 }
@@ -335,11 +357,11 @@ void graphics_render() {
   //Delete later
   int power=100;
   int angle=117;
-
+  int x,y;
 
   //Paint the ground & the background
-  for (int y=0; y < MAP_HEIGHT; y++) {
-    for (int x=0; x < MAP_WIDTH; x++) {
+  for (y=0; y < MAP_HEIGHT; y++) {
+    for (x=0; x < MAP_WIDTH; x++) {
 
       if (y >= 160) // Paint the ground. >= drawn_copy.map.ground[x]
         pixel_map[y][x] = Color_map_ground;
@@ -367,7 +389,7 @@ void graphics_render() {
 
 
 	int pixel_buf_ptr = *(int *) 0xFF203020; //PIXEL_BUF_CTRL_BASE
-	int pixel_ptr, x, y;
+	int pixel_ptr;
 
 	//Display
 	for (y = 0; y < MAP_HEIGHT; y++)

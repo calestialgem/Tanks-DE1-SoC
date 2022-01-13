@@ -1,5 +1,6 @@
 #include "Interrupt.h"
 
+#include "Audio.h"
 #include "Error.h"
 #include "Timer.h"
 
@@ -17,42 +18,25 @@ static inline void set_stack(void) {
 	mode = 0b11010011;
 	asm("msr cpsr, %[ps]" : : [ps] "r"(mode));
 }
-void config_interrupt(int N) {
-	int reg_offset, index, value, address;
-	/* Configure the Interrupt Set-Enable Registers (ICDISERn).
-	 * reg_offset = (integer_div(N / 32) * 4
-	 * value = 1 << (N mod 32) */
-	reg_offset = (N >> 3) & 0xFFFFFFFC;
-	index = N & 0x1F;
-	value = 0x1 << index;
-	address = 0xFFFED100 + reg_offset;
-	/* Now that we know the register address and value, set the appropriate
-	 * bit */
-	*(int *)address |= value;
-	/* Configure the Interrupt Processor Targets Register (ICDIPTRn)
-	 * reg_offset = integer_div(N / 4) * 4
-	 * index = N mod 4 */
-	reg_offset = (N & 0xFFFFFFFC);
-	index = N & 0x3;
-	address = 0xFFFED800 + reg_offset + index;
-#define CPU_target ((char)1)
-	/* Now that we know the register address and value, write to (only) the
-	 * appropriate byte */
-	*(char *)address = CPU_target;
-}
 void interrupt_config(void) {
 	interrupt_disable();
 	set_stack();
-	config_interrupt(TIMER_INTERRUPT_ID);
+	// configure the FPGA interval timer and Audio
+	*((int *)0xFFFED848) = 0x00000001;
+	*((int *)0xFFFED84C) = 0x00010000;
+	*((int *)0xFFFED108) = 0x00004100;
+	// configure the FPGA timer and Audio Timer Priorities
+	*((int *)0xFFFED448) = 0x00000001;
+	*((int *)0xFFFED44C) = 0x00000000;
 	// Set Interrupt Priority Mask Register (ICCPMR). Enable interrupts of
 	// all priorities
 	*((int *)0xFFFEC104) = 0xFFFF;
 	// Set CPU Interface Control Register (ICCICR). Enable signaling of
 	// interrupts
-	*((int *)0xFFFEC100) = 1;
+	*((int *)0xFFFEC100) = 1; // enable = 1
 	// Configure the Distributor Control Register (ICDDCR) to send pending
 	// interrupts to CPUs
-	*((int *)0xFFFED000) = 1;
+	*((int *)0xFFFED000) = 1; // enable = 1
 }
 void interrupt_disable(void) {
 	int status = 0b11010011;
@@ -69,6 +53,9 @@ void __attribute__((interrupt)) __cs3_isr_irq(void) {
 	switch (interrupt_ID) {
 	case TIMER_INTERRUPT_ID:
 		timer_interrupt();
+		break;
+	case AUDIO_INTERRUPT_ID:
+		audio_ISR();
 		break;
 	default:
 		error_show(ERROR_INTERRUPT_DEVICE_ID);

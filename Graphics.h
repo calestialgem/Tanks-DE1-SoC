@@ -6,6 +6,10 @@
 #define Pixel_gui_border 35
 
 // Configuration and main render file.
+
+int fpow(int x, int y);
+int flog(int x);
+int digit(int N);
 void graphics_initialize(void);
 void graphics_render(void);
 void graphics_draw_line(short originy, short originx, short finaly, short finalx, short Color);

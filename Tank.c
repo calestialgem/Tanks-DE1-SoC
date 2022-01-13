@@ -1,5 +1,6 @@
 #include "Tank.h"
 
+#include "Audio.h"
 #include "Error.h"
 #include "Game.h"
 #include "Map.h"
@@ -54,6 +55,7 @@ void tank_move(volatile Tank *const tank, int8_t const movement) {
 	if (!movement || tank->fuel <= 0.0F) {
 		return;
 	}
+	audio_play_tank_movement();
 	float const position = tank->position.x + movement * TANK_SPEED;
 	if (position < MAP_LEFT_BORDER) {
 		tank_place(tank, MAP_LEFT_BORDER);

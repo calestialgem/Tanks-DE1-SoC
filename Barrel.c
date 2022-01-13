@@ -1,5 +1,6 @@
 #include "Barrel.h"
 
+#include "Audio.h"
 #include "Timer.h"
 
 #define SPEED (0.1F * TIMER_STEP)
@@ -16,6 +17,7 @@ void barrel_rotate(volatile Barrel *const barrel, int8_t const rotation) {
 	if (!rotation) {
 		return;
 	}
+	audio_play_barrel_movement();
 	barrel->angle += rotation * SPEED;
 	if (barrel->angle < LOWER_ANGLE) {
 		barrel->angle = LOWER_ANGLE;

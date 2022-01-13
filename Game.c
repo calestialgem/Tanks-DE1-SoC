@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "Audio.h"
 #include "Error.h"
 #include "Graphics.h"
 #include "Keyboard.h"
@@ -65,6 +66,9 @@ static inline void apply_bullet_damage(volatile Bullet *const bullet) {
 		tank->health -= bullet->power * BULLET_DAMAGE_MULTIPLIER /
 				distanceSquared;
 		tank->alive = tank->health > 0.0F;
+		if (!tank->alive) {
+			audio_play_tank_death();
+		}
 	}
 }
 static inline void next_turn(void) {
@@ -78,6 +82,7 @@ static inline void update_waiting_bullets(void) {
 		volatile Bullet *const bullet = &game_instance.bullets.array[i];
 		bullet_move(bullet);
 		if (check_bullet_contact(bullet)) {
+			audio_play_explosion();
 			explode_bullet(bullet);
 			apply_bullet_damage(bullet);
 			*bullet = game_instance.bullets
@@ -106,6 +111,7 @@ static inline void shoot(void) {
 	bullet->velocity.y =
 		-sinf(angle) * barrel->power * BULLET_SPEED_MULTIPLIER;
 	game_instance.waitingBullets = true;
+	audio_play_shooting();
 }
 static inline void game_update(void) {
 	if (game_instance.waitingBullets) {
