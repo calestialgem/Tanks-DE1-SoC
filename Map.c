@@ -10,23 +10,24 @@ void map_generate(void) {
 	float const valleyHeight = math_random(0.75F, 0.85F);
 	float const minHeight = peakHeight - 0.1F;
 	float const maxHeight = valleyHeight + 0.05F;
-	float const noise = 0.05F;
-	float const noiseStart = 1.0F - noise;
-	float const noiseEnd = 1.0F + noise;
+	float const sinHalf = (peakHeight + valleyHeight) / 2.0F;
+	float const lineStart = math_random(peakHeight, valleyHeight) / sinHalf;
+	float const lineEnd = math_random(peakHeight, valleyHeight) / sinHalf;
+	float const slope = (lineEnd - lineStart) / MAP_WIDTH;
 	size_t x;
 	for (x = 0; x < MAP_WIDTH; x++) {
 		float const angle =
 			math_linearly_map(x, 0.0F, MAP_WIDTH, 0.0F, MATH_2PI);
-		float const normalized =
+		float const sin =
 			math_linearly_map(math_sin(angle * peakCount + start),
 				-1.0F,
 				1.0F,
 				peakHeight,
 				valleyHeight);
-		float const noisy =
-			normalized * math_random(noiseStart, noiseEnd);
+		float const line = lineStart + x * slope;
 		game_instance.map.ground[x] =
-			math_clamp(noisy, minHeight, maxHeight) * MAP_HEIGHT;
+			math_clamp(sin * line, minHeight, maxHeight) *
+			MAP_HEIGHT;
 	}
 }
 static inline float slope(size_t const firstIndex, size_t const secondIndex) {
