@@ -1,6 +1,7 @@
 #ifndef MATH_TOOLS_H
 #define MATH_TOOLS_H
 
+#include <stdint.h>
 #include <stdlib.h>
 
 #define MATH_PI 3.1415927F

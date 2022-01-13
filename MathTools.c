@@ -1,7 +1,6 @@
 #include "MathTools.h"
 
 #include <stdint.h>
-#include <time.h>
 
 #define MAX_RANDOM 32768
 
