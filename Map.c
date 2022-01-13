@@ -8,8 +8,9 @@ void map_generate(void) {
 	float const start = math_random(0.0F, MATH_2PI);
 	float const peakHeight = math_random(0.5F, 0.67F);
 	float const valleyHeight = math_random(0.75F, 0.85F);
-	float const minHeight = peakHeight - 0.1F;
-	float const maxHeight = valleyHeight + 0.05F;
+	/* GUI at 0.15F. Give at least 0.20F playing space. */
+	float const minHeight = 0.35F;
+	float const maxHeight = 0.95F;
 	float const sinHalf = (peakHeight + valleyHeight) / 2.0F;
 	float const lineStart = math_random(peakHeight, valleyHeight) / sinHalf;
 	float const lineEnd = math_random(peakHeight, valleyHeight) / sinHalf;
