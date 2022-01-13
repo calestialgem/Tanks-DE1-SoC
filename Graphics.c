@@ -1493,11 +1493,11 @@ void graphics_render() {
 				Color_tank_grey);
 			break;
 		}
-		graphics_draw_line(originY,
-			originX,
-			originY - math_sin(barrelAngle) * 6,
-			originX + math_cos(barrelAngle) * 6,
-			Color_barrel);
+		// graphics_draw_line(originY,
+		// 	originX,
+		// 	originY - math_sin(barrelAngle) * 6,
+		// 	originX + math_cos(barrelAngle) * 6,
+		// 	Color_barrel);
 	}
 
 	int pixel_buf_ptr = *(int *)0xFF203020; // PIXEL_BUF_CTRL_BASE
