@@ -1326,17 +1326,24 @@ void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
 
 void graphics_render() {
 	int x, y;
+	volatile int *led_ptr= (int*) 0XFF200000;
+for(x=0;x<MAP_WIDTH;x++){
+if(drawn_copy.map.ground[100]<1)
+				*led_ptr=(int) 0b11111111;
+}
 
 	// Paint the ground & the background
 	for (y = 0; y < MAP_HEIGHT; y++) {
 		for (x = 0; x < MAP_WIDTH; x++) {
 			// Paint the ground.
-			if (y >= drawn_copy.map.ground[x])
-				pixel_map[y][x] = Color_map_ground;
-			else if (y > Pixel_gui_border) // Paint the background.
-						       // Alternatively take
-						       // this from picture.
-				pixel_map[y][x] = Color_map_background;
+			if (y > Pixel_gui_border){
+				if (y >= drawn_copy.map.ground[x])
+					pixel_map[y][x] = Color_map_ground;
+				else // Paint the background.
+								// Alternatively take
+								// this from picture.
+					pixel_map[y][x] = Color_map_background;
+			}
 		}
 	}
 	volatile Tank *const tank = &drawn_copy.tanks.array[drawn_copy.turn];
