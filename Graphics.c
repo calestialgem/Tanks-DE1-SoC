@@ -1381,8 +1381,8 @@ void graphics_render() {
 		int tilt = (drawnTank->tilt) * 8 / MATH_PI;
 		int originX = drawnTank->position.x;
 		int originY = drawnTank->position.y;
-		int barrelAngle =
-			(drawnTank->tilt + drawnTank->gun.angle) * 8 / MATH_PI;
+		// int barrelAngle =
+		// 	(drawnTank->tilt + drawnTank->gun.angle) * 8 / MATH_PI;
 		switch (tilt) {
 		case 0:
 			graphics_draw_sprite(originY - 3,
