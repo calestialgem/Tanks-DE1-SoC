@@ -3,8 +3,6 @@
 #include "Game.h"
 #include "MathTools.h"
 
-#include <math.h>
-
 void map_generate(void) {
 	float const peakCount = math_random(0.75F, 1.5F);
 	float const start = math_random(0.0F, MATH_2PI);
@@ -15,7 +13,7 @@ void map_generate(void) {
 		float const angle =
 			math_linearly_map(x, 0.0F, MAP_WIDTH, 0.0F, MATH_2PI);
 		game_instance.map.ground[x] =
-			math_linearly_map(sinf(angle * peakCount + start),
+			math_linearly_map(math_sin(angle * peakCount + start),
 				-1.0F,
 				1.0F,
 				peakHeight,
@@ -35,5 +33,6 @@ float map_slope(size_t const index) {
 	}
 	float const leftSlope = slope(index - 1, index);
 	float const rightSlope = slope(index, index + 1);
-	return fabsf(leftSlope) < fabsf(rightSlope) ? leftSlope : rightSlope;
+	return math_abs(leftSlope) < math_abs(rightSlope) ? leftSlope
+							  : rightSlope;
 }

@@ -5,8 +5,6 @@
 #include "Graphics.h"
 #include "Keyboard.h"
 
-#include <math.h>
-
 volatile Game game_instance;
 
 static inline void reset_tanks(void) {
@@ -30,13 +28,14 @@ void game_restart(void) {
 	reset_tanks();
 }
 static inline bool check_bullet_contact(volatile Bullet *const bullet) {
-	size_t const index = floorf(bullet->position.x);
+	size_t const index = math_floor(bullet->position.x);
 	return game_instance.map.ground[index] >=
 	       bullet->position.y + bullet->radius;
 }
 static inline void explode_bullet(volatile Bullet *const bullet) {
-	size_t const leftReach = floorf(bullet->position.x - bullet->power);
-	size_t const rightReach = floorf(bullet->position.x + bullet->power);
+	size_t const leftReach = math_floor(bullet->position.x - bullet->power);
+	size_t const rightReach =
+		math_floor(bullet->position.x + bullet->power);
 	size_t const leftEdge = leftReach < 0 ? 0 : leftReach;
 	size_t const rightEdge =
 		rightReach >= MAP_WIDTH ? MAP_WIDTH - 1 : rightReach;
@@ -47,7 +46,7 @@ static inline void explode_bullet(volatile Bullet *const bullet) {
 			math_square(bullet->power) -
 			math_square(bullet->position.x - position);
 		float const destruction =
-			2 * sqrtf(potential < 0.0F ? 0.0F : potential);
+			2 * math_sqrt(potential < 0.0F ? 0.0F : potential);
 		game_instance.map.ground[i] += destruction;
 		if (game_instance.map.ground[i] >= MAP_HEIGHT) {
 			game_instance.map.ground[i] = MAP_HEIGHT - 1;
@@ -107,9 +106,9 @@ static inline void shoot(void) {
 	bullet->radius = barrel->power * BULLET_RADIUS_MULTIPLIER;
 	bullet->power = barrel->power * BULLET_POWER_MULTIPLIER;
 	bullet->velocity.x =
-		cosf(angle) * barrel->power * BULLET_SPEED_MULTIPLIER;
+		math_cos(angle) * barrel->power * BULLET_SPEED_MULTIPLIER;
 	bullet->velocity.y =
-		-sinf(angle) * barrel->power * BULLET_SPEED_MULTIPLIER;
+		-math_sin(angle) * barrel->power * BULLET_SPEED_MULTIPLIER;
 	game_instance.waitingBullets = true;
 	audio_play_shooting();
 }

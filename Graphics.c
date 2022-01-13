@@ -2,8 +2,6 @@
 
 #include "Game.h"
 
-#include <math.h>
-
 // Macros
 #define min(A, B) (((A) < (B)) ? (A) : (B))
 #define max(A, B) (((A) > (B)) ? (A) : (B))

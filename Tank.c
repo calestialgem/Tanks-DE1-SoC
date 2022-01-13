@@ -5,8 +5,6 @@
 #include "Game.h"
 #include "Map.h"
 
-#include <math.h>
-
 #define TANK_INITIAL_HEALTH 100
 #define TANK_INITIAL_FUEL 250
 #define TANK_FUEL_CONSUMPTION (2.5F * TIMER_STEP)
@@ -32,14 +30,14 @@ void tank_remove(size_t const index) {
 }
 void tank_place(volatile Tank *const tank, float const position) {
 	tank->fuel -=
-		fabsf(tank->position.x - position) * TANK_FUEL_CONSUMPTION;
+		math_abs(tank->position.x - position) * TANK_FUEL_CONSUMPTION;
 	if (tank->fuel < 0.0F) {
 		tank->fuel = 0.0F;
 	}
 	tank->position.x = position;
-	size_t const index = floorf(tank->position.x);
+	size_t const index = math_floor(tank->position.x);
 	tank->position.y = game_instance.map.ground[index];
-	tank->tilt = atanf(map_slope(index));
+	tank->tilt = math_atan(map_slope(index));
 }
 void tank_move(volatile Tank *const tank, int8_t const movement) {
 	if (!movement || tank->fuel <= 0.0F) {

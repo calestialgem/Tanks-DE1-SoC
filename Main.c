@@ -5,12 +5,9 @@
 #include "Keyboard.h"
 #include "Timer.h"
 
-#include <math.h>
-
 /** Configures all the subsystems at the start. */
 static void config_all(void) {
 	error_config();
-	audio_config();
 	keyboard_config();
 	timer_config();
 	graphics_initialize();
