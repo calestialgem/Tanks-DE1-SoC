@@ -69,11 +69,6 @@ static inline void apply_bullet_damage(volatile Bullet *const bullet) {
 		}
 	}
 }
-static inline void next_turn(void) {
-	if (++game_instance.turn >= game_instance.tanks.size) {
-		game_instance.turn = 0;
-	}
-}
 static inline void update_waiting_bullets(void) {
 	size_t i;
 	for (i = 0; i < game_instance.bullets.size; i++) {
@@ -110,6 +105,9 @@ static inline void shoot(void) {
 		-math_sin(angle) * barrel->power * BULLET_SPEED_MULTIPLIER;
 	game_instance.waitingBullets = true;
 	audio_play_shooting();
+	if (++game_instance.turn >= game_instance.tanks.size) {
+		game_instance.turn = 0;
+	}
 }
 void game_update(void) {
 	if (game_instance.waitingBullets) {
