@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <time.h>
 
+#define MAX_RANDOM 32768
+
 /** Takes the given number that is currently in a range, and normalizes it. Then
  * maps it to the target range linearly. */
 float math_linearly_map(float const number,
@@ -14,13 +16,16 @@ float math_linearly_map(float const number,
 		       (targetMax - targetMin) +
 	       targetMin;
 }
+/* https://stackoverflow.com/questions/4768180/rand-implementation */
+int32_t math_raw_random() {
+	uint32_t next = 1;
+	next = next * 1103515245 + 12345;
+	return (next / 65536) % MAX_RANDOM;
+}
 /** Returns a random number in the given range. */
 float math_random(float const min, float const max) {
-	return math_linearly_map(rand(), 0, (float)RAND_MAX, min, max);
-}
-/** Reseeds the random number generator with the current time. */
-void math_reseed(void) {
-	srand(time(NULL));
+	return math_linearly_map(
+		math_raw_random(), 0, (float)MAX_RANDOM, min, max);
 }
 /** Returns the square of the given number. */
 float math_square(float const number) {
@@ -28,7 +33,7 @@ float math_square(float const number) {
 }
 /** Returns a random index. */
 size_t math_random_index(size_t const size) {
-	return rand() % size;
+	return math_raw_random() % size;
 }
 float math_pow(float const base, int const exponent) {
 	if (exponent == 1) {

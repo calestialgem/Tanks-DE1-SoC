@@ -15,10 +15,10 @@ float math_linearly_map(float const number,
 	float const currentMax,
 	float const targetMin,
 	float const targetMax);
+/** Returns a raw random from the generator. */
+int32_t math_raw_random(void);
 /** Returns a random number in the given range. */
 float math_random(float const min, float const max);
-/** Reseeds the random number generator with the current time. */
-void math_reseed(void);
 /** Returns the square of the given number. */
 float math_square(float const number);
 /** Returns a random index. */

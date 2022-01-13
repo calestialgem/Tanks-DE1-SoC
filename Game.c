@@ -22,7 +22,6 @@ void game_restart(void) {
 	}
 	game_instance.playing = true;
 	game_instance.turn = 0;
-	math_reseed();
 	map_generate();
 	game_instance.bullets.size = 0;
 	reset_tanks();
