@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 
-void config_audio(void){
+void audio_clear(void){
     volatile int *audio_ptr = (int *) 0xFF203040;
     *audio_ptr |= 0b1000;
     *audio_ptr &= ~0b1111;

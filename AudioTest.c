@@ -5,7 +5,7 @@ static volatile int buffer_index = 0;
 static void set_A9_IRQ_stack (void);
 static void config_GIC (void);
 static void config_interval_timer (void);
-static void config_audio (void);
+static void audio_clear (void);
 static void enable_A9_interrupts (void);
 static void play_audio(int input_buf_size, int* input_array);
 
@@ -14,7 +14,7 @@ static int main(void) {
 	set_A9_IRQ_stack (); // initialize the stack pointer for IRQ mode
 	config_GIC (); // configure the general interrupt controller
 	config_interval_timer (); // configure Altera interval timer to generate interrupt
-    config_audio();
+    audio_clear();
 	enable_A9_interrupts (); // enable interrupts in the A9 processor
 	volatile int *lcd_ptr = (int *) 0xFF200020;
 	volatile int *switch_ptr = (int *) 0xff200040;
@@ -86,7 +86,7 @@ static void config_interval_timer(){
 	*(interval_timer_ptr + 1) = 0x7; // STOP = 0, START = 1, CONT = 1, ITO = 1
 }
 
-static void config_audio(){
+static void audio_clear(){
     volatile int *audio_ptr = (int *) 0xFF203040;
 
     *audio_ptr |= 0b1000;
