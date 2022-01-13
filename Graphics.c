@@ -643,7 +643,7 @@ void graphics_draw_numbers(short originy,
 
 void graphics_draw_power(int power) {
 	graphics_draw_rectangle(
-		4, 72, 23, 83, Color_gui_background); // Reset its background to
+		4, 72, 24, 83, Color_gui_background); // Reset its background to
 						      // reset the slider.
 	graphics_draw_rectangle(4, 73, 7, 82, Color_gui_red); // Draw the cone
 	graphics_draw_rectangle(8, 74, 11, 81, Color_gui_red);
@@ -1352,7 +1352,7 @@ void graphics_render() {
 			}
 		}
 	}
-	volatile Tank *const tank = &drawn_copy.tanks.array[drawn_copy.turn];
+	Tank *const tank = &drawn_copy.tanks.array[drawn_copy.turn];
 	// Update the Pixel Map
 	graphics_draw_sprite(7,
 		7,
@@ -1370,11 +1370,135 @@ void graphics_render() {
 		19, 84, tank->gun.power, Color_gui_background); // Power
 	graphics_draw_numbers(10,
 		96,
-		tank->gun.angle * 180 / MATH_PI,
+		(tank->gun.angle) * 180 / MATH_PI,
 		Color_gui_background);				 // Angle
 	graphics_draw_numbers(16, 121, 0, Color_gui_background); // Wind
 	graphics_draw_power(tank->gun.power);			 // Power Bar
 	graphics_draw_angle((tank->gun.angle) * 180 / MATH_PI);	 // Angle Bar
+	size_t index;
+	for (index = 0; index < drawn_copy.tanks.size; index++) {
+		Tank *drawnTank = &drawn_copy.tanks.array[index];
+		int tilt = (drawnTank->tilt) * 8 / MATH_PI;
+		int originX = drawnTank->position.x;
+		int originY = drawnTank->position.y;
+		int barrelAngle =
+			(drawnTank->tilt + drawnTank->gun.angle) * 8 / MATH_PI;
+		switch (tilt) {
+		case 0:
+			graphics_draw_sprite(originY - 3,
+				originX - 3,
+				24,
+				sprite_tank_0_red,
+				Color_tank[drawnTank->color]);
+			graphics_draw_sprite(originY - 3,
+				originX - 3,
+				2,
+				sprite_tank_0_grey,
+				Color_tank_grey);
+			break;
+		case 1:
+			graphics_draw_sprite(originY - 4,
+				originX - 4,
+				25,
+				sprite_tank_22_red,
+				Color_tank[drawnTank->color]);
+			graphics_draw_sprite(originY - 4,
+				originX - 4,
+				2,
+				sprite_tank_22_grey,
+				Color_tank_grey);
+			break;
+		case 2:
+			graphics_draw_sprite(originY - 4,
+				originX - 4,
+				22,
+				sprite_tank_45_red,
+				Color_tank[drawnTank->color]);
+			graphics_draw_sprite(originY - 4,
+				originX - 4,
+				2,
+				sprite_tank_45_grey,
+				Color_tank_grey);
+			break;
+		case 3:
+			graphics_draw_sprite(originY - 4,
+				originX - 4,
+				25,
+				sprite_tank_67_red,
+				Color_tank[drawnTank->color]);
+			graphics_draw_sprite(originY - 4,
+				originX - 4,
+				2,
+				sprite_tank_67_grey,
+				Color_tank_grey);
+			break;
+		case 4:
+			graphics_draw_sprite(originY - 3,
+				originX - 3,
+				24,
+				sprite_tank_90_red,
+				Color_tank[drawnTank->color]);
+			graphics_draw_sprite(originY - 3,
+				originX - 3,
+				2,
+				sprite_tank_90_grey,
+				Color_tank_grey);
+			break;
+		case 12:
+			graphics_draw_sprite(originY - 3,
+				originX,
+				24,
+				sprite_tank_m90_red,
+				Color_tank[drawnTank->color]);
+			graphics_draw_sprite(originY - 3,
+				originX,
+				2,
+				sprite_tank_m90_grey,
+				Color_tank_grey);
+			break;
+		case 13:
+			graphics_draw_sprite(originY - 4,
+				originX,
+				25,
+				sprite_tank_m67_red,
+				Color_tank[drawnTank->color]);
+			graphics_draw_sprite(originY - 4,
+				originX,
+				2,
+				sprite_tank_m67_grey,
+				Color_tank_grey);
+			break;
+		case 14:
+			graphics_draw_sprite(originY - 4,
+				originX - 1,
+				22,
+				sprite_tank_m45_red,
+				Color_tank[drawnTank->color]);
+			graphics_draw_sprite(originY - 4,
+				originX - 1,
+				2,
+				sprite_tank_m45_grey,
+				Color_tank_grey);
+			break;
+		case 15:
+			graphics_draw_sprite(originY - 4,
+				originX - 2,
+				25,
+				sprite_tank_m22_red,
+				Color_tank[drawnTank->color]);
+			graphics_draw_sprite(originY - 4,
+				originX - 2,
+				2,
+				sprite_tank_m22_grey,
+				Color_tank_grey);
+			break;
+		}
+		graphics_draw_line(originY,
+			originX,
+			originY - math_sin(barrelAngle) * 6,
+			originX + math_cos(barrelAngle) * 6,
+			Color_barrel);
+	}
 
 	int pixel_buf_ptr = *(int *)0xFF203020; // PIXEL_BUF_CTRL_BASE
 	int pixel_ptr;

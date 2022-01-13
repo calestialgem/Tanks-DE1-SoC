@@ -2,6 +2,7 @@
 #include "Error.h"
 #include "Game.h"
 #include "Graphics.h"
+#include "Interrupt.h"
 #include "Keyboard.h"
 #include "Timer.h"
 
@@ -10,6 +11,7 @@
 /** Configures all the subsystems at the start. */
 static void config_all(void) {
 	error_config();
+	interrupt_config();
 	keyboard_config();
 	timer_config();
 	graphics_initialize();
@@ -41,6 +43,7 @@ int main() {
 	add_tanks();
 	game_restart();
 	config_all();
+	interrupt_enable();
 	while (true) {
 		graphics_render();
 	}

@@ -4,8 +4,8 @@
 
 #define KEYBOARD_KEY_TANK_LEFT 0x1C    // A
 #define KEYBOARD_KEY_TANK_RIGHT 0x23   // D
-#define KEYBOARD_KEY_BARREL_LEFT 0x24  // E
-#define KEYBOARD_KEY_BARREL_RIGHT 0x15 // Q
+#define KEYBOARD_KEY_BARREL_LEFT 0x15  // Q
+#define KEYBOARD_KEY_BARREL_RIGHT 0x24 // E
 #define KEYBOARD_KEY_POWER_UP 0x1D     // W
 #define KEYBOARD_KEY_POWER_DOWN 0x1B   // S
 #define KEYBOARD_KEY_SHOOT 0x29	       // SPACE
@@ -23,6 +23,7 @@ static struct {
 	bool barrelRight;
 	bool powerUp;
 	bool powerDown;
+	bool shootCommand;
 	bool shoot;
 } keyboard;
 /** The previous byte in the buffer. Says if it is a press or a release. */
@@ -59,7 +60,8 @@ void keyboard_update(void) {
 			keyboard.powerDown = keyState;
 			break;
 		case KEYBOARD_KEY_SHOOT:
-			keyboard.shoot = keyState;
+			keyboard.shoot = !keyboard.shootCommand && keyState;
+			keyboard.shootCommand = keyState;
 			break;
 		default:
 			break;
