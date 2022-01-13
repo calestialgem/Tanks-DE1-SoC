@@ -1,6 +1,7 @@
 #include "Graphics.h"
 
 #include "Game.h"
+#include "Interrupt.h"
 
 // Macros
 #define min(A, B) (((A) < (B)) ? (A) : (B))
@@ -25,6 +26,8 @@ int flog(int x) {
 int digit(int N) {
 	if (N != 0)
 		return flog(N) + 1;
+	else
+		return 1;
 }
 // Colors
 // Tank Colors: Red, Green, Blue, Purple, Yellow
@@ -1325,11 +1328,14 @@ void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
 }
 
 void graphics_render() {
+	interrupt_disable();
+	drawn_copy = game_instance;
+	interrupt_enable();
 	int x, y;
 	volatile int *led_ptr= (int*) 0XFF200000;
 for(x=0;x<MAP_WIDTH;x++){
 if(drawn_copy.map.ground[100]<1)
-				*led_ptr=(int) 0b11111111;
+				*led_ptr=(int) 1<<7;
 }
 
 	// Paint the ground & the background
@@ -1366,7 +1372,7 @@ if(drawn_copy.map.ground[100]<1)
 		10, 96, tank->gun.angle, Color_gui_background);	 // Angle
 	graphics_draw_numbers(16, 121, 0, Color_gui_background); // Wind
 	graphics_draw_power(tank->gun.power);			 // Power Bar
-	graphics_draw_angle(tank->gun.angle);			 // Angle Bar
+	graphics_draw_angle((tank->gun.angle)*180/MATH_PI);			 // Angle Bar
 
 	int pixel_buf_ptr = *(int *)0xFF203020; // PIXEL_BUF_CTRL_BASE
 	int pixel_ptr;
