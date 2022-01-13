@@ -4,7 +4,7 @@
 #include "MathTools.h"
 
 void map_generate(void) {
-	float const peakCount = math_random(0.75F, 1.5F);
+	float const peakCount = math_random(1.25F, 2.0F);
 	float const start = math_random(0.0F, MATH_2PI);
 	float const peakHeight = math_random(0.5F, 0.67F);
 	float const valleyHeight = math_random(0.75F, 0.85F);
