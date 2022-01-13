@@ -9,7 +9,6 @@
 #include <stdlib.h>
 
 #define TANK_CAPACITY 4
-#define TANK_NAME_CAPACITY 32
 
 /** Characters controlled by players. */
 typedef struct {
@@ -26,8 +25,6 @@ typedef struct {
 	uint8_t fuel;
 	/** Weapon. */
 	Barrel gun;
-	/** Player's name. */
-	char name[TANK_NAME_CAPACITY];
 	/** Index of the player's color. */
 	size_t color;
 } Tank;
@@ -40,7 +37,7 @@ typedef struct {
 } Tanks;
 
 /** Adds a tank to the array. */
-void tank_add(char const *const name, size_t const color);
+void tank_add(size_t const color);
 /** Removes the tank at the given index from the array. */
 void tank_remove(size_t const index);
 /** Moves the tank to the given position. */

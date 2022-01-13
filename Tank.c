@@ -12,23 +12,13 @@
 #define TANK_FUEL_CONSUMPTION (2.5F * TIMER_STEP)
 #define TANK_SPEED (0.1F * TIMER_STEP)
 
-static inline void copy_name(volatile char destination[TANK_NAME_CAPACITY],
-	char const *const source) {
-	size_t i;
-	for (i = 0; i < TANK_NAME_CAPACITY; i++) {
-		if (!(destination[i] = source[i])) {
-			return;
-		}
-	}
-}
-void tank_add(char const *const name, size_t const color) {
+void tank_add(size_t const color) {
 	if (game_instance.tanks.size == TANK_CAPACITY) {
 		error_show(ERROR_LOGIC_REACHED_TANK_CAPACITY);
 		return;
 	}
 	volatile Tank *const tank =
 		&game_instance.tanks.array[game_instance.tanks.size++];
-	copy_name(tank->name, name);
 	tank->color = color;
 }
 void tank_remove(size_t const index) {

@@ -19,9 +19,9 @@ static void config_all(void) {
 /** Starts the program. */
 int main() {
 	math_reseed();
-	tank_add("Player 1", math_random_index(GRAPHICS_TANK_COLOR_COUNT));
-	tank_add("Player 2", math_random_index(GRAPHICS_TANK_COLOR_COUNT));
-	tank_add("Player 3", math_random_index(GRAPHICS_TANK_COLOR_COUNT));
+	tank_add(math_random_index(GRAPHICS_TANK_COLOR_COUNT));
+	tank_add(math_random_index(GRAPHICS_TANK_COLOR_COUNT));
+	tank_add(math_random_index(GRAPHICS_TANK_COLOR_COUNT));
 	game_restart();
 	config_all();
 
