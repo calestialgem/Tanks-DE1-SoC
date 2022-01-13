@@ -18,7 +18,9 @@ int turret_data[TURRET_BUF_SIZE]={4302979,10803223,13488770,11413574,15747070,17
 #ifndef AUDIO_INTERRUPT_ID
 #define AUDIO_INTERRUPT_ID 72
 
-/* Simple example code that I've used to configure GIC (timer ID = 72, audio ID = 78):
+/**************************************************************************************
+* Simple example code that I've used to configure GIC (timer ID = 72, audio ID = 78): *
+***************************************************************************************
 
 // Configure the Generic Interrupt Controller (GIC) 
 static void config_GIC(void){
