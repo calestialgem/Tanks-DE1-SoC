@@ -33,25 +33,23 @@ static inline uint8_t hex_signal(uint8_t const digit) {
 		return 0b1001001;
 	}
 }
-/** Writes the given error code to the hexes. */
-static inline void hexes_write(uint32_t const error) {
+static inline void hexes_write(
+	uint8_t const code, Register8 hex0, Register8 hex1) {
+	*hex0 = hex_signal((code / (uint8_t)1e0) % 10);
+	*hex1 = hex_signal((code / (uint8_t)1e1) % 10);
+}
+void error_show(uint8_t const error) {
 	Register8 sevenSegment0 = (Register8)0xFF200020;
 	Register8 sevenSegment1 = (Register8)0xFF200021;
-	Register8 sevenSegment2 = (Register8)0xFF200022;
-	Register8 sevenSegment3 = (Register8)0xFF200023;
-	Register8 sevenSegment4 = (Register8)0xFF200030;
-	Register8 sevenSegment5 = (Register8)0xFF200031;
-	*sevenSegment0 = hex_signal((error / (uint32_t)1e0) % 10);
-	*sevenSegment1 = hex_signal((error / (uint32_t)1e1) % 10);
-	*sevenSegment2 = hex_signal((error / (uint32_t)1e2) % 10);
-	*sevenSegment3 = hex_signal((error / (uint32_t)1e3) % 10);
-	*sevenSegment4 = hex_signal((error / (uint32_t)1e4) % 10);
-	*sevenSegment5 = hex_signal((error / (uint32_t)1e5) % 10);
-}
-void error_show(uint32_t const error) {
 	// Show the error in the seven segment displays.
-	hexes_write(error);
+	hexes_write(error, sevenSegment0, sevenSegment1);
 	// Stall the execution when a problem exists.
 	while (error)
 		;
+}
+void error_stage(uint8_t const debug) {
+	Register8 sevenSegment2 = (Register8)0xFF200022;
+	Register8 sevenSegment3 = (Register8)0xFF200023;
+	// Show the stage in the seven segment displays.
+	hexes_write(debug, sevenSegment2, sevenSegment3);
 }

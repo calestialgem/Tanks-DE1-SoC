@@ -15,6 +15,7 @@ static void config_all(void) {
 
 /** Starts the program. */
 int main() {
+	error_stage(DEBUG_START);
 	math_reseed();
 	tank_add(math_random_index(GRAPHICS_TANK_COLOR_COUNT));
 	tank_add(math_random_index(GRAPHICS_TANK_COLOR_COUNT));

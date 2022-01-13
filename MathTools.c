@@ -49,14 +49,21 @@ float math_sqrt(float const number) {
 	return result;
 }
 float math_sin(float const angle) {
-	return angle - math_pow(angle, 3) / 6.0F + math_pow(angle, 5) / 6.0F;
+	float const angle_2 = angle * angle;
+	float const angle_3 = angle_2 * angle;
+	float const angle_5 = angle_3 * angle_2;
+	return angle - angle_3 / 6.0F + angle_5 / 120.0F;
 }
 float math_cos(float const angle) {
-	return 1.0F - math_pow(angle, 2) / 2.0F + math_pow(angle, 4) / 24.0F;
+	float const angle_2 = angle * angle;
+	return 1.0F - angle_2 / 2.0F + angle_2 * angle_2 / 24.0F;
 }
 float math_atan(float const tan) {
-	return -math_pow(tan, 3) / 3.0F + math_pow(tan, 5) / 5.0F -
-	       math_pow(tan, 7) / 7.0F;
+	float const tan_2 = tan * tan;
+	float const tan_3 = tan_2 * tan;
+	float const tan_5 = tan_3 * tan_2;
+	float const tan_7 = tan_5 * tan_2;
+	return -tan_3 / 3.0F + tan_5 / 5.0F - tan_7 / 7.0F;
 }
 float math_abs(float const number) {
 	return number < 0.0F ? -number : number;
