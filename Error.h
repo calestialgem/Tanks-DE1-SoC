@@ -36,6 +36,8 @@
 #define ERROR_LOGIC_NO_TANK_TO_REMOVE 23U
 
 #define DEBUG_START 0U
+#define DEBUG_CONFIG 1U
+#define DEBUG_RUNNING 2U
 
 /** Configures and initializes the error system. Called at the start of the
  * program. */

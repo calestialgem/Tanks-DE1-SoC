@@ -21,8 +21,9 @@ int main() {
 	tank_add(math_random_index(GRAPHICS_TANK_COLOR_COUNT));
 	tank_add(math_random_index(GRAPHICS_TANK_COLOR_COUNT));
 	game_restart();
+	error_stage(DEBUG_CONFIG);
 	config_all();
-
+	error_stage(DEBUG_RUNNING);
 	while (true) {
 		graphics_render();
 	}
