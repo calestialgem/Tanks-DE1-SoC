@@ -108,7 +108,6 @@ static inline void shoot(void) {
 	game_instance.waitingBullets = true;
 }
 static inline void game_update(void) {
-	keyboard_update();
 	if (game_instance.waitingBullets) {
 		update_waiting_bullets();
 		return;
