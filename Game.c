@@ -113,7 +113,7 @@ static inline void shoot(void) {
 	game_instance.waitingBullets = true;
 	audio_play_shooting();
 }
-static inline void game_update(void) {
+void game_update(void) {
 	if (game_instance.waitingBullets) {
 		update_waiting_bullets();
 		return;
