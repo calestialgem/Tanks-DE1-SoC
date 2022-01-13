@@ -37,5 +37,12 @@ float math_cos(float const angle);
 float math_atan(float const tan);
 /** Returns the magnitude of the number. */
 float math_abs(float const number);
+/** Returns the smallest of the two number. */
+float math_min(float const first, float const second);
+/** Returns the biggest of the two number. */
+float math_max(float const first, float const second);
+/** Returns the number if it is between the min and max, or returns the
+ * boundary, min or max, that is surpassed. */
+float math_clamp(float const number, float const min, float const max);
 
 #endif // MATH_TOOLS_H

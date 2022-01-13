@@ -74,3 +74,12 @@ float math_atan(float const tan) {
 float math_abs(float const number) {
 	return number < 0.0F ? -number : number;
 }
+float math_min(float const first, float const second) {
+	return first < second ? first : second;
+}
+float math_max(float const first, float const second) {
+	return first > second ? first : second;
+}
+float math_clamp(float const number, float const min, float const max) {
+	return math_min(math_max(number, min), max);
+}
