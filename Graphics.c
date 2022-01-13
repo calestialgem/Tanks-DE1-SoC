@@ -25,6 +25,8 @@ int flog(int x) {
 int digit(int N) {
 	if (N != 0)
 		return flog(N) + 1;
+	else
+		return 1;
 }
 // Colors
 // Tank Colors: Red, Green, Blue, Purple, Yellow
