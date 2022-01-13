@@ -1332,22 +1332,22 @@ void graphics_render() {
 	drawn_copy = game_instance;
 	interrupt_enable();
 	int x, y;
-	volatile int *led_ptr= (int*) 0XFF200000;
-for(x=0;x<MAP_WIDTH;x++){
-if(drawn_copy.map.ground[100]<1)
-				*led_ptr=(int) 1<<7;
-}
+	volatile int *led_ptr = (int *)0XFF200000;
+	for (x = 0; x < MAP_WIDTH; x++) {
+		if (drawn_copy.map.ground[100] < 1)
+			*led_ptr = (int)1 << 7;
+	}
 
 	// Paint the ground & the background
 	for (y = 0; y < MAP_HEIGHT; y++) {
 		for (x = 0; x < MAP_WIDTH; x++) {
 			// Paint the ground.
-			if (y > Pixel_gui_border){
+			if (y > Pixel_gui_border) {
 				if (y >= drawn_copy.map.ground[x])
 					pixel_map[y][x] = Color_map_ground;
 				else // Paint the background.
-								// Alternatively take
-								// this from picture.
+				     // Alternatively take
+				     // this from picture.
 					pixel_map[y][x] = Color_map_background;
 			}
 		}
@@ -1368,11 +1368,13 @@ if(drawn_copy.map.ground[100]<1)
 		26, 17, tank->health, Color_gui_background); // Health
 	graphics_draw_numbers(
 		19, 84, tank->gun.power, Color_gui_background); // Power
-	graphics_draw_numbers(
-		10, 96, tank->gun.angle, Color_gui_background);	 // Angle
+	graphics_draw_numbers(10,
+		96,
+		tank->gun.angle * 180 / MATH_PI,
+		Color_gui_background);				 // Angle
 	graphics_draw_numbers(16, 121, 0, Color_gui_background); // Wind
 	graphics_draw_power(tank->gun.power);			 // Power Bar
-	graphics_draw_angle((tank->gun.angle)*180/MATH_PI);			 // Angle Bar
+	graphics_draw_angle((tank->gun.angle) * 180 / MATH_PI);	 // Angle Bar
 
 	int pixel_buf_ptr = *(int *)0xFF203020; // PIXEL_BUF_CTRL_BASE
 	int pixel_ptr;
