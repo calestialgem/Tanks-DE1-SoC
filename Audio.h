@@ -25,9 +25,14 @@ volatile int buffer_index = 0;
 
 /* Clears the audio write register */
 void audio_config(void);
-/** Plays the sound that corresponds to the given id. Stops the currently
- * running sound if there is one. Called by the game logic. */
+
+/* Plays sound until the whole sound is played, depending on the pressed key. 
+Sound's array and array's length should be given as inputs */
 void audio_play(int input_buf_size, int* input_array);
+
+/* Stops playing the sound. Should be put into the "Is key released?" check. */
+void audio_stop(void);
+
 void audio_ISR (void);
 
 #endif // AUDIO_H

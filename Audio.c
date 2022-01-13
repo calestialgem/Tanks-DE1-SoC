@@ -18,6 +18,12 @@ void audio_play(int input_buf_size, int* input_array){
     *audio_ptr = *audio_ptr | 0b10;
 }
 
+void audio_stop(void){
+    volatile int *audio_ptr = (int *) 0xFF203040;
+    *audio_ptr = *audio_ptr & ~0b10;
+    buffer_index = 0;
+}
+
 void audio_ISR (void){                        
     volatile int *audio_ptr = (int *) 0xFF203040;
 
