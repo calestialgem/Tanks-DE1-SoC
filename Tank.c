@@ -28,6 +28,11 @@ void tank_remove(size_t const index) {
 	volatile Tank *const removed = &game_instance.tanks.array[index];
 	*removed = last;
 }
+void tank_update_map_position(volatile Tank *const tank) {
+	size_t const index = math_floor(tank->position.x);
+	tank->position.y = game_instance.map.ground[index];
+	tank->tilt = math_atan(map_slope(index));
+}
 void tank_place(volatile Tank *const tank, float const position) {
 	tank->fuel -=
 		math_abs(tank->position.x - position) * TANK_FUEL_CONSUMPTION;
@@ -35,9 +40,7 @@ void tank_place(volatile Tank *const tank, float const position) {
 		tank->fuel = 0.0F;
 	}
 	tank->position.x = position;
-	size_t const index = math_floor(tank->position.x);
-	tank->position.y = game_instance.map.ground[index];
-	tank->tilt = math_atan(map_slope(index));
+	tank_update_map_position(tank);
 }
 void tank_move(volatile Tank *const tank, int8_t const movement) {
 	if (!movement || tank->fuel <= 0.0F) {

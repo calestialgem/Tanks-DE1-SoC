@@ -40,6 +40,9 @@ typedef struct {
 void tank_add(size_t const color);
 /** Removes the tank at the given index from the array. */
 void tank_remove(size_t const index);
+/** Updates the height and tilt of the tank, for a change in the map or the
+ * position of the tank in the map. */
+void tank_update_map_position(volatile Tank *const tank);
 /** Moves the tank to the given position. */
 void tank_place(volatile Tank *const tank, float const position);
 /** Moves the tank by the given tick amount. */
