@@ -6,7 +6,8 @@
 #include "Timer.h"
 
 #define MAX_DAMAGE_DISTANCE_SQUARED 900.0F // 30 pixels
-#define GRAVITY 9.81F
+#define GRAVITY 9.81F			   // Asuming 1 pixel = 1 meter
+#define BULLET_RADIUS 0.5F		   // 1x1 pixel drawing
 #define EXPLOSION_RADIUS 10.0F
 #define SPEED_MULTIPLIER (20.0F * TIMER_STEP)
 #define DAMAGE_MULTIPLIER 0.2F

@@ -7,7 +7,6 @@
 #include <stdlib.h>
 
 #define BULLET_CAPACITY 8
-#define BULLET_RADIUS 1.0F
 
 /** Projectiles that do damage. */
 typedef struct {
