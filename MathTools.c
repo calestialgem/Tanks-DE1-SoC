@@ -50,10 +50,6 @@ float math_sqrt(float const number) {
 	result = 0.5F * (result + (number / result));
 	return result;
 }
-static inline float bounds(float const angle) {
-	int32_t const wholePart = math_floor(angle);
-	return (wholePart % 360 + 360) % 360 + angle - wholePart;
-}
 float math_sin(float const angle) {
 	return sines[((int32_t)(angle * SINES_COUNT / MATH_2PI) % SINES_COUNT +
 			     SINES_COUNT) %
