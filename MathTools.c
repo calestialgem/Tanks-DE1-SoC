@@ -62,12 +62,10 @@ float math_sin(float const angle) {
 float math_cos(float const angle) {
 	return math_sin(MATH_PI_2 - angle);
 }
+/* Taken from https://nghiaho.com/?p=997. */
 float math_atan(float const tan) {
-	float const tan_2 = tan * tan;
-	float const tan_3 = tan_2 * tan;
-	float const tan_5 = tan_3 * tan_2;
-	float const tan_7 = tan_5 * tan_2;
-	return bounds(-tan_3 / 3.0F + tan_5 / 5.0F - tan_7 / 7.0F);
+	float const abs = math_abs(tan);
+	return MATH_PI_4 * tan - tan * (abs - 1.0F) * (0.2447F + 0.0663F * abs);
 }
 float math_abs(float const number) {
 	return number < 0.0F ? -number : number;
