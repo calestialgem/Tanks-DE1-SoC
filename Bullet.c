@@ -7,8 +7,7 @@
 
 #define MAX_DAMAGE_DISTANCE_SQUARED 900.0F // 30 pixels
 #define GRAVITY 9.81F
-#define RADIUS_MULTIPLIER 0.1F
-#define POWER_MULTIPLIER 0.1F
+#define EXPLOSION_RADIUS 10.0F
 #define SPEED_MULTIPLIER (20.0F * TIMER_STEP)
 #define DAMAGE_MULTIPLIER 0.2F
 
@@ -17,15 +16,12 @@ void bullet_init(volatile Bullet *const bullet) {
 		&game_instance.tanks.array[game_instance.turn];
 	volatile Barrel *const barrel = &tank->gun;
 	bullet->position = tank->position;
-	bullet->radius = barrel->power * RADIUS_MULTIPLIER;
-	bullet->power = barrel->power * POWER_MULTIPLIER;
-	float const angle = tank->tilt + barrel->angle;
-	float const speed = barrel->power * SPEED_MULTIPLIER;
-	bullet->velocity.x = math_cos(angle) * speed;
-	bullet->velocity.y = -math_sin(angle) * speed;
+	vector_init(&bullet->velocity,
+		barrel->power * SPEED_MULTIPLIER,
+		tank->tilt + barrel->angle);
 }
 void bullet_move(volatile Bullet *const bullet) {
-	Vector const acceleration = {.x = 0.0F, .y = GRAVITY};
+	static Vector const acceleration = {.x = 0.0F, .y = GRAVITY};
 	Vector const velocityEffect = vector_mul(bullet->velocity, TIMER_STEP);
 	Vector const accelerationEffect =
 		vector_mul(acceleration, math_square(TIMER_STEP) / 2.0F);
@@ -38,12 +34,13 @@ void bullet_move(volatile Bullet *const bullet) {
 bool bullet_contact(volatile Bullet const *const bullet) {
 	size_t const index = math_floor(bullet->position.x);
 	return game_instance.map.ground[index] >=
-	       bullet->position.y + bullet->radius;
+	       bullet->position.y + BULLET_RADIUS;
 }
 static inline void apply_ground_damage(volatile Bullet const *const bullet) {
-	size_t const leftReach = math_floor(bullet->position.x - bullet->power);
+	size_t const leftReach =
+		math_floor(bullet->position.x - EXPLOSION_RADIUS);
 	size_t const rightReach =
-		math_floor(bullet->position.x + bullet->power);
+		math_floor(bullet->position.x + EXPLOSION_RADIUS);
 	size_t const leftEdge = leftReach < 0 ? 0 : leftReach;
 	size_t const rightEdge =
 		rightReach >= MAP_WIDTH ? MAP_WIDTH - 1 : rightReach;
@@ -51,7 +48,7 @@ static inline void apply_ground_damage(volatile Bullet const *const bullet) {
 	for (i = leftEdge; i <= rightEdge; i++) {
 		float const position = i + 0.5F;
 		float const potential =
-			math_square(bullet->power) -
+			math_square(EXPLOSION_RADIUS) -
 			math_square(bullet->position.x - position);
 		float const destruction =
 			2 * math_sqrt(potential < 0.0F ? 0.0F : potential);
@@ -75,7 +72,7 @@ static inline void apply_tank_damage(volatile Bullet const *const bullet) {
 			continue;
 		}
 		tank->health -=
-			bullet->power * DAMAGE_MULTIPLIER / distanceSquared;
+			EXPLOSION_RADIUS * DAMAGE_MULTIPLIER / distanceSquared;
 		tank->alive = tank->health > 0.0F;
 		if (!tank->alive) {
 			audio_play_tank_death();

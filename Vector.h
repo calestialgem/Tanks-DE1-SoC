@@ -9,6 +9,10 @@ typedef struct {
 	float y;
 } Vector;
 
+/** Initiales the given vector. */
+void vector_init(volatile Vector *const vector,
+	float const magnitude,
+	float const angle);
 /** Adds the given vectors, and returns the result as a new vector. */
 Vector vector_add(Vector const left, Vector const right);
 /** Subtracts the given vectors, and returns the result as a new vector. */

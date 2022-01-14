@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #define BULLET_CAPACITY 8
+#define BULLET_RADIUS 1.0F
 
 /** Projectiles that do damage. */
 typedef struct {
@@ -14,10 +15,6 @@ typedef struct {
 	Vector position;
 	/** Velocity of the center of mass in pixel/s. */
 	Vector velocity;
-	/** Radius in pixel. */
-	float radius;
-	/** Explosion radius in pixel. */
-	float power;
 } Bullet;
 /** Array of bullets. */
 typedef struct {
