@@ -1374,11 +1374,6 @@ void graphics_render() {
 		int barrelOriginY;
 		int barrelOriginX;
 
-		graphics_draw_numbers(
-			38 + index * 14, 38, originY, Color_map_background);
-		graphics_draw_numbers(
-			45 + index * 14, 38, originX, Color_map_background);
-
 		switch (tilt) {
 		case 0: // 0
 			graphics_draw_sprite(originY - 3,
