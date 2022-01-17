@@ -457,21 +457,19 @@ void graphics_draw_line(float originy,
 	float finaly,
 	float finalx,
 	short Color) { // Input start and end points.
-	float slope = (finaly - originy)/(finalx - originx);
+	float slope = (finaly - originy) / (finalx - originx);
 	int x, y;
-	if (math_abs(slope)<=1)
-	for (x = min(originx, finalx); x <= max(originx, finalx); x++) {
-		y=(int)((x-originx)*slope+originy);
+	if (math_abs(slope) <= 1)
+		for (x = min(originx, finalx); x <= max(originx, finalx); x++) {
+			y = (int)((x - originx) * slope + originy);
 			pixel_map[y][x] = Color;
 		}
-	else{
-	for (y = min(originy, finaly); y<= max(originy, finaly); y++) {
-		x=(int)((y-originy)/slope+originx);
+	else {
+		for (y = min(originy, finaly); y <= max(originy, finaly); y++) {
+			x = (int)((y - originy) / slope + originx);
 			pixel_map[y][x] = Color;
 		}
-
 	}
-	
 }
 
 void graphics_draw_rectangle(short originy,
@@ -504,11 +502,8 @@ void graphics_draw_numbers(short originy,
 	short Color_background) { // Input origin of number. (Number is 1-3
 				  // digits long)
 	int i;
-	graphics_draw_rectangle(originy,
-		originx,
-		originy + 4,
-		originx + 10,
-		Color_background);
+	graphics_draw_rectangle(
+		originy, originx, originy + 4, originx + 10, Color_background);
 	int d = digit(number);
 	for (i = 0; i < d; i++) {
 		switch (number /
@@ -1332,10 +1327,6 @@ void graphics_render() {
 	interrupt_enable();
 	int x, y;
 	volatile int *led_ptr = (int *)0XFF200000;
-	for (x = 0; x < MAP_WIDTH; x++) {
-		if (drawn_copy.map.ground[100] < 1)
-			*led_ptr = (int)1 << 7;
-	}
 
 	// Paint the ground & the background
 	for (y = 0; y < MAP_HEIGHT; y++) {
@@ -1383,10 +1374,10 @@ void graphics_render() {
 		int barrelOriginY;
 		int barrelOriginX;
 
-		graphics_draw_numbers(38+index*14,38,originY,Color_map_background);
-		graphics_draw_numbers(45+index*14,38,originX,Color_map_background);
-
-
+		graphics_draw_numbers(
+			38 + index * 14, 38, originY, Color_map_background);
+		graphics_draw_numbers(
+			45 + index * 14, 38, originX, Color_map_background);
 
 		switch (tilt) {
 		case 0: // 0
@@ -1534,7 +1525,6 @@ void graphics_render() {
 		pixel_map[(int)drawn_bullet->position.y]
 			 [(int)drawn_bullet->position.x] = Color_gui_black;
 	}
-
 
 	int pixel_buf_ptr = *(int *)0xFF203020; // PIXEL_BUF_CTRL_BASE
 	int pixel_ptr;

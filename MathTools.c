@@ -75,3 +75,6 @@ float math_max(float const first, float const second) {
 float math_clamp(float const number, float const min, float const max) {
 	return math_min(math_max(number, min), max);
 }
+bool math_nan(float const number) {
+	return number != number;
+}

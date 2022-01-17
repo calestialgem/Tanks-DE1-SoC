@@ -1,6 +1,7 @@
 #ifndef MATH_TOOLS_H
 #define MATH_TOOLS_H
 
+#include <stdbool.h>
 #include <stdlib.h>
 
 #define MATH_PI 3.1415927F
@@ -44,5 +45,6 @@ float math_max(float const first, float const second);
 /** Returns the number if it is between the min and max, or returns the
  * boundary, min or max, that is surpassed. */
 float math_clamp(float const number, float const min, float const max);
-
+/** Returns true if the number is NaN. */
+bool math_nan(float const number);
 #endif // MATH_TOOLS_H

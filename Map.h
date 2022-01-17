@@ -14,8 +14,13 @@ typedef struct {
 	float ground[MAP_WIDTH];
 } Map;
 
+/** Sets the ground to the given value after clamping. */
+void map_set(size_t const index, float const height);
 /** Generates the terrain. */
 void map_generate(void);
+/** Returns the index that corresponds to the given position. Clamps to map
+ * limits. */
+size_t map_index(float const position);
 /** Returns the slope at the given position. */
 float map_slope(size_t const index);
 

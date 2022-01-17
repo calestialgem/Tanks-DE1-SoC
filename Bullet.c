@@ -35,18 +35,14 @@ void bullet_move(volatile Bullet *const bullet) {
 	bullet->velocity = vector_add(bullet->velocity, velocityChange);
 }
 bool bullet_contact(volatile Bullet const *const bullet) {
-	if (bullet->position.x < 0.0F || bullet->position.x >= MAP_WIDTH) {
-		return true;
-	}
-	size_t const index = math_floor(bullet->position.x);
-	return game_instance.map.ground[index] <=
+	return game_instance.map.ground[map_index(bullet->position.x)] <=
 	       bullet->position.y + BULLET_RADIUS;
 }
 static inline void apply_ground_damage(volatile Bullet const *const bullet) {
-	size_t const leftEdge = math_floor(math_clamp(
-		bullet->position.x - EXPLOSION_RADIUS, 0.0F, MAP_WIDTH - 1.0F));
-	size_t const rightEdge = math_floor(math_clamp(
-		bullet->position.x + EXPLOSION_RADIUS, 0.0F, MAP_WIDTH - 1.0F));
+	size_t const leftEdge =
+		map_index(bullet->position.x - EXPLOSION_RADIUS);
+	size_t const rightEdge =
+		map_index(bullet->position.x + EXPLOSION_RADIUS);
 	size_t i;
 	for (i = leftEdge; i <= rightEdge; i++) {
 		float const position = i + 0.5F;
@@ -54,11 +50,8 @@ static inline void apply_ground_damage(volatile Bullet const *const bullet) {
 			math_square(EXPLOSION_RADIUS) -
 			math_square(bullet->position.x - position);
 		float const destruction =
-			2 * math_sqrt(potential < 0.0F ? 0.0F : potential);
-		game_instance.map.ground[i] += destruction;
-		if (game_instance.map.ground[i] >= MAP_HEIGHT) {
-			game_instance.map.ground[i] = MAP_HEIGHT - 1;
-		}
+			2.0F * math_sqrt(math_max(potential, 0.0F));
+		map_set(i, game_instance.map.ground[i] + destruction);
 	}
 }
 static inline void apply_tank_damage(volatile Bullet const *const bullet) {

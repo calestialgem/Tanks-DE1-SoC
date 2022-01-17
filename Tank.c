@@ -27,7 +27,7 @@ void tank_remove(size_t const index) {
 	*removed = last;
 }
 void tank_update_map_position(volatile Tank *const tank) {
-	size_t const index = math_floor(tank->position.x);
+	size_t const index = map_index(tank->position.x);
 	tank->position.y = game_instance.map.ground[index];
 	tank->tilt = math_atan(map_slope(index));
 }

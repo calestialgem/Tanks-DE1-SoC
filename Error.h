@@ -33,6 +33,8 @@
 #define ERROR_LOGIC_REACHED_TANK_CAPACITY 200001U
 /** Removing while there is not any tank. */
 #define ERROR_LOGIC_NO_TANK_TO_REMOVE 200002U
+/** Setting ground height to NaN. */
+#define ERROR_LOGIC_NAN_HEIGHT 200003U
 
 /* Starting with 3: Graphics. */
 
