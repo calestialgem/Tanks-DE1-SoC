@@ -35,6 +35,8 @@ typedef struct {
 	Tank array[TANK_CAPACITY];
 	/** Amount of tanks in the array. */
 	size_t size;
+	/** Amount of alive tanks. */
+	size_t living;
 } Tanks;
 
 /** Adds a tank to the array. */
@@ -50,5 +52,7 @@ void tank_place(volatile Tank *const tank, float const position);
 void tank_move(volatile Tank *const tank, int8_t const movement);
 /** Initializes the tank. */
 void tank_init(volatile Tank *const tank, float const position);
+/** Lower the health of the tank. Handles death. */
+void tank_damage(volatile Tank *const tank, float const damage);
 
 #endif // TANK_H

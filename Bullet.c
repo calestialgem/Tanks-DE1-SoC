@@ -71,12 +71,9 @@ static inline void apply_tank_damage(volatile Bullet const *const bullet) {
 		if (distanceSquared > DAMAGE_MULTIPLIER) {
 			continue;
 		}
-		tank->health -= math_min(
-			DAMAGE_MULTIPLIER / distanceSquared, MAX_DAMAGE);
-		tank->alive = tank->health > 0.0F;
-		if (!tank->alive) {
-			audio_play_tank_death();
-		}
+		tank_damage(tank,
+			math_min(DAMAGE_MULTIPLIER / distanceSquared,
+				MAX_DAMAGE));
 	}
 }
 void bullet_explode(volatile Bullet const *const bullet) {

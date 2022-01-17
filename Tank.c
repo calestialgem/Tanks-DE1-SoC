@@ -58,4 +58,13 @@ void tank_init(volatile Tank *const tank, float const position) {
 	tank->health = TANK_INITIAL_HEALTH;
 	tank->alive = true;
 	tank->fuel = TANK_INITIAL_FUEL;
+	game_instance.tanks.living++;
+}
+void tank_damage(volatile Tank *const tank, float const damage) {
+	tank->health -= damage;
+	if (tank->health <= 0.0F) {
+		tank->alive = false;
+		game_instance.tanks.living--;
+		audio_play_tank_death();
+	}
 }

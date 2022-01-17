@@ -8,6 +8,7 @@
 volatile Game game_instance;
 
 static inline void reset_tanks(void) {
+	game_instance.tanks.living = 0;
 	uint8_t i;
 	for (i = 0; i < game_instance.tanks.size; i++) {
 		volatile Tank *const tank = &game_instance.tanks.array[i];
@@ -18,11 +19,16 @@ static inline void reset_tanks(void) {
 void game_restart(void) {
 	game_instance.turn = 0;
 	map_generate();
-	game_instance.bullets.size = 0;
 	reset_tanks();
-	game_instance.waitingBullets = false;
+	game_instance.bullets.size = 0;
 }
-static inline void update_waiting_bullets(void) {
+static inline void next_turn(void) {
+	do {
+		game_instance.turn++;
+		game_instance.turn %= game_instance.tanks.size;
+	} while (!game_instance.tanks.array[game_instance.turn].alive);
+}
+static inline void update_bullets(void) {
 	size_t i;
 	for (i = 0; i < game_instance.bullets.size; i++) {
 		volatile Bullet *const bullet = &game_instance.bullets.array[i];
@@ -42,14 +48,16 @@ static inline void update_waiting_bullets(void) {
 			i--;
 		}
 	}
-	game_instance.waitingBullets = game_instance.bullets.size;
-	for (i = 0; i < game_instance.tanks.size; i++) {
-		volatile Tank *const tank = &game_instance.tanks.array[i];
-		if (tank->alive) {
-			return;
-		}
+}
+static inline void update_waiting_bullets(void) {
+	update_bullets();
+	if (game_instance.tanks.living <= 1) {
+		game_restart();
+		return;
 	}
-	game_restart();
+	if (!game_instance.bullets.size) {
+		next_turn();
+	}
 }
 static inline void shoot(void) {
 	if (game_instance.bullets.size == BULLET_CAPACITY) {
@@ -57,18 +65,14 @@ static inline void shoot(void) {
 		return;
 	}
 	bullet_init(&game_instance.bullets.array[game_instance.bullets.size++]);
-	game_instance.waitingBullets = true;
 	audio_play_shooting();
-	if (++game_instance.turn >= game_instance.tanks.size) {
-		game_instance.turn = 0;
-	}
 }
 void game_update(void) {
 	if (keyboard_reset()) {
 		game_restart();
 		return;
 	}
-	if (game_instance.waitingBullets) {
+	if (game_instance.bullets.size) {
 		update_waiting_bullets();
 		return;
 	}

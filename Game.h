@@ -23,8 +23,6 @@ typedef struct {
 	Map map;
 	/** The index of the tank that can do actions. */
 	size_t turn;
-	/** Wheter the game is waiting for all the bullets to explode. */
-	bool waitingBullets;
 } Game;
 
 /** The game which is currently running. Volatile because it is accessed by both
