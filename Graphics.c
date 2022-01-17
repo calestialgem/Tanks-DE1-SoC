@@ -1,5 +1,6 @@
 #include "Graphics.h"
 
+#include "Error.h"
 #include "Game.h"
 #include "Interrupt.h"
 
@@ -1499,13 +1500,17 @@ void graphics_render() {
 			barrelOriginY = originY - 3;
 			barrelOriginX = originX + 1;
 			break;
+		default:
+			error_show(ERROR_GRAPHICS_TANK_TILT_OUT_OF_BOUNDS);
+			barrelOriginY = originY;
+			barrelOriginX = originX;
 		}
 		float barrelAngle = drawnTank->tilt + drawnTank->gun.angle;
 		graphics_draw_line(barrelOriginY,
 			barrelOriginX,
 			barrelOriginY - 6 * math_sin(barrelAngle),
 			barrelOriginX + 6 * math_cos(barrelAngle),
-			Color_gui_black);
+			Color_barrel);
 	}
 
 	int pixel_buf_ptr = *(int *)0xFF203020; // PIXEL_BUF_CTRL_BASE
