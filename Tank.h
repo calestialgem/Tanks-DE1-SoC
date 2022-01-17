@@ -9,6 +9,8 @@
 #include <stdlib.h>
 
 #define TANK_CAPACITY 4
+#define TANK_INITIAL_FUEL 100
+
 
 /** Characters controlled by players. */
 typedef struct {

@@ -6,8 +6,6 @@
 #include "Map.h"
 
 #define TANK_INITIAL_HEALTH 100
-#define TANK_INITIAL_FUEL 250
-#define TANK_FUEL_CONSUMPTION (1.0F * TIMER_STEP)
 #define TANK_SPEED (5.0F * TIMER_STEP)
 
 void tank_add(size_t const color) {
@@ -35,7 +33,7 @@ void tank_update_map_position(volatile Tank *const tank) {
 }
 void tank_place(volatile Tank *const tank, float const position) {
 	tank->fuel -=
-		math_abs(tank->position.x - position) * TANK_FUEL_CONSUMPTION;
+		math_abs(tank->position.x - position);
 	if (tank->fuel < 0.0F) {
 		tank->fuel = 0.0F;
 	}

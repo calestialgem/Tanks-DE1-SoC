@@ -22,5 +22,7 @@ bool keyboard_power_up(void);
 bool keyboard_power_down(void);
 /** Returns true if the key is pressured to shoot the bullet. */
 bool keyboard_shoot(void);
+/** Returns true if the key is pressured to reset the game. */
+bool keyboard_reset(void);
 
 #endif // KEYBOARD_H

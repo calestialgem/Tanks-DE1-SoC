@@ -17,6 +17,8 @@ void bullet_init(volatile Bullet *const bullet) {
 		&game_instance.tanks.array[game_instance.turn];
 	volatile Barrel *const barrel = &tank->gun;
 	bullet->position = tank->position;
+	// Go to the middle of the tank, which has 3 pixels thickness.
+	bullet->position.y -= 1.5F * math_cos(tank->tilt);
 	vector_init(&bullet->velocity,
 		barrel->power * SPEED_MULTIPLIER,
 		tank->tilt + barrel->angle);
@@ -33,18 +35,15 @@ void bullet_move(volatile Bullet *const bullet) {
 	bullet->velocity = vector_add(bullet->velocity, velocityChange);
 }
 bool bullet_contact(volatile Bullet const *const bullet) {
+	if (bullet->position.x < 0.0F || bullet->position.x >= MAP_WIDTH) {
+		return true;
+	}
 	size_t const index = math_floor(bullet->position.x);
-	return game_instance.map.ground[index] >=
-	       bullet->position.y + BULLET_RADIUS;
+	return game_instance.map.ground[index] <= bullet->position.y + BULLET_RADIUS;
 }
 static inline void apply_ground_damage(volatile Bullet const *const bullet) {
-	size_t const leftReach =
-		math_floor(bullet->position.x - EXPLOSION_RADIUS);
-	size_t const rightReach =
-		math_floor(bullet->position.x + EXPLOSION_RADIUS);
-	size_t const leftEdge = leftReach < 0 ? 0 : leftReach;
-	size_t const rightEdge =
-		rightReach >= MAP_WIDTH ? MAP_WIDTH - 1 : rightReach;
+	size_t const leftEdge = math_floor(math_clamp(bullet->position.x - EXPLOSION_RADIUS, 0.0F, MAP_WIDTH-1.0F));
+	size_t const rightEdge = math_floor(math_clamp(bullet->position.x + EXPLOSION_RADIUS, 0.0F, MAP_WIDTH-1.0F));
 	size_t i;
 	for (i = leftEdge; i <= rightEdge; i++) {
 		float const position = i + 0.5F;

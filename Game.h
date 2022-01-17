@@ -21,8 +21,6 @@ typedef struct {
 	Bullets bullets;
 	/** Map. */
 	Map map;
-	/** Whether the game is running. */
-	bool playing;
 	/** The index of the tank that can do actions. */
 	size_t turn;
 	/** Wheter the game is waiting for all the bullets to explode. */

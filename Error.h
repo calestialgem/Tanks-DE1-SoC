@@ -27,14 +27,12 @@
 
 /* Starting with 2: Game Logic. */
 
-/** Restarting while the game is not finished. */
-#define ERROR_LOGIC_STILL_PLAYING 200000U
 /** Shooting while maximum amount of bullets is reached. */
-#define ERROR_LOGIC_REACHED_BULLET_CAPACITY 200001U
+#define ERROR_LOGIC_REACHED_BULLET_CAPACITY 200000U
 /** Adding while maximum amount of tanks is reached. */
-#define ERROR_LOGIC_REACHED_TANK_CAPACITY 200002U
+#define ERROR_LOGIC_REACHED_TANK_CAPACITY 200001U
 /** Removing while there is not any tank. */
-#define ERROR_LOGIC_NO_TANK_TO_REMOVE 200003U
+#define ERROR_LOGIC_NO_TANK_TO_REMOVE 200002U
 
 /* Starting with 3: Graphics. */
 

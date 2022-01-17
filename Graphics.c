@@ -452,21 +452,26 @@ static Game drawn_copy;
 /** Pixel map that buffers the color data to the screen. */
 short pixel_map[MAP_HEIGHT][MAP_WIDTH];
 
-void graphics_draw_line(short originy,
-	short originx,
-	short finaly,
-	short finalx,
+void graphics_draw_line(float originy,
+	float originx,
+	float finaly,
+	float finalx,
 	short Color) { // Input start and end points.
+	float slope = (finaly - originy)/(finalx - originx);
 	int x, y;
-	for (y = min(originy, finaly); y <= max(originy, finaly); y++) {
-		for (x = min(originx, finalx); x <= max(originx, finalx); x++) {
-			if (y - originy -
-					(finaly - originy) * (x - originx) /
-						(finalx - originx) ==
-				0)
-				pixel_map[y][x] = Color;
+	if (math_abs(slope)<=1)
+	for (x = min(originx, finalx); x <= max(originx, finalx); x++) {
+		y=(int)((x-originx)*slope+originy);
+			pixel_map[y][x] = Color;
 		}
+	else{
+	for (y = min(originy, finaly); y<= max(originy, finaly); y++) {
+		x=(int)((y-originy)/slope+originx);
+			pixel_map[y][x] = Color;
+		}
+
 	}
+	
 }
 
 void graphics_draw_rectangle(short originy,
@@ -503,7 +508,7 @@ void graphics_draw_numbers(short originy,
 		originx,
 		originy + 4,
 		originx + 10,
-		Color_gui_background);
+		Color_background);
 	int d = digit(number);
 	for (i = 0; i < d; i++) {
 		switch (number /
@@ -1377,6 +1382,12 @@ void graphics_render() {
 		int originY = drawnTank->position.y;
 		int barrelOriginY;
 		int barrelOriginX;
+
+		graphics_draw_numbers(38+index*14,38,originY,Color_map_background);
+		graphics_draw_numbers(45+index*14,38,originX,Color_map_background);
+
+
+
 		switch (tilt) {
 		case 0: // 0
 			graphics_draw_sprite(originY - 3,
@@ -1523,6 +1534,7 @@ void graphics_render() {
 		pixel_map[(int)drawn_bullet->position.y]
 			 [(int)drawn_bullet->position.x] = Color_gui_black;
 	}
+
 
 	int pixel_buf_ptr = *(int *)0xFF203020; // PIXEL_BUF_CTRL_BASE
 	int pixel_ptr;

@@ -16,15 +16,11 @@ static inline void reset_tanks(void) {
 	}
 }
 void game_restart(void) {
-	if (game_instance.playing) {
-		error_show(ERROR_LOGIC_STILL_PLAYING);
-		return;
-	}
-	game_instance.playing = true;
 	game_instance.turn = 0;
 	map_generate();
 	game_instance.bullets.size = 0;
 	reset_tanks();
+	game_instance.waitingBullets = false;
 }
 static inline void update_waiting_bullets(void) {
 	size_t i;
@@ -40,6 +36,13 @@ static inline void update_waiting_bullets(void) {
 		}
 	}
 	game_instance.waitingBullets = game_instance.bullets.size;
+	for (i = 0; i < game_instance.tanks.size; i++) {
+		volatile Tank* const tank = &game_instance.tanks.array[i];
+		if (tank->alive) {
+			return;
+		}
+	}
+	game_restart();
 }
 static inline void shoot(void) {
 	if (game_instance.bullets.size == BULLET_CAPACITY) {
@@ -54,6 +57,10 @@ static inline void shoot(void) {
 	}
 }
 void game_update(void) {
+	if (keyboard_reset()) {
+		game_restart();
+		return;
+	}
 	if (game_instance.waitingBullets) {
 		update_waiting_bullets();
 		return;
@@ -61,12 +68,13 @@ void game_update(void) {
 	volatile Tank *const tank =
 		&game_instance.tanks.array[game_instance.turn];
 	volatile Barrel *const barrel = &tank->gun;
-	tank_move(tank, keyboard_tank_left() - keyboard_tank_right());
+	tank_move(tank, keyboard_tank_right() - keyboard_tank_left());
 	barrel_rotate(barrel, keyboard_barrel_left() - keyboard_barrel_right());
 	barrel_change_power(barrel,
 		keyboard_power_up() - keyboard_power_down(),
 		tank->health);
 	if (keyboard_shoot()) {
 		shoot();
+		tank->fuel = TANK_INITIAL_FUEL;
 	}
 }

@@ -13,10 +13,11 @@
 #define KEYBOARD_KEY_REPAIR 0x2D       // R
 #define KEYBOARD_KEY_TELEPORT 0x2C     // T
 #define KEYBOARD_KEY_SHIELD 0x2B       // F
+#define KEYBOARD_KEY_RESET 0x76        // ESC
 #define KEYBOARD_BREAK_CODE 0xF0
 
 /** Holds the key data. */
-static struct {
+volatile static struct {
 	bool tankLeft;
 	bool tankRight;
 	bool barrelLeft;
@@ -25,6 +26,8 @@ static struct {
 	bool powerDown;
 	bool shootCommand;
 	bool shoot;
+	bool resetCommand;
+	bool reset;
 } keyboard;
 /** The previous byte in the buffer. Says if it is a press or a release. */
 static volatile uint8_t previous_data;
@@ -63,6 +66,10 @@ void keyboard_update(void) {
 			keyboard.shoot = !keyboard.shootCommand && keyState;
 			keyboard.shootCommand = keyState;
 			break;
+		case KEYBOARD_KEY_RESET:
+			keyboard.reset = !keyboard.resetCommand && keyState;
+			keyboard.resetCommand = keyState;
+			break;
 		default:
 			break;
 		}
@@ -88,4 +95,7 @@ bool keyboard_power_down(void) {
 }
 bool keyboard_shoot(void) {
 	return keyboard.shoot;
+}
+bool keyboard_reset(void) {
+	return keyboard.reset;
 }
