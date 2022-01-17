@@ -28,7 +28,7 @@ static inline void update_waiting_bullets(void) {
 		volatile Bullet *const bullet = &game_instance.bullets.array[i];
 		bullet_move(bullet);
 		bool remove = false;
-		if (0.0F < bullet->position.x ||
+		if (0.0F > bullet->position.x ||
 			bullet->position.x >= MAP_WIDTH) {
 			remove = true;
 		} else if (bullet_contact(bullet)) {
