@@ -1,6 +1,7 @@
 #include "Bullet.h"
 
 #include "Audio.h"
+#include "Error.h"
 #include "Game.h"
 #include "MathTools.h"
 #include "Timer.h"
@@ -19,9 +20,10 @@ void bullet_init(volatile Bullet *const bullet) {
 	bullet->position = tank->position;
 	// Go to the middle of the tank, which has 3 pixels thickness.
 	bullet->position.y -= 1.5F * math_cos(tank->tilt);
-	vector_init(&bullet->velocity,
-		barrel->power * SPEED_MULTIPLIER,
-		tank->tilt + barrel->angle);
+	Vector unit;
+	vector_init(&unit, 1.0F, tank->tilt + barrel->angle);
+	bullet->position = vector_add(bullet->position, vector_mul(unit, 6.0F));
+	bullet->velocity = vector_mul(unit, barrel->power * SPEED_MULTIPLIER);
 }
 void bullet_move(volatile Bullet *const bullet) {
 	static Vector const acceleration = {.x = 0.0F, .y = GRAVITY};
@@ -49,8 +51,14 @@ static inline void apply_ground_damage(volatile Bullet const *const bullet) {
 		float const potential =
 			math_square(EXPLOSION_RADIUS) -
 			math_square(bullet->position.x - position);
-		float const destruction =
-			2.0F * math_sqrt(math_max(potential, 0.0F));
+		if (math_nan(potential)) {
+			error_show(ERROR_LOGIC_NAN_POTENTIAL);
+			return;
+		}
+		if (potential < 0.0F) {
+			continue;
+		}
+		float const destruction = 2.0F * math_sqrt(potential);
 		map_set(i, game_instance.map.ground[i] + destruction);
 	}
 }

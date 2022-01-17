@@ -35,6 +35,8 @@
 #define ERROR_LOGIC_NO_TANK_TO_REMOVE 200002U
 /** Setting ground height to NaN. */
 #define ERROR_LOGIC_NAN_HEIGHT 200003U
+/** Calculated potential being NaN. */
+#define ERROR_LOGIC_NAN_POTENTIAL 200004U
 
 /* Starting with 3: Graphics. */
 
