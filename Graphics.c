@@ -1388,7 +1388,7 @@ void graphics_render() {
 			barrelOriginY = originY - 2;
 			barrelOriginX = originX;
 			break;
-		case 1: // 22.5
+		case -1: // 22.5
 			graphics_draw_sprite(originY - 4,
 				originX - 4,
 				25,
@@ -1402,7 +1402,7 @@ void graphics_render() {
 			barrelOriginY = originY - 3;
 			barrelOriginX = originX - 1;
 			break;
-		case 2: // 45
+		case -2: // 45
 			graphics_draw_sprite(originY - 4,
 				originX - 4,
 				22,
@@ -1416,7 +1416,7 @@ void graphics_render() {
 			barrelOriginY = originY - 2;
 			barrelOriginX = originX - 2;
 			break;
-		case 3: // 67.5
+		case -3: // 67.5
 			graphics_draw_sprite(originY - 4,
 				originX - 4,
 				25,
@@ -1430,7 +1430,7 @@ void graphics_render() {
 			barrelOriginY = originY - 2;
 			barrelOriginX = originX - 3;
 			break;
-		case 4: // 90
+		case -4: // 90
 			graphics_draw_sprite(originY - 3,
 				originX - 3,
 				24,
@@ -1444,7 +1444,7 @@ void graphics_render() {
 			barrelOriginY = originY + 3;
 			barrelOriginX = originX - 2;
 			break;
-		case -4: // 270, -90
+		case 4: // 270, -90
 			graphics_draw_sprite(originY - 3,
 				originX,
 				24,
@@ -1458,7 +1458,7 @@ void graphics_render() {
 			barrelOriginY = originY;
 			barrelOriginX = originX + 2;
 			break;
-		case -3: // 292.5, -67.5
+		case 3: // 292.5, -67.5
 			graphics_draw_sprite(originY - 4,
 				originX,
 				25,
@@ -1472,7 +1472,7 @@ void graphics_render() {
 			barrelOriginY = originY - 1;
 			barrelOriginX = originX + 3;
 			break;
-		case -2: // 315, -45
+		case 2: // 315, -45
 			graphics_draw_sprite(originY - 4,
 				originX - 1,
 				22,
@@ -1486,7 +1486,7 @@ void graphics_render() {
 			barrelOriginY = originY - 2;
 			barrelOriginX = originX + 2;
 			break;
-		case -1: // 337.5, -22.5
+		case 1: // 337.5, -22.5
 			graphics_draw_sprite(originY - 4,
 				originX - 2,
 				25,
