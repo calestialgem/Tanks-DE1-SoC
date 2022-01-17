@@ -81,6 +81,9 @@ uint8_t sprite_num_9_white[2][3] = {{3, 1, 3}, {0, 1, 1}};
 uint8_t sprite_num_P[2][10] = {
 	{0, 1, 2, 3, 4, 0, 2, 0, 1, 2}, {0, 0, 0, 0, 0, 1, 1, 2, 2, 2}};
 
+// Barrel Sprites
+uint8_t sprite_barrel_45[2][6] = {{5, 4, 3, 2, 1, 0}, {0, 1, 2, 3, 4, 5}};
+
 // Tank Sprites
 uint8_t sprite_tank_m90_red[2][24] = {{1,
 					      2,
@@ -1315,6 +1318,7 @@ void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
 		sprite_tank_0_grey,
 		Color_tank_grey); // Player Indicator
 	graphics_draw_sprite(6, 17, 10, sprite_num_P, Color_gui_black);
+	graphics_draw_sprite(3, 10, 6, sprite_barrel_45, Color_barrel);
 }
 
 void graphics_render() {
