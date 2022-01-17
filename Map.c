@@ -33,6 +33,13 @@ void map_generate(void) {
 		float const line = lineStart + x * slope;
 		map_set(x, sin * line * MAP_HEIGHT);
 	}
+	game_instance.map.acceleration.x =
+		math_random(-1.0F, 1.0F) * MAP_MAX_WIND;
+	game_instance.map.acceleration.y = 9.81F;
+	game_instance.map.positionEffect = vector_mul(
+		game_instance.map.acceleration, math_square(TIMER_STEP) / 2.0F);
+	game_instance.map.velocityEffect =
+		vector_mul(game_instance.map.acceleration, TIMER_STEP);
 }
 size_t map_index(float const position) {
 	return math_clamp(position, 0.0F, MAP_WIDTH - 1.0F);

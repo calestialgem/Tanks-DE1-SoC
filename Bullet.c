@@ -6,7 +6,6 @@
 #include "MathTools.h"
 #include "Timer.h"
 
-#define GRAVITY 9.81F	   // Asuming 1 pixel = 1 meter
 #define BULLET_RADIUS 0.5F // 1x1 pixel drawing
 #define EXPLOSION_RADIUS 10.0F
 #define SPEED_MULTIPLIER (20.0F * TIMER_STEP)
@@ -26,15 +25,12 @@ void bullet_init(volatile Bullet *const bullet) {
 	bullet->velocity = vector_mul(unit, barrel->power * SPEED_MULTIPLIER);
 }
 void bullet_move(volatile Bullet *const bullet) {
-	static Vector const acceleration = {.x = 0.0F, .y = GRAVITY};
-	Vector const velocityEffect = vector_mul(bullet->velocity, TIMER_STEP);
-	Vector const accelerationEffect =
-		vector_mul(acceleration, math_square(TIMER_STEP) / 2.0F);
-	Vector const positionChange =
-		vector_add(velocityEffect, accelerationEffect);
-	bullet->position = vector_add(bullet->position, positionChange);
-	Vector const velocityChange = vector_mul(acceleration, TIMER_STEP);
-	bullet->velocity = vector_add(bullet->velocity, velocityChange);
+	bullet->position = vector_add(
+		bullet->position, vector_mul(bullet->velocity, TIMER_STEP));
+	bullet->position =
+		vector_add(bullet->position, game_instance.map.positionEffect);
+	bullet->velocity =
+		vector_add(bullet->velocity, game_instance.map.velocityEffect);
 }
 bool bullet_contact(volatile Bullet const *const bullet) {
 	return game_instance.map.ground[map_index(bullet->position.x)] <=
