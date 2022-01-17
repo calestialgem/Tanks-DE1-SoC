@@ -1513,6 +1513,13 @@ void graphics_render() {
 			Color_barrel);
 	}
 
+	for (index = 0; index < drawn_copy.bullets.size; index++) {
+		Bullet const *const drawn_bullet =
+			&drawn_copy.bullets.array[index];
+		pixel_map[(int)drawn_bullet->position.y]
+			 [(int)drawn_bullet->position.x] = Color_gui_black;
+	}
+
 	int pixel_buf_ptr = *(int *)0xFF203020; // PIXEL_BUF_CTRL_BASE
 	int pixel_ptr;
 
