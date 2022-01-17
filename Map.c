@@ -9,10 +9,6 @@
 #define FLOOR (0.95F * MAP_HEIGHT)
 
 void map_set(size_t const index, float const height) {
-	if (math_nan(height)) {
-		error_show(ERROR_LOGIC_NAN_HEIGHT);
-		return;
-	}
 	game_instance.map.ground[index] = math_clamp(height, CEILING, FLOOR);
 }
 void map_generate(void) {

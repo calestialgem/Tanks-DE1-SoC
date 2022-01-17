@@ -6,12 +6,12 @@
 #include "MathTools.h"
 #include "Timer.h"
 
-#define MAX_DAMAGE_DISTANCE_SQUARED 900.0F // 30 pixels
-#define GRAVITY 9.81F			   // Asuming 1 pixel = 1 meter
-#define BULLET_RADIUS 0.5F		   // 1x1 pixel drawing
+#define GRAVITY 9.81F	   // Asuming 1 pixel = 1 meter
+#define BULLET_RADIUS 0.5F // 1x1 pixel drawing
 #define EXPLOSION_RADIUS 10.0F
 #define SPEED_MULTIPLIER (20.0F * TIMER_STEP)
-#define DAMAGE_MULTIPLIER 0.2F
+#define DAMAGE_MULTIPLIER 1000.0F // ~30 Pixel Damage Radius
+#define MAX_DAMAGE 30.0F
 
 void bullet_init(volatile Bullet *const bullet) {
 	volatile Tank *const tank =
@@ -51,14 +51,14 @@ static inline void apply_ground_damage(volatile Bullet const *const bullet) {
 		float const potential =
 			math_square(EXPLOSION_RADIUS) -
 			math_square(bullet->position.x - position);
-		if (math_nan(potential)) {
-			error_show(ERROR_LOGIC_NAN_POTENTIAL);
-			return;
-		}
 		if (potential < 0.0F) {
 			continue;
 		}
 		float const destruction = 2.0F * math_sqrt(potential);
+		if (math_nan(destruction)) {
+			error_show(ERROR_LOGIC_NAN_DESTRUCTION);
+			return;
+		}
 		map_set(i, game_instance.map.ground[i] + destruction);
 	}
 }
@@ -72,11 +72,11 @@ static inline void apply_tank_damage(volatile Bullet const *const bullet) {
 		float const distanceSquared = vector_square(
 			vector_sub(tank->position, bullet->position));
 		tank_update_map_position(tank);
-		if (distanceSquared > MAX_DAMAGE_DISTANCE_SQUARED) {
+		if (distanceSquared > DAMAGE_MULTIPLIER) {
 			continue;
 		}
-		tank->health -=
-			EXPLOSION_RADIUS * DAMAGE_MULTIPLIER / distanceSquared;
+		tank->health -= math_min(
+			DAMAGE_MULTIPLIER / distanceSquared, MAX_DAMAGE);
 		tank->alive = tank->health > 0.0F;
 		if (!tank->alive) {
 			audio_play_tank_death();
