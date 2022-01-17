@@ -54,6 +54,9 @@ float map_slope(size_t const index) {
 	}
 	float const leftSlope = slope(index - 1, index);
 	float const rightSlope = slope(index, index + 1);
-	return math_abs(leftSlope) < math_abs(rightSlope) ? leftSlope
-							  : rightSlope;
+	return math_clamp(math_abs(leftSlope) < math_abs(rightSlope)
+				  ? leftSlope
+				  : rightSlope,
+		-MATH_PI_2,
+		MATH_PI_2);
 }

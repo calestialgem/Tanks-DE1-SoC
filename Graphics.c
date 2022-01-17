@@ -637,7 +637,7 @@ void graphics_draw_numbers(short originy,
 
 void graphics_draw_power(int power) {
 	graphics_draw_rectangle(
-		4, 72, 23, 83, Color_gui_background); // Reset its background to
+		4, 72, 24, 83, Color_gui_background); // Reset its background to
 						      // reset the slider.
 	graphics_draw_rectangle(4, 73, 7, 82, Color_gui_red); // Draw the cone
 	graphics_draw_rectangle(8, 74, 11, 81, Color_gui_red);
