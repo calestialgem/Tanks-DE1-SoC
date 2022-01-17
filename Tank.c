@@ -61,10 +61,17 @@ void tank_init(volatile Tank *const tank, float const position) {
 	game_instance.tanks.living++;
 }
 void tank_damage(volatile Tank *const tank, float const damage) {
-	tank->health -= damage;
-	if (tank->health <= 0.0F) {
+	float const newHealth = tank->health - damage;
+	if (newHealth <= 0.0F) {
+		tank->health = 0;
 		tank->alive = false;
+		tank->gun.power = 0;
 		game_instance.tanks.living--;
 		audio_play_tank_death();
+		return;
+	}
+	tank->health = newHealth;
+	if (tank->gun.power > tank->health) {
+		tank->gun.power = tank->health;
 	}
 }
