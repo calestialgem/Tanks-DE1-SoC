@@ -7,8 +7,8 @@
 
 #define TANK_INITIAL_HEALTH 100
 #define TANK_INITIAL_FUEL 250
-#define TANK_FUEL_CONSUMPTION (2.5F * TIMER_STEP)
-#define TANK_SPEED (10.0F * TIMER_STEP)
+#define TANK_FUEL_CONSUMPTION (1.0F * TIMER_STEP)
+#define TANK_SPEED (5.0F * TIMER_STEP)
 
 void tank_add(size_t const color) {
 	if (game_instance.tanks.size == TANK_CAPACITY) {
