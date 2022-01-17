@@ -37,7 +37,7 @@ static inline void update_waiting_bullets(void) {
 	}
 	game_instance.waitingBullets = game_instance.bullets.size;
 	for (i = 0; i < game_instance.tanks.size; i++) {
-		volatile Tank* const tank = &game_instance.tanks.array[i];
+		volatile Tank *const tank = &game_instance.tanks.array[i];
 		if (tank->alive) {
 			return;
 		}

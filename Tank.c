@@ -32,8 +32,7 @@ void tank_update_map_position(volatile Tank *const tank) {
 	tank->tilt = math_atan(map_slope(index));
 }
 void tank_place(volatile Tank *const tank, float const position) {
-	tank->fuel -=
-		math_abs(tank->position.x - position);
+	tank->fuel -= math_abs(tank->position.x - position);
 	if (tank->fuel < 0.0F) {
 		tank->fuel = 0.0F;
 	}

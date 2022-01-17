@@ -39,11 +39,14 @@ bool bullet_contact(volatile Bullet const *const bullet) {
 		return true;
 	}
 	size_t const index = math_floor(bullet->position.x);
-	return game_instance.map.ground[index] <= bullet->position.y + BULLET_RADIUS;
+	return game_instance.map.ground[index] <=
+	       bullet->position.y + BULLET_RADIUS;
 }
 static inline void apply_ground_damage(volatile Bullet const *const bullet) {
-	size_t const leftEdge = math_floor(math_clamp(bullet->position.x - EXPLOSION_RADIUS, 0.0F, MAP_WIDTH-1.0F));
-	size_t const rightEdge = math_floor(math_clamp(bullet->position.x + EXPLOSION_RADIUS, 0.0F, MAP_WIDTH-1.0F));
+	size_t const leftEdge = math_floor(math_clamp(
+		bullet->position.x - EXPLOSION_RADIUS, 0.0F, MAP_WIDTH - 1.0F));
+	size_t const rightEdge = math_floor(math_clamp(
+		bullet->position.x + EXPLOSION_RADIUS, 0.0F, MAP_WIDTH - 1.0F));
 	size_t i;
 	for (i = leftEdge; i <= rightEdge; i++) {
 		float const position = i + 0.5F;
