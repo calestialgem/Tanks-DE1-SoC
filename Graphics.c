@@ -1326,7 +1326,6 @@ void graphics_render() {
 	drawn_copy = game_instance;
 	interrupt_enable();
 	int x, y;
-	volatile int *led_ptr = (int *)0XFF200000;
 
 	// Paint the ground & the background
 	for (y = 0; y < MAP_HEIGHT; y++) {
