@@ -44,21 +44,6 @@ static short Color_gui_background = (short)0xFFFF;
 static short Color_map_ground = (short)0xFFFF;
 static short Color_map_background = (short)0x9E7F;
 
-// Number Sprites
-static short Color_tank[GRAPHICS_TANK_COLOR_COUNT] = {0xC000, 0x0260, 0x11B4, 0x8010, 0xFEA0};
-static short Color_tank_grey =(short) 0xC618;
-static short Color_barrel =(short) 0x0000;
-
-static short Color_gui_red =(short) 0xF800;
-static short Color_gui_black =(short) 0x0000;
-static short Color_gui_grey =(short) 0x7BEF;
-static short Color_gui_background =(short) 0xFFFF;
-
-static short Color_map_ground =(short) 0xFFFF;
-static short Color_map_background =(short) 0x9E7F;
-
-
-
 
 
 //Number Sprites
@@ -335,10 +320,7 @@ void graphics_initialize(){	//Initialize the whole screen, Draw all the pixels t
 	graphics_draw_sprite(24,47,33,  sprite_key_p,           Color_gui_black);
 	graphics_draw_sprite(24,57,30,  sprite_key_t,           Color_gui_black);
 	graphics_draw_sprite(7,7,2,     sprite_tank_0_grey,     Color_tank_grey);			//Player Indicator
-	graphics_draw_sprite(3,10,6,    sprite_barrel_45,       Color_barrel);
 	graphics_draw_sprite(6,17,10,   sprite_num_P,           Color_gui_black);
-
-
 }
 
 
