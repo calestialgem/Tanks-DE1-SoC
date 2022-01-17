@@ -27,9 +27,16 @@ static inline void update_waiting_bullets(void) {
 	for (i = 0; i < game_instance.bullets.size; i++) {
 		volatile Bullet *const bullet = &game_instance.bullets.array[i];
 		bullet_move(bullet);
-		if (bullet_contact(bullet)) {
+		bool remove = false;
+		if (0.0F < bullet->position.x ||
+			bullet->position.x >= MAP_WIDTH) {
+			remove = true;
+		} else if (bullet_contact(bullet)) {
 			audio_play_explosion();
 			bullet_explode(bullet);
+			remove = true;
+		}
+		if (remove) {
 			*bullet = game_instance.bullets
 					  .array[--game_instance.bullets.size];
 			i--;
