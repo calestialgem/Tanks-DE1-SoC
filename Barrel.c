@@ -3,7 +3,7 @@
 #include "Audio.h"
 #include "Timer.h"
 
-#define SPEED (0.2F * TIMER_STEP)
+#define SPEED (0.4F * TIMER_STEP)
 #define INITIAL_ANGLE MATH_PI_4
 #define LOWER_ANGLE 0.0F
 #define UPPER_ANGLE (MATH_PI - LOWER_ANGLE)
