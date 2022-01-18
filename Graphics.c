@@ -253,7 +253,12 @@ void graphics_draw_angle(int angle){
 
 void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
 			     // that doesn't need redrawing.
-	int x, y, i;
+	//Copy the game firstly. (Since we need to copy the game to stop updating, we don't need back buffer.)
+	interrupt_disable();
+	drawn_copy = game_instance;
+	interrupt_enable();
+
+	int x, y;
 
 	short Color_gui_cloud_blue = (short)0x051D;
 	short Color_gui_fuel_green = (short)0x0320;
@@ -327,10 +332,12 @@ void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
 		graphics_draw_sprite(7,7,2,     sprite_tank_0_grey,     Color_tank_grey);			//Player Indicator
 		graphics_draw_sprite(3,10,6,    sprite_barrel_45,       Color_barrel);
 		graphics_draw_sprite(6,17,10,   sprite_num_P,           Color_gui_black);
-		for(i=0;i<TANK_COUNT;i++){		//Tank Health GUI
-			graphics_draw_sprite(11,142+i*25,22,sprite_tank_indicator,color(i));	//3 tankın da colorını tutan array
-			graphics_draw_sprite(8,145+i*25,6,    sprite_barrel_45,       Color_barrel);
-			graphics_draw_sprite(11,142+i*25,2,     sprite_tank_0_grey,     Color_tank_grey);
+		size_t index;
+		for (index = 0; index < drawn_copy.tanks.size; index++) {		//Tank Health GUI
+			Tank *drawnTank = &drawn_copy.tanks.array[index];
+			graphics_draw_sprite(11,142+index*25,22,sprite_tank_indicator,drawnTank->color);
+			graphics_draw_sprite(8,145+index*25,6,    sprite_barrel_45,       Color_barrel);
+			graphics_draw_sprite(11,142+index*25,2,     sprite_tank_0_grey,     Color_tank_grey);
 		}
 
 }
