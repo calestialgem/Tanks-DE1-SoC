@@ -11,6 +11,15 @@
 void map_set(size_t const index, float const height) {
 	game_instance.map.ground[index] = math_clamp(height, CEILING, FLOOR);
 }
+void map_randomize_wind(void) {
+	game_instance.map.acceleration.x =
+		math_random(-1.0F, 1.0F) * MAP_MAX_WIND;
+	game_instance.map.acceleration.y = 9.81F;
+	game_instance.map.positionEffect = vector_mul(
+		game_instance.map.acceleration, math_square(TIMER_STEP) / 2.0F);
+	game_instance.map.velocityEffect =
+		vector_mul(game_instance.map.acceleration, TIMER_STEP);
+}
 void map_generate(void) {
 	float const peakCount = math_random(1.25F, 2.0F);
 	float const start = math_random(0.0F, MATH_2PI);
@@ -33,13 +42,7 @@ void map_generate(void) {
 		float const line = lineStart + x * slope;
 		map_set(x, sin * line * MAP_HEIGHT);
 	}
-	game_instance.map.acceleration.x =
-		math_random(-1.0F, 1.0F) * MAP_MAX_WIND;
-	game_instance.map.acceleration.y = 9.81F;
-	game_instance.map.positionEffect = vector_mul(
-		game_instance.map.acceleration, math_square(TIMER_STEP) / 2.0F);
-	game_instance.map.velocityEffect =
-		vector_mul(game_instance.map.acceleration, TIMER_STEP);
+	map_randomize_wind();
 }
 size_t map_index(float const position) {
 	return math_clamp(position, 0.0F, MAP_WIDTH - 1.0F);

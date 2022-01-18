@@ -25,6 +25,8 @@ typedef struct {
 
 /** Sets the ground to the given value after clamping. */
 void map_set(size_t const index, float const height);
+/** Sets the wind to a random value. */
+void map_randomize_wind(void);
 /** Generates the terrain. */
 void map_generate(void);
 /** Returns the index that corresponds to the given position. Clamps to map
