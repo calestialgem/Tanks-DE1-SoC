@@ -146,7 +146,7 @@ static Game drawn_copy;
 /** Pixel map that buffers the color data to the screen. */
 short pixel_map[MAP_HEIGHT][MAP_WIDTH];
 
-void graphics_draw_line(short originy, short originx, short finaly, short finalx, short Color){ //Input start and end points.
+void graphics_draw_line(float originy, float originx, float finaly, float finalx, short Color){ //Input start and end points.
 	float slope = (finaly - originy) / (finalx - originx);
 	int x, y;
 	if (math_abs(slope) <= 1)
@@ -241,15 +241,11 @@ void graphics_draw_power(int power){
 	pixel_map[4][84]=Color_gui_background;
 }
 
-
-
 void graphics_draw_angle(int angle){
 	graphics_draw_rectangle(3,92,8,110,Color_gui_background);	//Reset its background to reset the slider.
 	graphics_draw_rectangle(4,92,7,110,Color_gui_red);			//Draw the bar
 	graphics_draw_rectangle(3,110-angle/10,8,110-angle/10,Color_gui_black);		//Draw the slider
 }
-
-
 
 void graphics_initialize() { // Initialize the whole screen, Draw all the pixels that doesn't need redrawing.
 
