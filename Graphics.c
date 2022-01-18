@@ -174,8 +174,7 @@ void graphics_draw_rectangle(short originy, short originx, short finaly, short f
 void graphics_draw_sprite(short originy, short originx, uint8_t pixel_count, uint8_t pixel_set[2][pixel_count], short Color){
 	int i;
 	for (i = 0; i < pixel_count; i++)
-		pixel_map[originy + pixel_set[0][i]]
-			 [originx + pixel_set[1][i]] = Color;
+		pixel_map[originy + pixel_set[0][i]] [originx + pixel_set[1][i]] = Color;
 }
 
 void graphics_draw_numbers(short originy, short originx, int number, short Color_background){ //Input origin of number. (Number is 1-3 digits long)
@@ -268,69 +267,69 @@ void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
 	}
 
 	//Define the sprites that won't change and print them on.{{y},{x}}
-		uint8_t sprite_fuel_can_black[2][26] ={{0,2,3,4,5,6,7,1,2,7,1,2,4,5,7,1,2,4,6,7,2,3,4,5,6,7},
-																			     {0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,4}};
-	  uint8_t sprite_fuel_can_green[2][8]  ={{3,4,5,6,3,6,3,5},
-					    													   {1,1,1,1,2,2,3,3}};
-	  uint8_t sprite_health_black[2][24]   ={{1,2,3,4,5,1,5,0,1,5,1,5,1,5,0,1,5,1,5,1,2,3,4,5},
-	                                         {0,0,0,0,0,1,1,2,2,2,3,3,4,4,5,5,5,6,6,7,7,7,7,7}};
-	  uint8_t sprite_health_red[2][5]      ={{3,2,3,4,3},
-	                                         {4,5,5,5,6}};
-	  uint8_t sprite_health_blue[2][2]     ={{3,3},
-	                                         {1,2}};
-		uint8_t sprite_shield[2][16]         ={{2,3,4,1,5,0,6,0,6,0,6,1,5,2,3,4},
-																		       {0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6}};
-		uint8_t sprite_repair_black[2][19]   ={{1,2,0,2,0,1,2,3,2,3,4,3,4,5,4,5,6,5,6},
-																		       {0,0,1,1,2,2,2,2,3,3,3,4,4,4,5,5,5,6,6}};
-		uint8_t sprite_repair_grey[2][8]     ={{5,6,4,5,6,5,2,1},
-																		       {1,1,2,2,2,3,5,6}};
-		uint8_t sprite_parachute_black[2][5] ={{4,5,6,5,4},
-																		       {1,2,3,4,5}};
-		uint8_t sprite_parachute_grey[2][17] ={{2,3,1,3,0,2,3,0,1,3,0,2,3,1,3,2,3},
-																		       {0,0,1,1,2,2,2,3,3,3,4,4,4,5,5,6,6}};
-		uint8_t sprite_teleport_black[2][8]  ={{1,2,0,0,1,2,3,4},
-																		       {0,0,1,2,3,3,4,4}};
-		uint8_t sprite_teleport_red[2][5]    ={{4,6,5,4,6},
-																		       {3,3,4,5,5}};
-		uint8_t sprite_cloud[2][57]          ={{2,3,4,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,2,3,4,5,2,3,4,5,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5, 1, 2, 3, 4, 5, 2, 3, 4},
-																		       {0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,6,7,7,7,7,7,7,8,8,8,8,8,8,9,9,9,9,9,9,10,10,10,10,10,11,11,11}};
-		uint8_t sprite_key_f[2][31]          ={{0,1,2,3,4,5,6,0,6,0,6,0,6,0,6,0,6,0,1,2,3,4,5,6,2,3,4,5,2,4,2},
-																		       {0,0,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,2,2,2,2,3,3,4}};
-		uint8_t sprite_key_r[2][33]          ={{0,1,2,3,4,5,6,0,6,0,6,0,6,0,6,0,6,0,1,2,3,4,5,6,2,3,4,5,2,4,2,3,5},
-																	         {0,0,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,2,2,2,2,3,3,4,4,4}};
-		uint8_t sprite_key_p[2][33]          ={{0,1,2,3,4,5,6,0,6,0,6,0,6,0,6,0,6,0,1,2,3,4,5,6,2,3,4,5,2,4,2,3,4},
-																		       {0,0,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,2,2,2,2,3,3,4,4,4}};
-		uint8_t sprite_key_t[2][30]          ={{0,1,2,3,4,5,6,0,6,0,6,0,6,0,6,0,6,0,1,2,3,4,5,6,2,2,3,4,5,2},
-																	  	     {0,0,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,2,3,3,3,3,4}};
+	uint8_t sprite_fuel_can_black[2][26] ={{0,2,3,4,5,6,7,1,2,7,1,2,4,5,7,1,2,4,6,7,2,3,4,5,6,7},
+																		     {0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,4}};
+	uint8_t sprite_fuel_can_green[2][8]  ={{3,4,5,6,3,6,3,5},
+				    													   {1,1,1,1,2,2,3,3}};
+	uint8_t sprite_health_black[2][24]   ={{1,2,3,4,5,1,5,0,1,5,1,5,1,5,0,1,5,1,5,1,2,3,4,5},
+	                                       {0,0,0,0,0,1,1,2,2,2,3,3,4,4,5,5,5,6,6,7,7,7,7,7}};
+	uint8_t sprite_health_red[2][5]      ={{3,2,3,4,3},
+	                                       {4,5,5,5,6}};
+	uint8_t sprite_health_blue[2][2]     ={{3,3},
+	                                       {1,2}};
+	uint8_t sprite_shield[2][16]         ={{2,3,4,1,5,0,6,0,6,0,6,1,5,2,3,4},
+	  															       {0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6}};
+	uint8_t sprite_repair_black[2][19]   ={{1,2,0,2,0,1,2,3,2,3,4,3,4,5,4,5,6,5,6},
+																	       {0,0,1,1,2,2,2,2,3,3,3,4,4,4,5,5,5,6,6}};
+	uint8_t sprite_repair_grey[2][8]     ={{5,6,4,5,6,5,2,1},
+																	       {1,1,2,2,2,3,5,6}};
+	uint8_t sprite_parachute_black[2][5] ={{4,5,6,5,4},
+																	       {1,2,3,4,5}};
+	uint8_t sprite_parachute_grey[2][17] ={{2,3,1,3,0,2,3,0,1,3,0,2,3,1,3,2,3},
+																	       {0,0,1,1,2,2,2,3,3,3,4,4,4,5,5,6,6}};
+	uint8_t sprite_teleport_black[2][8]  ={{1,2,0,0,1,2,3,4},
+																	       {0,0,1,2,3,3,4,4}};
+	uint8_t sprite_teleport_red[2][5]    ={{4,6,5,4,6},
+																	       {3,3,4,5,5}};
+	uint8_t sprite_cloud[2][57]          ={{2,3,4,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,2,3,4,5,2,3,4,5,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5, 1, 2, 3, 4, 5, 2, 3, 4},
+																	       {0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,6,7,7,7,7,7,7,8,8,8,8,8,8,9,9,9,9,9,9,10,10,10,10,10,11,11,11}};
+	uint8_t sprite_key_f[2][31]          ={{0,1,2,3,4,5,6,0,6,0,6,0,6,0,6,0,6,0,1,2,3,4,5,6,2,3,4,5,2,4,2},
+																	       {0,0,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,2,2,2,2,3,3,4}};
+	uint8_t sprite_key_r[2][33]          ={{0,1,2,3,4,5,6,0,6,0,6,0,6,0,6,0,6,0,1,2,3,4,5,6,2,3,4,5,2,4,2,3,5},
+																         {0,0,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,2,2,2,2,3,3,4,4,4}};
+	uint8_t sprite_key_p[2][33]          ={{0,1,2,3,4,5,6,0,6,0,6,0,6,0,6,0,6,0,1,2,3,4,5,6,2,3,4,5,2,4,2,3,4},
+																	       {0,0,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,2,2,2,2,3,3,4,4,4}};
+	uint8_t sprite_key_t[2][30]          ={{0,1,2,3,4,5,6,0,6,0,6,0,6,0,6,0,6,0,1,2,3,4,5,6,2,2,3,4,5,2},
+																  	     {0,0,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,2,3,3,3,3,4}};
 
-		graphics_draw_sprite(14,8,26,   sprite_fuel_can_black,  Color_gui_black);			//Fuel Can
-	    graphics_draw_sprite(14,8,8,    sprite_fuel_can_green,  Color_gui_fuel_green);
-		graphics_draw_sprite(25,7,24,   sprite_health_black,    Color_gui_black);			//Health
-		graphics_draw_sprite(25,7,5,    sprite_health_red,      Color_gui_red);
-		graphics_draw_sprite(25,7,2,    sprite_health_blue,     Color_gui_health_blue);
-		graphics_draw_sprite(4,42,16,   sprite_shield,          Color_gui_shield_blue);//Shield
-		graphics_draw_sprite(15,37,19,  sprite_repair_black,    Color_gui_black);			//Repair Pack
-		graphics_draw_sprite(15,37,8,   sprite_repair_grey,     Color_gui_grey);
-		graphics_draw_sprite(15,47,5,   sprite_parachute_black, Color_gui_black);			//Parachute
-		graphics_draw_sprite(15,47,17,  sprite_parachute_grey,  Color_gui_grey);
-		graphics_draw_sprite(15,57,8,   sprite_teleport_black,  Color_gui_black);			//Teleport
-		graphics_draw_sprite(15,57,5,   sprite_teleport_red,    Color_gui_red);
-		graphics_draw_sprite(3,120,57,  sprite_cloud,           Color_gui_cloud_blue);//Cloud
-		graphics_draw_sprite(4,52,31,   sprite_key_f,           Color_gui_black);			//Keys
-		graphics_draw_sprite(24,37,33,  sprite_key_r,           Color_gui_black);
-		graphics_draw_sprite(24,47,33,  sprite_key_p,           Color_gui_black);
-		graphics_draw_sprite(24,57,30,  sprite_key_t,           Color_gui_black);
-		graphics_draw_sprite(7,7,2,     sprite_tank_0_grey,     Color_tank_grey);			//Player Indicator
-		graphics_draw_sprite(3,10,6,    sprite_barrel_45,       Color_barrel);
-		graphics_draw_sprite(6,17,10,   sprite_num_P,           Color_gui_black);
-		int index;
-		for (index = 0; index < game_instance.tanks.size; index++) {		//Tank Health GUI
-			graphics_draw_sprite(11,142+index*25,22,sprite_tank_indicator,Color_tank[game_instance.tanks.array[index].color]);
-			graphics_draw_sprite(7,145+index*25,6,    sprite_barrel_45,       Color_barrel);
-			graphics_draw_sprite(11,142+index*25,2,     sprite_tank_0_grey,     Color_tank_grey);
-			graphics_draw_sprite(17,142+index*25,10,   sprite_num_P,           Color_gui_black);
-			graphics_draw_numbers(17,146+index*25,index + 1,Color_gui_background);  // Player number
-		}
+	graphics_draw_sprite(14,8,26,   sprite_fuel_can_black,  Color_gui_black);			//Fuel Can
+  graphics_draw_sprite(14,8,8,    sprite_fuel_can_green,  Color_gui_fuel_green);
+	graphics_draw_sprite(25,7,24,   sprite_health_black,    Color_gui_black);			//Health
+	graphics_draw_sprite(25,7,5,    sprite_health_red,      Color_gui_red);
+	graphics_draw_sprite(25,7,2,    sprite_health_blue,     Color_gui_health_blue);
+	graphics_draw_sprite(4,42,16,   sprite_shield,          Color_gui_shield_blue);//Shield
+	graphics_draw_sprite(15,37,19,  sprite_repair_black,    Color_gui_black);			//Repair Pack
+	graphics_draw_sprite(15,37,8,   sprite_repair_grey,     Color_gui_grey);
+	graphics_draw_sprite(15,47,5,   sprite_parachute_black, Color_gui_black);			//Parachute
+	graphics_draw_sprite(15,47,17,  sprite_parachute_grey,  Color_gui_grey);
+	graphics_draw_sprite(15,57,8,   sprite_teleport_black,  Color_gui_black);			//Teleport
+	graphics_draw_sprite(15,57,5,   sprite_teleport_red,    Color_gui_red);
+	graphics_draw_sprite(3,120,57,  sprite_cloud,           Color_gui_cloud_blue);//Cloud
+	graphics_draw_sprite(4,52,31,   sprite_key_f,           Color_gui_black);			//Keys
+	graphics_draw_sprite(24,37,33,  sprite_key_r,           Color_gui_black);
+	graphics_draw_sprite(24,47,33,  sprite_key_p,           Color_gui_black);
+	graphics_draw_sprite(24,57,30,  sprite_key_t,           Color_gui_black);
+	graphics_draw_sprite(7,7,2,     sprite_tank_0_grey,     Color_tank_grey);			//Player Indicator
+	graphics_draw_sprite(3,10,6,    sprite_barrel_45,       Color_barrel);
+	graphics_draw_sprite(6,17,10,   sprite_num_P,           Color_gui_black);
+	int index;
+	for (index = 0; index < game_instance.tanks.size; index++) {		//Tank Health GUI
+		graphics_draw_sprite(11,142+index*25,22,sprite_tank_indicator,Color_tank[game_instance.tanks.array[index].color]);
+		graphics_draw_sprite(7,145+index*25,6,    sprite_barrel_45,       Color_barrel);
+		graphics_draw_sprite(11,142+index*25,2,     sprite_tank_0_grey,     Color_tank_grey);
+		graphics_draw_sprite(17,142+index*25,10,   sprite_num_P,           Color_gui_black);
+		graphics_draw_numbers(17,146+index*25,index + 1,Color_gui_background);  // Player number
+	}
 
 }
 
@@ -468,10 +467,8 @@ void graphics_render() {
 	int pixel_buf_ptr = *(int *)0xFF203020; // PIXEL_BUF_CTRL_BASE
 	int pixel_ptr;
 	for (y = 0; y < MAP_HEIGHT; y++)
-		for (x = 0; x < MAP_WIDTH;
-			x++) { // Change to correct pixel's address.
+		for (x = 0; x < MAP_WIDTH; x++) { // Change to correct pixel's address.
 			pixel_ptr = pixel_buf_ptr + (y << 10) + (x << 1);
-			*(short *)pixel_ptr =
-				pixel_map[y][x]; // Set pixel color.
+			*(short *)pixel_ptr = pixel_map[y][x]; // Set pixel color.
 		}
 }
