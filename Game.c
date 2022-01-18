@@ -27,6 +27,7 @@ static inline void next_turn(void) {
 		game_instance.turn++;
 		game_instance.turn %= game_instance.tanks.size;
 	} while (!game_instance.tanks.array[game_instance.turn].alive);
+	map_randomize_wind();
 }
 static inline void update_bullets(void) {
 	size_t i;

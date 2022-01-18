@@ -183,7 +183,7 @@ void graphics_draw_numbers(short originy, short originx, int number, short Color
 	graphics_draw_rectangle(originy,originx,originy+4,originx+10,Color_background);
 	int d = digit(number);
 	for (i = 0; i < d; i++) {
-		switch(  number/(int)pow(10,d-1-i)   ){	//Number/100 gives the biggest digit for 3 digits. Cast pow result whic is double to int.
+		switch(  number/(int)fpow(10,d-1-i)   ){	//Number/100 gives the biggest digit for 3 digits. Cast pow result whic is double to int.
       case 0:
         graphics_draw_sprite(originy, originx+4*i,12,sprite_num_0_black, Color_gui_black);
         graphics_draw_sprite(originy, originx+4*i,3,sprite_num_0_white, Color_background);
@@ -225,7 +225,7 @@ void graphics_draw_numbers(short originy, short originx, int number, short Color
         graphics_draw_sprite(originy, originx+4*i,3,sprite_num_9_white, Color_background);
       break;
     }
-    number=number%(int)pow(10,d-1-i);
+    number=number%(int)fpow(10,d-1-i);
   }
 }
 
@@ -251,12 +251,7 @@ void graphics_draw_angle(int angle){
 
 
 
-void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
-			     // that doesn't need redrawing.
-	//Copy the game firstly. (Since we need to copy the game to stop updating, we don't need back buffer.)
-	interrupt_disable();
-	drawn_copy = game_instance;
-	interrupt_enable();
+void graphics_initialize() { // Initialize the whole screen, Draw all the pixels that doesn't need redrawing.
 
 	int x, y;
 
@@ -313,7 +308,7 @@ void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
 																	  	     {0,0,0,0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,6,6,6,6,6,2,3,3,3,3,4}};
 
 		graphics_draw_sprite(14,8,26,   sprite_fuel_can_black,  Color_gui_black);			//Fuel Can
-	  graphics_draw_sprite(14,8,8,    sprite_fuel_can_green,  Color_gui_fuel_green);
+	    graphics_draw_sprite(14,8,8,    sprite_fuel_can_green,  Color_gui_fuel_green);
 		graphics_draw_sprite(25,7,24,   sprite_health_black,    Color_gui_black);			//Health
 		graphics_draw_sprite(25,7,5,    sprite_health_red,      Color_gui_red);
 		graphics_draw_sprite(25,7,2,    sprite_health_blue,     Color_gui_health_blue);
@@ -324,7 +319,7 @@ void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
 		graphics_draw_sprite(15,47,17,  sprite_parachute_grey,  Color_gui_grey);
 		graphics_draw_sprite(15,57,8,   sprite_teleport_black,  Color_gui_black);			//Teleport
 		graphics_draw_sprite(15,57,5,   sprite_teleport_red,    Color_gui_red);
-		graphics_draw_sprite(4,120,57,  sprite_cloud,           Color_gui_cloud_blue);//Cloud
+		graphics_draw_sprite(3,120,57,  sprite_cloud,           Color_gui_cloud_blue);//Cloud
 		graphics_draw_sprite(4,52,31,   sprite_key_f,           Color_gui_black);			//Keys
 		graphics_draw_sprite(24,37,33,  sprite_key_r,           Color_gui_black);
 		graphics_draw_sprite(24,47,33,  sprite_key_p,           Color_gui_black);
@@ -332,12 +327,13 @@ void graphics_initialize() { // Initialize the whole screen, Draw all the pixels
 		graphics_draw_sprite(7,7,2,     sprite_tank_0_grey,     Color_tank_grey);			//Player Indicator
 		graphics_draw_sprite(3,10,6,    sprite_barrel_45,       Color_barrel);
 		graphics_draw_sprite(6,17,10,   sprite_num_P,           Color_gui_black);
-		size_t index;
-		for (index = 0; index < drawn_copy.tanks.size; index++) {		//Tank Health GUI
-			Tank *drawnTank = &drawn_copy.tanks.array[index];
-			graphics_draw_sprite(11,142+index*25,22,sprite_tank_indicator,drawnTank->color);
-			graphics_draw_sprite(8,145+index*25,6,    sprite_barrel_45,       Color_barrel);
+		int index;
+		for (index = 0; index < game_instance.tanks.size; index++) {		//Tank Health GUI
+			graphics_draw_sprite(11,142+index*25,22,sprite_tank_indicator,Color_tank[game_instance.tanks.array[index].color]);
+			graphics_draw_sprite(7,145+index*25,6,    sprite_barrel_45,       Color_barrel);
 			graphics_draw_sprite(11,142+index*25,2,     sprite_tank_0_grey,     Color_tank_grey);
+			graphics_draw_sprite(17,142+index*25,10,   sprite_num_P,           Color_gui_black);
+			graphics_draw_numbers(17,146+index*25,index + 1,Color_gui_background);  // Player number
 		}
 
 }
@@ -394,7 +390,7 @@ void graphics_render() {
 		int tilt = (drawnTank->tilt) * 8 / MATH_PI;
 		int originX = drawnTank->position.x;
 		int originY = drawnTank->position.y;
-		float barrelAngle = drawnTank->tilt + drawnTank->gun.angle;
+		int barrelOriginY, barrelOriginX;
 
 		//Update Tank Health GUI
 		graphics_draw_rectangle(7,153+index*25,26,156+index*25,Color_gui_red);
@@ -404,61 +400,70 @@ void graphics_render() {
 		case 0:	//0
 			graphics_draw_sprite(originY-3,originX-3,24,sprite_tank_0_red,Color_tank[drawnTank->color]);
 			graphics_draw_sprite(originY-3,originX-3,2,sprite_tank_0_grey,Color_tank_grey);
-			graphics_draw_line(originY-2,originX,originY-2-6*math_sin(barrelAngle),originX+6*math_cos(barrelAngle),Color_gui_black);
+			barrelOriginY = originY - 2;
+			barrelOriginX = originX;
 			break;
 		case -1: //22.5
 			graphics_draw_sprite(originY-4,originX-4,25,sprite_tank_22_red,Color_tank[drawnTank->color]);
 			graphics_draw_sprite(originY-4,originX-4,2,sprite_tank_22_grey,Color_tank_grey);
-			graphics_draw_line(originY-3,originX-1,originY-3-6*math_sin(barrelAngle),originX-1+6*math_cos(barrelAngle),Color_gui_black);
+			barrelOriginY = originY - 3;
+			barrelOriginX = originX - 1;
 			break;
 		case -2: //45
 			graphics_draw_sprite(originY-4,originX-4,22,sprite_tank_45_red,Color_tank[drawnTank->color]);
 			graphics_draw_sprite(originY-4,originX-4,2,sprite_tank_45_grey,Color_tank_grey);
-			graphics_draw_line(originY-2,originX-2,originY-2-6*math_sin(barrelAngle),originX-2+6*math_cos(barrelAngle),Color_gui_black);
+			barrelOriginY = originY - 2;
+			barrelOriginX = originX - 2;
 			break;
 		case -3: //67.5
 			graphics_draw_sprite(originY-4,originX-4,25,sprite_tank_67_red,Color_tank[drawnTank->color]);
 			graphics_draw_sprite(originY-4,originX-4,2,sprite_tank_67_grey,Color_tank_grey);
-			graphics_draw_line(originY-2,originX-3,originY-2-6*math_sin(barrelAngle),originX-3+6*math_cos(barrelAngle),Color_gui_black);
+			barrelOriginY = originY - 2;
+			barrelOriginX = originX - 3;
 			break;
 		case -4: //90
 			graphics_draw_sprite(originY-3,originX-3,24,sprite_tank_90_red,Color_tank[drawnTank->color]);
 			graphics_draw_sprite(originY-3,originX-3,2,sprite_tank_90_grey,Color_tank_grey);
-			graphics_draw_line(originY+3,originX-2,originY+3-6*math_sin(barrelAngle),originX-2+6*math_cos(barrelAngle),Color_gui_black);
+			barrelOriginY = originY + 3;
+			barrelOriginX = originX - 2;
 			break;
 		case 4: //270, -90
 			graphics_draw_sprite(originY-3,originX,24,sprite_tank_m90_red,Color_tank[drawnTank->color]);
 			graphics_draw_sprite(originY-3,originX,2,sprite_tank_m90_grey,Color_tank_grey);
-			graphics_draw_line(originY,originX+2,originY-6*math_sin(barrelAngle),originX+2+6*math_cos(barrelAngle),Color_gui_black);
+			barrelOriginY = originY;
+			barrelOriginX = originX + 2;
 			break;
 		case 3: //292.5, -67.5
 			graphics_draw_sprite(originY-4,originX,25,sprite_tank_m67_red,Color_tank[drawnTank->color]);
 			graphics_draw_sprite(originY-4,originX,2,sprite_tank_m67_grey,Color_tank_grey);
-			graphics_draw_line(originY-1,originX+3,originY-1-6*math_sin(barrelAngle),originX+3+6*math_cos(barrelAngle),Color_gui_black);
+			barrelOriginY = originY - 1;
+			barrelOriginX = originX + 3;
 			break;
 		case 2: //315, -45
 			graphics_draw_sprite(originY-4,originX-1,22,sprite_tank_m45_red,Color_tank[drawnTank->color]);
 			graphics_draw_sprite(originY-4,originX-1,2,sprite_tank_m45_grey,Color_tank_grey);
-			graphics_draw_line(originY-2,originX+2,originY-2-6*math_sin(barrelAngle),originX+2+6*math_cos(barrelAngle),Color_gui_black);
+			barrelOriginY = originY - 2;
+			barrelOriginX = originX + 2;
 			break;
 		case 1: //337.5, -22.5
 			graphics_draw_sprite(originY-4,originX-2,25,sprite_tank_m22_red,Color_tank[drawnTank->color]);
 			graphics_draw_sprite(originY-4,originX-2,2,sprite_tank_m22_grey,Color_tank_grey);
-			graphics_draw_line(originY - 3,originX+1,originY-3-6*math_sin(barrelAngle),originX+1+6*math_cos(barrelAngle),Color_gui_black);
+			barrelOriginY = originY - 3;
+			barrelOriginX = originX + 1;
 			break;
 		default:
 				error_show(ERROR_GRAPHICS_TANK_TILT_OUT_OF_BOUNDS);
 		}
+		float barrelAngle = drawnTank->tilt + drawnTank->gun.angle;
+		graphics_draw_line(barrelOriginY,barrelOriginX,	barrelOriginY - 6 * math_sin(barrelAngle),	barrelOriginX + 6 * math_cos(barrelAngle), Color_barrel);
 	}
 
 
 
 	// Update the Bullet on Pixel Map
 	for (index = 0; index < drawn_copy.bullets.size; index++) {
-		Bullet const *const drawn_bullet =
-			&drawn_copy.bullets.array[index];
-		pixel_map[(int)drawn_bullet->position.y]
-			 [(int)drawn_bullet->position.x] = Color_gui_black;
+		Bullet const *const drawn_bullet = 	&drawn_copy.bullets.array[index];
+		pixel_map[(int)drawn_bullet->position.y] [(int)drawn_bullet->position.x] = Color_gui_black;
 	}
 
 
