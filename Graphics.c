@@ -361,7 +361,7 @@ void graphics_render() {
 
 	// Update the GUI Variables on Pixel Map
 	Tank *const tank = &drawn_copy.tanks.array[drawn_copy.turn];
-	graphics_draw_sprite(7,7,22,sprite_tank_indicator,Color_tank[tank->color]) // Player Indicator
+	graphics_draw_sprite(7,7,22,sprite_tank_indicator,Color_tank[tank->color]); // Player Indicator
 	graphics_draw_numbers(6,21,drawn_copy.turn + 1,Color_gui_background);  // Player number
 	graphics_draw_numbers(17, 17, tank->fuel, Color_gui_background);       // Fuel
 	graphics_draw_numbers(26, 17, tank->health, Color_gui_background);     // Health
@@ -371,7 +371,7 @@ void graphics_render() {
 	graphics_draw_angle((tank->gun.angle) * 180 / MATH_PI);	 	  // Angle Bar
 	int wind=(drawn_copy.map.acceleration.x/MAP_MAX_WIND)*100;  //Wind
 	graphics_draw_numbers(16, 121, math_abs(wind), Color_gui_background);
-	if wind>=0{
+	if (wind>=0){
 		graphics_draw_rectangle(10,120,14,132,Color_gui_background);
 		graphics_draw_sprite(10,120,19,sprite_wind_arrow_r,Color_gui_black);
 	}
@@ -379,12 +379,6 @@ void graphics_render() {
 		graphics_draw_rectangle(10,120,14,132,Color_gui_background);
 		graphics_draw_sprite(10,120,19,sprite_wind_arrow_l,Color_gui_black);
 	}
-	//3 tankın da healthini tutan array?
-	for(i=0;i<TANK_COUNT;i++){		//Update Tank Health GUI
-		graphics_draw_rectangle(7,153+i*25,26,156+i*25,Color_gui_red);
-		graphics_draw_rectangle(7+(100-health(i))/5,153+i*25,26,156+i*25,Color_gui_green);
-	}
-
 
 	// Update the Tanks on Pixel Map
 	size_t index;
@@ -394,6 +388,10 @@ void graphics_render() {
 		int originX = drawnTank->position.x;
 		int originY = drawnTank->position.y;
 		float barrelAngle = drawnTank->tilt + drawnTank->gun.angle;
+
+		//Update Tank Health GUI
+		graphics_draw_rectangle(7,153+index*25,26,156+index*25,Color_gui_red);
+		graphics_draw_rectangle(7+(100-drawnTank->health)/5,153+index*25,26,156+index*25,Color_gui_green);
 
 		switch (tilt) {
 		case 0:	//0
